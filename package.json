@@ -1,0 +1,24 @@
+{
+  "name": "thorjs-provider-http",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "ts-node test/repl.test.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tony.li@vechain.com",
+  "license": "MIT",
+  "devDependencies": {
+    "debug": "^3.1.0",
+    "repl-x": "^0.1.4",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.8.1",
+    "web3": "^1.0.0-beta.33"
+  },
+  "dependencies": {
+    "@types/node": "^9.6.4",
+    "xhr2": "^0.1.4"
+  }
+}

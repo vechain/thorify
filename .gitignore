@@ -1,0 +1,6 @@
+dist/
+node_modules/
+typedocs/
+package/
+*.tgz
+.DS_Store

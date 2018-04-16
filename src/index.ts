@@ -5,7 +5,7 @@
 const XHR2 = require('xhr2');
 const debug = require('debug')('thor:http-provider')
 import ThorInterceptor from './thor-interceptor';
-
+import extend from './extend'
 
 class ThorHttpProvider{
   private host: string;
@@ -23,7 +23,7 @@ class ThorHttpProvider{
     debug('payload: %O',payload);
 
     if (!ThorInterceptor[payload.method]) {
-      return callback(null, {
+      return callback(new Error('Method not supported!'), {
         id: payload.id || 0,
         jsonrpc: payload.jsonrpc || "2.0",
         result: null
@@ -65,6 +65,10 @@ class ThorHttpProvider{
       callback(`[thorjs-provider-http] CONNECTION ERROR: Couldn't connect to node '${this.host}': ${JSON.stringify(error, null, 2)}`, null);
     }
   }
+
+  extend(web3:any) {
+    extend(web3);
+  }
 }
 
 /**
@@ -73,11 +77,6 @@ class ThorHttpProvider{
 function invalidResponseError(result: any, host: any) {
   const message = !!result && !!result.error && !!result.error.message ? `[thorjs-provider-http] ${result.error.message}` : `[thorjs-provider-http] Invalid JSON RPC response from host provider ${host}: ${JSON.stringify(result, null, 2)}`;
   return new Error(message);
-}
-
-
-function Logger(payload: any) {
-  console.log(payload);
 }
 
 export default ThorHttpProvider;

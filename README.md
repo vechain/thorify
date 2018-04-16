@@ -13,12 +13,32 @@ npm install --save thorjs-provider-http
 ```js
 const HttpProvider = require('thorjs-provider-http');
 const Web3 = require('web3');
-const thor = new Web3(new HttpProvider('http://localhost:8669'));
+const thorHttpProvider = new HttpProvider('http://localhost:8669')
+const thor = new Web3(thorHttpProvider);
+
+thorHttpProvider.extend(web3);
 
 thor.getBlock();
 ```
 
+## Special Reminder
+
+- For those who get transaction receipt from `eth.sendSignedTransaction`, the transaction receipt formatter for thor is not applied to that receipt(only this method, the resaon is some special implementation inside web3.js), so the output is not as expected as `eth.getTransactionReceipt`, we suggest to use `eth.getTransactionReceipt.method.outputFormatter(receipt)` after you got receipt from that methods.
+
 ## Current Web3 method supported:
+
+- [x] eth_getBlockByNumber
+- [x] eth_getBlockByHash
+- [x] eth_blockNumber
+- [x] eth_getBalance
+- [x] eth_sendRawTransaction
+- [x] eth_getTransactionByHash
+- [x] eth_getTransactionReceipt
+- [x] eth_call
+
+## Extended Web3 method:
+
+- [x] eth_getEnergy
 
 ## About
 

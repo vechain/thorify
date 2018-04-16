@@ -37,12 +37,125 @@ ThorAPIMapping = {
     formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
       let request = new XHR2();
       request.timeout = timeout;
-      request.open('GET', host + '/blocks/' + payload.params[0], true);
+      request.open('GET', host + '/blocks/' + utils.formatBlockNumber(payload.params[0]), true);
       return {
         Method: 'GET',
         Body: {},
         Request: request,
         ResFormatter: (v) => v
+      }
+    }
+  },
+  'eth_blockNumber': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/blocks/best', true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => v.number
+      }
+    }
+  },
+  'eth_getBalance': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/accounts/' + payload.params[0] + '?revision=' + utils.formatBlockNumber(payload.params[1]), true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => v.balance
+      }
+    }
+  },
+  'eth_getEnergy': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/accounts/' + payload.params[0] + '?revision=' + utils.formatBlockNumber(payload.params[1]), true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => v.energy
+      }
+    }
+  },
+  'eth_sendRawTransaction': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('POST', host + '/transactions', true);
+      return {
+        Method: 'POST',
+        Body: {
+          raw: payload.params[0]
+        },
+        Request: request,
+        ResFormatter: (v) => v.id
+      }
+    }
+  },
+  'eth_getTransactionByHash': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/transactions/' + payload.params[0], true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => {
+          if (!v) return v
+          v.blockNumber = v.block.number;
+          return v;
+        }
+      }
+    }
+  },
+  'eth_getTransactionReceipt': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/transactions/' + payload.params[0]+'/receipt', true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => {
+          if(!v) return v
+          v.blockNumber = v.block.number;
+          v.blockHash = v.block.id;
+          return v;
+        }
+      }
+    }
+  },
+  'eth_call': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('POST', host + '/accounts/' + payload.params[0].to + '?revision=' + utils.formatBlockNumber(payload.params[1]), true);
+
+      let body:any = {
+        value: payload.params[0].value || '',
+        data: payload.params[0].data || '',
+        gas: payload.params[0].gas || 0,
+        gasPrice: payload.params[0].gasPrice || ''
+      };
+      if (payload.params[0].from) {
+        body.caller = payload.params[0].from;
+      }
+
+      return {
+        Method: 'POST',
+        Body: body,
+        Request: request,
+        ResFormatter: (v) => v.data
       }
     }
   }

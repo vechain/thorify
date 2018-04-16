@@ -6,8 +6,10 @@ const formatBlockNumber = function (blockNumber: Number | String): Number|String
   } else if (typeof blockNumber === 'string') {
     if (blockNumber === 'earliest')
       return 0;
+    else if (blockNumber === 'latest' || blockNumber === 'pending')
+      return 'best';
     else
-      return 'best';  
+      return blockNumber;  
   } else {
     return 'best';
   }

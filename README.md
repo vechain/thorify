@@ -14,16 +14,16 @@ npm install --save thorjs-provider-http
 const HttpProvider = require('thorjs-provider-http');
 const Web3 = require('web3');
 const thorHttpProvider = new HttpProvider('http://localhost:8669')
-const thor = new Web3(thorHttpProvider);
+const web3 = new Web3(thorHttpProvider);
 
 thorHttpProvider.extend(web3);
 
-thor.getBlock();
+web3.eth.getBlock('latest').then(v=>console.log(v))
 ```
 
 ## Special Reminder
 
-- For those who get transaction receipt from `eth.sendSignedTransaction`, the transaction receipt formatter for thor is not applied to that receipt(only this method, the resaon is some special implementation inside web3.js), so the output is not as expected as `eth.getTransactionReceipt`, we suggest to use `eth.getTransactionReceipt.method.outputFormatter(receipt)` after you got receipt from that methods.
+- There are three special blocknumber in ethereum: `earliest`,`latest`,`pending`. In VeChain Thor, we introduced `best` block and there is no `pending` block, so they will be replaced to `0`(aka genesis),`best`,`best`
 
 ## Current Web3 method supported:
 
@@ -31,6 +31,8 @@ thor.getBlock();
 - [x] eth_getBlockByHash
 - [x] eth_blockNumber
 - [x] eth_getBalance
+- [x] eth_getCode
+- [x] eth_getStorageAt
 - [x] eth_sendRawTransaction
 - [x] eth_getTransactionByHash
 - [x] eth_getTransactionReceipt
@@ -42,7 +44,7 @@ thor.getBlock();
 
 ## About
 
-A simple provider module for the HTTP protocol that follows the web3 provider specification. This is purely an HTTP bypass using the XHR2 module.
+A simple provider module for the HTTP protocol that follows the web3 provider specification. This is an implantation simply to adapt VeChain Thor RESTful API.
 
 
 ## Licence
@@ -61,14 +63,14 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```

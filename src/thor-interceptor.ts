@@ -55,7 +55,7 @@ ThorAPIMapping = {
         Method: 'GET',
         Body: {},
         Request: request,
-        ResFormatter: (v) => v.number
+        ResFormatter: (v) => !v ? v : v.number
       }
     }
   },
@@ -68,7 +68,7 @@ ThorAPIMapping = {
         Method: 'GET',
         Body: {},
         Request: request,
-        ResFormatter: (v) => v.balance
+        ResFormatter: (v) => !v ? v : v.balance
       }
     }
   },
@@ -81,10 +81,36 @@ ThorAPIMapping = {
         Method: 'GET',
         Body: {},
         Request: request,
-        ResFormatter: (v) => v.energy
+        ResFormatter: (v) => !v ? v : v.energy
       }
     }
   },
+  'eth_getCode': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/accounts/' + payload.params[0] + '/code?revision=' + utils.formatBlockNumber(payload.params[1]), true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => !v ? v : v.code
+      }
+    }
+  },
+  'eth_getStorageAt': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/accounts/' + payload.params[0] + '/storage/' + payload.params[1]+'?revision=' + utils.formatBlockNumber(payload.params[2]), true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => !v ? v : v.value
+      }
+    }
+  },  
   'eth_sendRawTransaction': {
     formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
       let request = new XHR2();
@@ -96,7 +122,7 @@ ThorAPIMapping = {
           raw: payload.params[0]
         },
         Request: request,
-        ResFormatter: (v) => v.id
+        ResFormatter: (v) => !v ? v : v.id
       }
     }
   },
@@ -155,7 +181,7 @@ ThorAPIMapping = {
         Method: 'POST',
         Body: body,
         Request: request,
-        ResFormatter: (v) => v.data
+        ResFormatter: (v) => !v ? v : v.data
       }
     }
   }

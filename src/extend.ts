@@ -1,9 +1,11 @@
 'use strict';
 
 import _ = require('lodash'); 
+const debug = require('debug')('thor:injector')
 
-const outputTransactionFormatter = function (web3: any) {
-  return function (tx: any) {
+const extend = function (web3: any) {
+  web3.extend.formatters.outputTransactionFormatter = function (tx: any) {
+    debug('outputTransactionFormatter')
     tx.gas = web3.extend.utils.hexToNumber(tx.gas);
     tx.chainTag = web3.extend.utils.numberToHex(tx.chainTag)
 
@@ -16,16 +18,14 @@ const outputTransactionFormatter = function (web3: any) {
       if (clause.to && web3.extend.utils.isAddress(clause.to)) { // tx.to could be `0x0` or `null` while contract creation
         clause.to = web3.extend.utils.toChecksumAddress(clause.to);
       } else {
-          clause.to = null; // set to `null` if invalid address
+        clause.to = null; // set to `null` if invalid address
       }
     }
-
-    return tx; 
+    return tx;
   }
-}
 
-var outputTransactionReceiptFormatter = function (web3: any) {
-  return function (receipt: any) {
+  web3.extend.formatters.outputTransactionReceiptFormatter = function (receipt: any) {
+    debug('outputTransactionReceiptFormatter')
     if (typeof receipt !== 'object') {
       throw new Error('Received receipt is invalid: ' + receipt);
     }
@@ -44,7 +44,7 @@ var outputTransactionReceiptFormatter = function (web3: any) {
       receipt.tx.origin = web3.extend.utils.toChecksumAddress(receipt.tx.origin);
     }
 
-    for (let output of receipt.outputs){
+    for (let output of receipt.outputs) {
       if (_.isArray(output.logs)) {
         output.logs = output.logs.map(web3.extend.formatters.outputLogFormatter);
       }
@@ -55,10 +55,8 @@ var outputTransactionReceiptFormatter = function (web3: any) {
     }
 
     return receipt;
-  }  
-};
+  }
 
-const extend = function (web3: any) {
   web3.extend({
     property: 'eth',
     methods: [
@@ -74,17 +72,22 @@ const extend = function (web3: any) {
         call: 'eth_getTransactionByHash',
         params: 1,
         inputFormatter: [null],
-        outputFormatter: outputTransactionFormatter(web3)
+        outputFormatter: web3.extend.formatters.outputTransactionFormatter
       }),
       new web3.extend.Method({
         name: 'getTransactionReceipt',
         call: 'eth_getTransactionReceipt',
         params: 1,
         inputFormatter: [null],
-        outputFormatter: outputTransactionReceiptFormatter(web3)
+        outputFormatter: web3.extend.formatters.outputTransactionReceiptFormatter
       })
     ]
   })
+
+
+  // let _encodeEventABI = web3.eth.Contract.prototype._encodeEventABI;
+
+
 
 }
 

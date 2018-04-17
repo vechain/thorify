@@ -184,6 +184,33 @@ ThorAPIMapping = {
         ResFormatter: (v) => !v ? v : v.data
       }
     }
+  },
+  'eth_getLogs': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      console.log(payload.params);
+      console.log(host + '/accounts/' + payload.params[0].address + '/logs' + (payload.params[0].order ? '?order=' + payload.params[0].order : ''));
+      request.open('POST', host + '/accounts/' + payload.params[0].address + '/logs' + (payload.params[0].order ? '?order=' + payload.params[0].order :''), true);
+
+      // let body: any = {
+      //   value: payload.params[0].value || '',
+      //   data: payload.params[0].data || '',
+      //   gas: payload.params[0].gas || 0,
+      //   gasPrice: payload.params[0].gasPrice || ''
+      // };
+      // if (payload.params[0].from) {
+      //   body.caller = payload.params[0].from;
+      // }
+      let body={}
+
+      return {
+        Method: 'POST',
+        Body: body,
+        Request: request,
+        ResFormatter: (v) => v
+      }
+    }
   }
 };
 

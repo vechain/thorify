@@ -3,7 +3,7 @@
 import _ = require('lodash'); 
 const debug = require('debug')('thor:injector')
 
-const extend = function (web3: any) {
+const extendFormatters = function (web3: any) {
   web3.extend.formatters.outputTransactionFormatter = function (tx: any) {
     debug('outputTransactionFormatter')
     tx.gas = web3.extend.utils.hexToNumber(tx.gas);
@@ -56,7 +56,9 @@ const extend = function (web3: any) {
 
     return receipt;
   }
+};
 
+const extendMethods = function (web3: any) {
   web3.extend({
     property: 'eth',
     methods: [
@@ -83,12 +85,26 @@ const extend = function (web3: any) {
       })
     ]
   })
+}
 
+const extendContracts = function (web3: any) { 
+  let _encodeEventABI = web3.eth.Contract.prototype._encodeEventABI;
+  web3.eth.Contract.prototype._encodeEventABI = function (event:any, options:any):any {
+    let result = _encodeEventABI.call(this, event, options);
+    if(result.options)
+      result.options = options.options;
+    if (result.range)
+      result.range = options.range;
+    if (result.order)
+      result.order = options.order;
+    return result;
+  }
+}
 
-  // let _encodeEventABI = web3.eth.Contract.prototype._encodeEventABI;
-
-
-
+const extend = function (web3: any) {
+  extendFormatters(web3);
+  extendMethods(web3);
+  extendContracts(web3);
 }
 
 export default extend;

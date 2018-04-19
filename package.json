@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p .",
-    "dev": "ts-node test/repl.test.ts",
+    "dev": "export DEBUG=thor:* && ts-node test/repl.test.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "tony.li@vechain.com",

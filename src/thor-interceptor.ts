@@ -189,20 +189,18 @@ ThorAPIMapping = {
     formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
       let request = new XHR2();
       request.timeout = timeout;
-      console.log(payload.params);
-      console.log(host + '/accounts/' + payload.params[0].address + '/logs' + (payload.params[0].order ? '?order=' + payload.params[0].order : ''));
-      request.open('POST', host + '/accounts/' + payload.params[0].address + '/logs' + (payload.params[0].order ? '?order=' + payload.params[0].order :''), true);
 
-      // let body: any = {
-      //   value: payload.params[0].value || '',
-      //   data: payload.params[0].data || '',
-      //   gas: payload.params[0].gas || 0,
-      //   gasPrice: payload.params[0].gasPrice || ''
-      // };
-      // if (payload.params[0].from) {
-      //   body.caller = payload.params[0].from;
-      // }
-      let body={}
+      let query = '';
+      if (payload.params[0].address) {
+        query = '&address=' + payload.params[0].address;
+      }
+      if (payload.params[0].order && (payload.params[0].order.toUpperCase() === 'ASC' || payload.params[0].order.toUpperCase() === 'DESC')) {
+        query += '&order=' + payload.params[0].order.toUpperCase();
+      }
+      query = query.replace('&', '?');
+      let body = utils.formatLogQuery(payload.params[0]);
+
+      request.open('POST', host + '/logs' + query, true);
 
       return {
         Method: 'POST',

@@ -37,6 +37,7 @@ web3.eth.getBlock('latest').then(v=>console.log(v))
 - [x] eth_getTransactionByHash
 - [x] eth_getTransactionReceipt
 - [x] eth_call
+- [ ] eth_getLogs
 
 ## Extended Web3 method:
 

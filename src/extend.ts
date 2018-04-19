@@ -1,6 +1,5 @@
 'use strict';
 
-import _ = require('lodash'); 
 const debug = require('debug')('thor:injector')
 
 const extendFormatters = function (web3: any) {
@@ -45,7 +44,7 @@ const extendFormatters = function (web3: any) {
     }
 
     for (let output of receipt.outputs) {
-      if (_.isArray(output.logs)) {
+      if (web3.extend.utils._.isArray(output.logs)) {
         output.logs = output.logs.map(web3.extend.formatters.outputLogFormatter);
       }
 

@@ -2,7 +2,38 @@
 
 const MaxUint32 = Math.pow(2, 32) - 1;
 
-const isArray = function (o: any) {
+type topicName = 'topic0' | 'topic1' | 'topic2' | 'topic3' | 'topic4';
+interface topicItem{
+  name: string;
+  array: [string]
+}
+
+export interface topicSet{
+  topic0?: string;
+  topic1?: string;
+  topic2?: string;
+  topic3?: string;
+  topic4?: string;
+}
+
+export interface logQueryBody{
+  range?: logQueryRange;
+  options?: logQueryOptions;
+  topicSets: Array<topicSet>;
+}
+
+export interface logQueryRange{
+  unit ?: string;
+  from ?: number;
+  to ?: number;
+}
+
+export interface logQueryOptions { 
+  offset?: number;
+  limit?: number;
+}
+
+const isArray = function (o: any):boolean {
   return Object.prototype.toString.call(o) == '[object Array]';
 }
 
@@ -21,8 +52,8 @@ const formatBlockNumber = function (blockNumber: Number | String): Number|String
   }
 }
 
-const formatRange = function (range: any): any{
-  let ret:any;
+const formatRange = function (range: any): logQueryRange|null{
+  let ret: logQueryRange = {};
   if (range.unit !== 'block' && range.unit !== 'time')
     return null;
   ret.unit = range.unit;
@@ -44,8 +75,8 @@ const formatRange = function (range: any): any{
   return ret;
 }
 
-const formatOptions = function (options: any): any{
-  let ret: any
+const formatOptions = function (options: any): logQueryOptions|null{
+  let ret: logQueryOptions = {};
   if (options.limit) {
     try {
       ret.limit = Number.parseInt(options.limit)
@@ -59,8 +90,10 @@ const formatOptions = function (options: any): any{
   return ret;
 }
 
-const formatLogQuery = function (params: any): any {
-  let body: any = {}
+const formatLogQuery = function (params: any): logQueryBody {
+  let body: logQueryBody = {
+    topicSets:[]
+  };
   
   if (params.range) {
     let ret = formatRange(params.range);
@@ -96,23 +129,23 @@ const formatLogQuery = function (params: any): any {
   }
 
   body.topicSets = [];
-  let topics: Array<{name: string;array: [string]}> = [];
+  let topics: Array<topicItem> = [];
 
   for (let i = 0; i < params.topics.length; i++) {
     if(typeof params.topics[i] === 'string') {
       topics.push({
-        name: 'topic' + i,
+        name: <topicName>'topic' + i,
         array: [params.topics[i]]
       });
     } else if (isArray(params.topics[i]) && params.topics[i].length) {
       topics.push({
-        name: 'topic' + i,
+        name: <topicName>'topic' + i,
         array: params.topics[i]
       });
     }
   }
 
-  let outputTopic = function (topics: any, index: number, receiver: any, current: any) {
+  let outputTopic = function (topics: Array<topicItem>, index: number, receiver: Array<topicSet>, current: topicSet) {
     if (index == topics.length) {
       let o = {};
       Object.assign(o, current);
@@ -120,7 +153,7 @@ const formatLogQuery = function (params: any): any {
       return;
     }
     for (let item of topics[index].array) {
-      current[topics[index].name] = item;
+      current[<topicName>topics[index].name] = item;
       outputTopic(topics, index + 1, receiver, current);
     }
   }

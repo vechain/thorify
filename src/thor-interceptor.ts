@@ -156,6 +156,7 @@ ThorAPIMapping = {
           if(!v) return v
           v.blockNumber = v.block.number;
           v.blockHash = v.block.id;
+          v.transactionHash = v.tx.id;
           return v;
         }
       }
@@ -206,7 +207,14 @@ ThorAPIMapping = {
         Method: 'POST',
         Body: body,
         Request: request,
-        ResFormatter: (v) => v
+        ResFormatter: (v) => {
+          if (!v) return v
+          for (let item of v) {
+            item.blockNumber = item.block.number;
+            item.blockHash = item.block.id;
+          } 
+          return v;
+        }
       }
     }
   }

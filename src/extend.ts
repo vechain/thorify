@@ -55,6 +55,25 @@ const extendFormatters = function (web3: any) {
 
     return receipt;
   }
+
+  web3.extend.formatters.outputLogFormatter = function (log: any) {
+
+    if (log.hasOwnProperty('transactionIndex:'))
+      delete log.transactionIndex;
+    if (log.hasOwnProperty('logIndex'))
+      delete log.logIndex;
+    if (log.hasOwnProperty('id'))
+      delete log.id;
+
+    if (log.blockNumber !== null)
+      log.blockNumber = web3.extend. utils.hexToNumber(log.blockNumber);
+
+    if (log.address) {
+      log.address = web3.extend.utils.toChecksumAddress(log.address);
+    }
+
+    return log;
+  };
 };
 
 const extendMethods = function (web3: any) {

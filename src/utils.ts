@@ -56,7 +56,8 @@ const formatRange = function (range: any): logQueryRange|null{
   let ret: logQueryRange = {};
   if (range.unit !== 'block' && range.unit !== 'time')
     return null;
-  ret.unit = range.unit;
+  else
+    ret.unit = range.unit;
 
   try {
     let from = formatBlockNumber(range.from)

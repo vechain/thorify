@@ -57,7 +57,7 @@ const extendFormatters = function (web3: any) {
   }
 
   web3.extend.formatters.outputLogFormatter = function (log: any) {
-
+    debug('outputLogFormatter');
     if (log.hasOwnProperty('transactionIndex:'))
       delete log.transactionIndex;
     if (log.hasOwnProperty('logIndex'))
@@ -107,13 +107,14 @@ const extendMethods = function (web3: any) {
 
 const extendContracts = function (web3: any) { 
   let _encodeEventABI = web3.eth.Contract.prototype._encodeEventABI;
-  web3.eth.Contract.prototype._encodeEventABI = function (event:any, options:any):any {
+  web3.eth.Contract.prototype._encodeEventABI = function (event: any, options: any): any {
+    debug('_encodeEventABI');
     let result = _encodeEventABI.call(this, event, options);
-    if(result.options)
+    if (options.options)
       result.options = options.options;
-    if (result.range)
+    if (options.range)
       result.range = options.range;
-    if (result.order)
+    if (options.order)
       result.order = options.order;
     return result;
   }

@@ -166,7 +166,29 @@ const formatLogQuery = function (params: any): logQueryBody {
   return body;
 }
 
+const toPrefixedHex = function (hexStr: string): string{
+  if (hexStr.indexOf('0x') === 0)
+    return hexStr;
+  else
+    return '0x' + hexStr;  
+}
+
+const santizeHex = function (hexStr: string): string {
+  if (hexStr.indexOf('0x') === 0)
+    return hexStr.substr(2);
+  else
+    return hexStr;
+}
+
+const isHex = function (hex:string):boolean {
+  return ((typeof hex === 'string') && /^(-0x|0x)?[0-9a-f]*$/i.test(hex));
+};
+
 export default {
   formatBlockNumber,
-  formatLogQuery
+  formatLogQuery,
+  isArray,
+  toPrefixedHex,
+  santizeHex,
+  isHex
 }

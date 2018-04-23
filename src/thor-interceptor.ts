@@ -157,6 +157,15 @@ ThorAPIMapping = {
           v.blockNumber = v.block.number;
           v.blockHash = v.block.id;
           v.transactionHash = v.tx.id;
+          // For competible with ethereum's receipt
+          if (v.reverted) {
+            v.status = '0x0';
+          } else {
+            v.status = '0x1';
+          }
+          if (v.outputs.length) {
+            v.contractAddress = v.outputs[0].contractAddress;
+          }
           return v;
         }
       }

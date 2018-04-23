@@ -2,47 +2,7 @@
 const debug = require('debug')('thor:injector');
 import utils from './utils';
 import extendAccounts from './accounts';
-
-
-
-type StringorNull = string | null;
-type StringorNumber = string | number;
-interface RawTransaction {
-  ChainTag?: StringorNumber;
-  BlockRef?: StringorNumber;
-  Expiration?: StringorNumber;
-  GasPriceCoef?: StringorNumber;
-  Gas?: StringorNumber;
-  DependsOn?: string;
-  Nonce?: StringorNumber;
-  Signature?: string;
-  Clauses: Array<Clause>;
-  from?: string;
-  gasPrice?: StringorNumber;
-}
-
-interface Clause{
-  to?: StringorNull;
-  value: StringorNumber;
-  data?: string;
-}
-
-interface Transaction {
-  chainTag?: StringorNumber;
-  blockRef?: StringorNumber;
-  expiration?: StringorNumber;
-  gasPriceCoef?: StringorNumber;
-  gas?: StringorNumber;
-  dependsOn?: string;
-  nonce?: StringorNumber;
-  origin: string;
-  clauses: Array<Clause>;
-  // for competibale with web3, add from, to, value
-  to?: string;
-  from?: string;
-  value?: number;
-  data?: string;
-}
+import { StringorNull, StringorNumber, RawTransaction, Clause, Transaction } from './types';
 
 const extendFormatters = function (web3: any) {
 
@@ -53,37 +13,22 @@ const extendFormatters = function (web3: any) {
   const toUint8 = function (input: number | string): StringorNull {
     if (!input) {
       return null;
-    }else if (typeof input === 'number') {
-      return new web3.extend.utils.BN(input).mod(maxUint8).toString(10);
-    }else if (utils.isHex(input)) {
-      return new web3.extend.utils.BN(utils.santizeHex(input), 16).mod(maxUint8).toString(10);
-    } else {
-      return new web3.extend.utils.BN(input).mod(maxUint8).toString(10);
     }
+    return new web3.extend.utils.toBN(input).mod(maxUint8).toString(10);
   }
 
   const toUint64 = function (input: number | string): StringorNull {
     if (!input) {
       return null;
-    } else if (typeof input === 'number') {
-      return new web3.extend.utils.BN(input).mod(maxUint64).toString(10);
-    } else if (utils.isHex(input)) {
-      return new web3.extend.utils.BN(utils.santizeHex(input), 16).mod(maxUint64).toString(10);
-    } else {
-      return new web3.extend.utils.BN(input).mod(maxUint64).toString(10);
     }
+    return new web3.extend.utils.toBN(input).mod(maxUint64).toString(10);
   }
 
   const toUint32 = function (input: number | string): StringorNull {
     if (!input) {
       return null;
-    } else if (typeof input === 'number') {
-      return new web3.extend.utils.BN(input).mod(maxUint32).toString(10);
-    } else if (utils.isHex(input)) {
-      return new web3.extend.utils.BN(utils.santizeHex(input), 16).mod(maxUint32).toString(10);
-    } else {
-      return new web3.extend.utils.BN(input).mod(maxUint32).toString(10);
     }
+    return new web3.extend.utils.BN(input).mod(maxUint32).toString(10);
   }
 
   const formatCluases = function (clauses: Array<Clause>): Array<Clause> | null {
@@ -175,16 +120,16 @@ const extendFormatters = function (web3: any) {
     // TODO:default value
     if (tx.expiration===0||tx.expiration) {
       let expiration = toUint32(tx.expiration);
-      if (expiration) {
-        rawTx.Expiration = expiration;
-      }
+      rawTx.Expiration = expiration || utils.defaultExpiration;
+    }else{
+      rawTx.Expiration = utils.defaultExpiration;
     }
     // TODO:default value
     if (tx.gasPriceCoef === 0||tx.gasPriceCoef) {
       let gasPriceCoef = toUint8(tx.gasPriceCoef);
-      if (gasPriceCoef) {
-        rawTx.GasPriceCoef = gasPriceCoef;
-      }
+      rawTx.GasPriceCoef = gasPriceCoef||utils.defaultGasPriceCoef;
+    } else {
+      rawTx.GasPriceCoef = utils.defaultGasPriceCoef;
     }
     if (tx.gas) {
       let gas = toUint64(tx.gas);
@@ -203,27 +148,30 @@ const extendFormatters = function (web3: any) {
         rawTx.Nonce = nonce;
       }
     }
-    if (tx.clauses) {
-      let clauses = formatCluases(tx.clauses);
-      if (clauses) {
-        rawTx.Clauses = clauses;
-      }
-    } else {
-      let clause: Clause = {
-        value: 0
-      };
+    let clause: Clause = {
+      value: 0
+    };
 
-      if (tx.to) { // it might be contract creation
-        clause.to = web3.extend.formatters.inputAddressFormatter(tx.to);
-      }
-
-      if (tx.data && !web3.extend.utils.isHex(tx.data)) {
-        throw new Error('The data field must be HEX encoded data.');
-      }
-
-      clause.value = web3.extend.utils.numberToHex(tx.value)
-      rawTx.Clauses.push(clause);
+    if (tx.to) { // it might be contract creation
+      clause.to = web3.extend.formatters.inputAddressFormatter(tx.to);
+      rawTx.to = tx.to;
     }
+
+    if (tx.data) {
+      if (!web3.extend.utils.isHex(tx.data)) {
+        throw new Error('The data field must be HEX encoded data.');
+      } else {
+        rawTx.data = tx.data;
+        clause.data = tx.data;
+      }
+    }
+
+    let value = web3.extend.utils.numberToHex(tx.value)
+    if (value) {
+      clause.value = value;
+    }
+    rawTx.Clauses.push(clause);
+
     /* need to be competible when sending tx in ethereum's format
       from: for sendTransaction method to recognize which account is sending tranaction and load privatekey from eth.account.wallet
       gasPrice: for sendTransaction method to ignore gasPrice
@@ -287,6 +235,16 @@ const extendMethods = function (web3: any) {
         accounts: web3.eth.accounts,
         params: 1,
         inputFormatter: [web3.extend.formatters.inputTransactionFormatter]
+      }),
+      new web3.extend.Method({
+        name: 'getBlockRef',
+        call: 'eth_getBlockRef',
+        params: 0
+      }),
+      new web3.extend.Method({
+        name: 'getChainTag',
+        call: 'eth_getChainTag',
+        params: 0
       })
     ]
   })

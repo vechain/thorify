@@ -25,4 +25,13 @@ web3.eth.accounts.wallet.add('0x87e0eba9c86c494d98353800571089f316740b0cb84c9a7c
 
 thorProvider.extend(web3);
 
-replx.start({ prompt: 'Thor# ' }, () => { return { web3,energy} });
+// web3.eth.sendTransaction({from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', to:'0xd3ae78222beadb038203be21ed5ce7c9b1bff602', value: '100', chainTag:'0x50', blockRef:'0x00000001', gas: 21000, nonce: 100})
+// web3.eth.sendTransaction({ from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', to: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602', value: '100', gas: 21000, nonce: 100 })
+// energy.methods.transfer('0xd3ae78222beadb038203be21ed5ce7c9b1bff602', 100).send({from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', gas: 210000, nonce: 100 })
+replx.start({ prompt: 'Thor# ' }, () => {
+  return {
+    eth:web3.eth,
+    energy,
+    web3
+  }
+});

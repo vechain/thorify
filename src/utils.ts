@@ -1,3 +1,5 @@
+import { RawTransaction } from "./types";
+
 'use strict'
 
 const MaxUint32 = Math.pow(2, 32) - 1;
@@ -32,6 +34,9 @@ export interface logQueryOptions {
   offset?: number;
   limit?: number;
 }
+
+const defaultGasPriceCoef = 128;
+const defaultExpiration = 60;
 
 const isArray = function (o: any):boolean {
   return Object.prototype.toString.call(o) == '[object Array]';
@@ -184,11 +189,20 @@ const isHex = function (hex:string):boolean {
   return ((typeof hex === 'string') && /^(-0x|0x)?[0-9a-f]*$/i.test(hex));
 };
 
+const checkRawTx = function (tx: RawTransaction):void {
+  if (!tx.Nonce) {
+    throw new Error('Nonce is need for transaction')
+  }
+}
+
 export default {
   formatBlockNumber,
   formatLogQuery,
   isArray,
   toPrefixedHex,
   santizeHex,
-  isHex
+  isHex,
+  defaultGasPriceCoef,
+  defaultExpiration,
+  checkRawTx
 }

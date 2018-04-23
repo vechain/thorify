@@ -25,7 +25,7 @@ ThorAPIMapping = {
       let request = new XHR2(); 
       request.timeout = timeout;
       request.open('GET', host + '/blocks/' + utils.formatBlockNumber(payload.params[0]), true);
-      return {
+      return { 
         Method: 'GET',
         Body: {},
         Request: request,
@@ -212,8 +212,51 @@ ThorAPIMapping = {
           for (let item of v) {
             item.blockNumber = item.block.number;
             item.blockHash = item.block.id;
+            item.transactionHash = item.tx.id;
           } 
           return v;
+        }
+      }
+    }
+  },
+  'eth_getBlockRef': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/blocks/best', true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => {
+          if (!v) {
+            return null;
+          } else if (v.id) {
+            return v.id.substr(0, 18);
+          } else {
+            return null;
+          }
+        }
+      }
+    }
+  },
+  'eth_getChainTag': {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      let request = new XHR2();
+      request.timeout = timeout;
+      request.open('GET', host + '/blocks/0', true);
+      return {
+        Method: 'GET',
+        Body: {},
+        Request: request,
+        ResFormatter: (v) => {
+          if (!v) {
+            return null;
+          } else if (v.id&&v.id.length === 66) {
+            return '0x'+v.id.substr(64,2);
+          } else {
+            return null;
+          }
         }
       }
     }

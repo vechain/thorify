@@ -37,11 +37,14 @@ web3.eth.getBlock('latest').then(v=>console.log(v))
 - [x] eth_getTransactionByHash
 - [x] eth_getTransactionReceipt
 - [x] eth_call
-- [ ] eth_getLogs
+- [x] eth_getLogs
+- [x] eth_sendTransaction(transaction signed with presetted wallet, the real API called behind is `eth_sendRawTransaction`)
 
-## Extended Web3 method:
+## Extended Web3 method
 
 - [x] eth_getEnergy
+- [x] eth_getChainId
+- [x] eth_getBlockRef
 
 ## About
 

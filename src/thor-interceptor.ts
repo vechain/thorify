@@ -163,7 +163,7 @@ ThorAPIMapping = {
           } else {
             v.status = '0x1';
           }
-          if (v.outputs.length) {
+          if (v.outputs.length === 1) {
             v.contractAddress = v.outputs[0].contractAddress;
           }
           return v;

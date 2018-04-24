@@ -1,8 +1,7 @@
 'use strict';
 const debug = require('debug')('thor:injector');
-import utils from './utils';
-import extendAccounts from './accounts';
-import { StringorNull, StringorNumber, RawTransaction, Clause, Transaction } from './types';
+import utils from '../utils';
+import { StringorNull, StringorNumber, RawTransaction, Clause, Transaction } from '../types';
 
 const extendFormatters = function (web3: any) {
 
@@ -33,7 +32,7 @@ const extendFormatters = function (web3: any) {
 
   const formatCluases = function (clauses: Array<Clause>): Array<Clause> | null {
     if (!web3.extend.utils._.isAddress(clauses))
-      return null;  
+      return null;
     for (let clause of clauses) {
       if (clause.to) { // it might be contract creation
         clause.to = web3.extend.formatters.inputAddressFormatter(clause.to);
@@ -101,33 +100,31 @@ const extendFormatters = function (web3: any) {
     return receipt;
   }
 
-  web3.extend.formatters.inputTransactionFormatter = function (tx: Transaction): RawTransaction{
+  web3.extend.formatters.inputTransactionFormatter = function (tx: Transaction): RawTransaction {
     let rawTx: RawTransaction = {
-      Clauses:[]
+      Clauses: []
     };
-    if (tx.chainTag === 0||tx.chainTag) {
+    if (tx.chainTag === 0 || tx.chainTag) {
       let chainTag = toUint8(tx.chainTag);
       if (chainTag) {
         rawTx.ChainTag = chainTag;
       }
     }
-    if (tx.blockRef===0||tx.blockRef) {
+    if (tx.blockRef === 0 || tx.blockRef) {
       let blockRef = toUint64(tx.blockRef);
       if (blockRef) {
         rawTx.BlockRef = blockRef;
       }
     }
-    // TODO:default value
-    if (tx.expiration===0||tx.expiration) {
+    if (tx.expiration === 0 || tx.expiration) {
       let expiration = toUint32(tx.expiration);
       rawTx.Expiration = expiration || utils.defaultExpiration;
-    }else{
+    } else {
       rawTx.Expiration = utils.defaultExpiration;
     }
-    // TODO:default value
-    if (tx.gasPriceCoef === 0||tx.gasPriceCoef) {
+    if (tx.gasPriceCoef === 0 || tx.gasPriceCoef) {
       let gasPriceCoef = toUint8(tx.gasPriceCoef);
-      rawTx.GasPriceCoef = gasPriceCoef||utils.defaultGasPriceCoef;
+      rawTx.GasPriceCoef = gasPriceCoef || utils.defaultGasPriceCoef;
     } else {
       rawTx.GasPriceCoef = utils.defaultGasPriceCoef;
     }
@@ -148,6 +145,7 @@ const extendFormatters = function (web3: any) {
         rawTx.Nonce = nonce;
       }
     }
+    // TODO: accept clauses
     let clause: Clause = {
       value: 0
     };
@@ -194,7 +192,7 @@ const extendFormatters = function (web3: any) {
       delete log.id;
 
     if (log.blockNumber !== null)
-      log.blockNumber = web3.extend. utils.hexToNumber(log.blockNumber);
+      log.blockNumber = web3.extend.utils.hexToNumber(log.blockNumber);
 
     if (log.address) {
       log.address = web3.extend.utils.toChecksumAddress(log.address);
@@ -204,99 +202,4 @@ const extendFormatters = function (web3: any) {
   };
 };
 
-const extendMethods = function (web3: any) {
-  web3.extend({
-    property: 'eth',
-    methods: [
-      new web3.extend.Method({
-        name: 'getEnergy',
-        call: 'eth_getEnergy',
-        params: 2,
-        inputFormatter: [web3.extend.utils.toAddress, web3.extend.formatters.inputDefaultBlockNumberFormatter],
-        outputFormatter: web3.extend.formatters.outputBigNumberFormatter
-      }),
-      new web3.extend.Method({
-        name: 'getTransaction',
-        call: 'eth_getTransactionByHash',
-        params: 1,
-        inputFormatter: [null],
-        outputFormatter: web3.extend.formatters.outputTransactionFormatter
-      }),
-      new web3.extend.Method({
-        name: 'getTransactionReceipt',
-        call: 'eth_getTransactionReceipt',
-        params: 1,
-        inputFormatter: [null],
-        outputFormatter: web3.extend.formatters.outputTransactionReceiptFormatter
-      }),
-      new web3.extend.Method({
-        name: 'sendTransaction',
-        call: 'eth_sendTransaction',
-        accounts: web3.eth.accounts,
-        params: 1,
-        inputFormatter: [web3.extend.formatters.inputTransactionFormatter]
-      }),
-      new web3.extend.Method({
-        name: 'getBlockRef',
-        call: 'eth_getBlockRef',
-        params: 0
-      }),
-      new web3.extend.Method({
-        name: 'getChainTag',
-        call: 'eth_getChainTag',
-        params: 0
-      })
-    ]
-  })
-}
-
-const extendContracts = function (web3: any) { 
-  let _encodeEventABI = web3.eth.Contract.prototype._encodeEventABI;
-  web3.eth.Contract.prototype._encodeEventABI = function (event: any, options: any): any {
-    debug('_encodeEventABI');
-    let result = _encodeEventABI.call(this, event, options);
-    if (options.options)
-      result.options = options.options;
-    if (options.range)
-      result.range = options.range;
-    if (options.order)
-      result.order = options.order;
-    return result;
-  }
-}
-
-const extend = function (web3: any) {
-  extendAccounts(web3);
-  extendFormatters(web3);
-  extendMethods(web3);
-  extendContracts(web3);
-}
-
-export default extend;
-
-/*
-
-Accout
-  'signTransaction',
-
-  'create',
-  'recoverTransaction',
-  'hashMessage',
-  'sign',
-  'recover',
-
-
-  _addAccountFunctions',
-  
-  'privateKeyToAccount',
-
-  'decrypt',
-  'encrypt'
-Wallet 
-  'create',
-  'add',
-  'remove',
-  'clear',
-  'encrypt',
-  'decrypt
- */
+export default extendFormatters;

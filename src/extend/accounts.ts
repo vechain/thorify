@@ -25,8 +25,8 @@ const extendAccounts = function (web3: any): any {
         if (tx.ChainTag) {
           return resolve(tx.ChainTag);
         } else {
-          web3.eth.getChainTag().then(function (chainTag: string) {
-            return resolve(web3.extend.utils.toBN(chainTag).toString(10));
+          return web3.eth.getChainTag().then(function (chainTag: string) {
+            return resolve(chainTag);
           })
         }
       }),
@@ -35,7 +35,7 @@ const extendAccounts = function (web3: any): any {
           return resolve(tx.BlockRef);
         } else {
           web3.eth.getBlockRef().then(function (blockRef: string) {
-            return resolve(web3.extend.utils.toBN(blockRef).toString(10));
+            return resolve(blockRef);
           })
         }
       })
@@ -43,6 +43,7 @@ const extendAccounts = function (web3: any): any {
       tx.ChainTag = <string>ret[0];
       tx.BlockRef = <string>ret[1];
 
+      debug(tx);
       let thorTx = Tx(tx);
       let rawTx = thorTx.serialize(utils.santizeHex(privateKey));
       let result = {

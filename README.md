@@ -1,22 +1,23 @@
-## thorjs-provider-http
+## Thorify
 
 A simple provider module for VeChain Thor RESTful HTTP API.
 
 ## Install
 
 ```
-npm install --save thorjs-provider-http
+npm install --save thorify
 ```
 
 ## Usage
 
-```js
-const HttpProvider = require('thorjs-provider-http');
+``` js
+import Thorify from 'thorify'
 const Web3 = require('web3');
-const thorHttpProvider = new HttpProvider('http://localhost:8669')
-const web3 = new Web3(thorHttpProvider);
 
-thorHttpProvider.extend(web3);
+const thorProvider = new Thorify.ThorHttpProvider('http://localhost:8669')
+const web3 = new Web3(thorProvider);
+
+Thorify.extend(web3);
 
 web3.eth.getBlock('latest').then(v=>console.log(v))
 ```
@@ -45,11 +46,6 @@ web3.eth.getBlock('latest').then(v=>console.log(v))
 - [x] eth_getEnergy
 - [x] eth_getChainId
 - [x] eth_getBlockRef
-
-## About
-
-A simple provider module for the HTTP protocol that follows the web3 provider specification. This is an implantation simply to adapt VeChain Thor RESTful API.
-
 
 ## Licence
 

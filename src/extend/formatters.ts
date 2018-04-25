@@ -10,24 +10,24 @@ const extendFormatters = function (web3: any) {
   const maxUint64 = new web3.extend.utils.BN(2).pow(new web3.extend.utils.BN(64));
 
   const toUint8 = function (input: number | string): StringorNull {
-    if (!input) {
+    if (typeof input !== 'number' && !input) {
       return null;
     }
-    return new web3.extend.utils.toBN(input).mod(maxUint8).toString(10);
+    return '0x' + web3.extend.utils.toBN(input).mod(maxUint8).toString(16);
   }
 
   const toUint64 = function (input: number | string): StringorNull {
-    if (!input) {
+    if (typeof input !== 'number' && !input) {
       return null;
     }
-    return new web3.extend.utils.toBN(input).mod(maxUint64).toString(10);
+    return '0x' + web3.extend.utils.toBN(input).mod(maxUint64).toString(16);
   }
 
   const toUint32 = function (input: number | string): StringorNull {
-    if (!input) {
+    if (typeof input !== 'number' && !input) {
       return null;
     }
-    return new web3.extend.utils.BN(input).mod(maxUint32).toString(10);
+    return '0x'+ web3.extend.utils.toBN(input).mod(maxUint32).toString(16);
   }
 
   const formatCluases = function (clauses: Array<Clause>): Array<Clause> | null {

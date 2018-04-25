@@ -1,6 +1,6 @@
 ## Thorify
 
-A simple provider module for VeChain Thor RESTful HTTP API.
+A web3 adaptor for VeChain Thor RESTful HTTP API.
 
 ## Install
 

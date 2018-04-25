@@ -11,7 +11,6 @@ const extendAccounts = function (web3: any): any {
   
   // signTransaction supoorts both callback and promise style
   proto.signTransaction = function signTransaction(tx: RawTransaction, privateKey: any, callback: Callback) {
-    
     debug('tx to sign: %O', tx);
     utils.checkRawTx(tx);
     // remove 
@@ -20,29 +19,23 @@ const extendAccounts = function (web3: any): any {
     if (tx.hasOwnProperty('from'))
       delete tx.gasPrice;
     
-    return Promise.all([
-      new Promise((resolve, reject) => {
-        if (tx.ChainTag) {
-          return resolve(tx.ChainTag);
+    let sign = async function (tx: RawTransaction) {
+      if (!tx.ChainTag) {
+        let chainTag = await web3.eth.getChainTag();
+        if (chainTag) {
+          tx.ChainTag = chainTag;
         } else {
-          return web3.eth.getChainTag().then(function (chainTag: string) {
-            return resolve(chainTag);
-          })
+          throw new Error('error getting chainTag');
         }
-      }),
-      new Promise((resolve, reject) => {
-        if (tx.BlockRef) {
-          return resolve(tx.BlockRef);
+      }
+      if (!tx.BlockRef) {
+        let blockRef = await web3.eth.getBlockRef();
+        if (blockRef) {
+          tx.BlockRef = blockRef;
         } else {
-          web3.eth.getBlockRef().then(function (blockRef: string) {
-            return resolve(blockRef);
-          })
+          throw new Error('error getting blockRef');
         }
-      })
-    ]).then((ret: any) => {
-      tx.ChainTag = <string>ret[0];
-      tx.BlockRef = <string>ret[1];
-
+      }
       debug(tx);
       let thorTx = Tx(tx);
       let rawTx = thorTx.serialize(utils.santizeHex(privateKey));
@@ -50,14 +43,19 @@ const extendAccounts = function (web3: any): any {
         rawTransaction: utils.toPrefixedHex(rawTx.toString('hex'))
       };
 
-      if (callback) {
-        callback(null, result);
-      }
-
       return result;
-    }).catch((e) => {
-      return Promise.reject(e);
-    });
+    }
+
+    // for supporting both callback and promise
+    if (callback instanceof Function) {
+      sign(tx).then(ret => {
+        return callback(null, ret);
+      }).catch(e => {
+        return callback(e);
+      })
+    } else {
+      return sign(tx);
+    }
   }
 
 }

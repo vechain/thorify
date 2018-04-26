@@ -3,6 +3,7 @@
 
 import Thorify from '../src'
 import replx = require('repl-x');
+import { encode } from 'rlp';
 const Web3 = require('web3');
 
 const thorProvider = new Thorify.ThorHttpProvider('http://localhost:8669')
@@ -34,11 +35,12 @@ let deploy = testContract.deploy({
 // web3.eth.sendTransaction({ from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', to: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602', value: '100', gas: 21000, nonce: 100 })
 // energy.methods.transfer('0xd3ae78222beadb038203be21ed5ce7c9b1bff602', 100).send({from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', gas: 210000, nonce: 100 })
 // deploy.send({from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', gas: 4700000, nonce: 100 })
+
 replx.start({ prompt: 'Thor# ' }, () => {
   return {
     eth:web3.eth,
     energy,
     web3,
-    deploy
+    deploy 
   }
 });

@@ -1,7 +1,7 @@
 'use strict';
 const debug = require('debug')('thor:injector');
 import utils from '../utils';
-import { StringorNull, StringorNumber, RawTransaction, Clause, Transaction } from '../types';
+import { StringOrNull, StringOrNumber, RawTransaction, Clause, Transaction } from '../types';
 
 const extendFormatters = function (web3: any) {
 
@@ -9,28 +9,28 @@ const extendFormatters = function (web3: any) {
   const maxUint32 = new web3.extend.utils.BN(2).pow(new web3.extend.utils.BN(32));
   const maxUint64 = new web3.extend.utils.BN(2).pow(new web3.extend.utils.BN(64));
 
-  const toUint8 = function (input: number | string): StringorNull {
+  const toUint8 = function (input: number | string): StringOrNull {
     if (typeof input !== 'number' && !input) {
       return null;
     }
     return '0x' + web3.extend.utils.toBN(input).mod(maxUint8).toString(16);
   }
 
-  const toUint64 = function (input: number | string): StringorNull {
+  const toUint64 = function (input: number | string): StringOrNull {
     if (typeof input !== 'number' && !input) {
       return null;
     }
     return '0x' + web3.extend.utils.toBN(input).mod(maxUint64).toString(16);
   }
 
-  const toUint32 = function (input: number | string): StringorNull {
+  const toUint32 = function (input: number | string): StringOrNull {
     if (typeof input !== 'number' && !input) {
       return null;
     }
     return '0x'+ web3.extend.utils.toBN(input).mod(maxUint32).toString(16);
   }
 
-  const formatCluases = function (clauses: Array<Clause>): Array<Clause> | null {
+  const formatClauses = function (clauses: Array<Clause>): Array<Clause> | null {
     if (!web3.extend.utils._.isAddress(clauses))
       return null;
     for (let clause of clauses) {
@@ -152,7 +152,6 @@ const extendFormatters = function (web3: any) {
 
     if (tx.to) { // it might be contract creation
       clause.to = web3.extend.formatters.inputAddressFormatter(tx.to);
-      rawTx.to = tx.to;
     }
 
     if (tx.data) {
@@ -170,10 +169,9 @@ const extendFormatters = function (web3: any) {
     }
     rawTx.Clauses.push(clause);
 
-    /* need to be competible when sending tx in ethereum's format
-      from: for sendTransaction method to recognize which account is sending tranaction and load privatekey from eth.account.wallet
+    /* need to be compatible when sending tx in ethereum's format
+      from: for sendTransaction method to recognize which account is sending transaction and load private-key from eth.account.wallet
       gasPrice: for sendTransaction method to ignore gasPrice
-      TODO: new Contract and get receipt
     */
 
     rawTx.from = tx.from;

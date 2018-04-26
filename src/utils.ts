@@ -1,8 +1,12 @@
+'use strict';
+
+const blake = require('blakejs');
+const elliptic = require('elliptic');
+const EthLib = require("eth-lib/lib");
 import { RawTransaction } from "./types";
 
-'use strict'
-
 const MaxUint32 = Math.pow(2, 32) - 1;
+const secp256k1 = new elliptic.ec("secp256k1");
 
 type topicName = 'topic0' | 'topic1' | 'topic2' | 'topic3' | 'topic4';
 interface topicItem{
@@ -36,7 +40,7 @@ export interface logQueryOptions {
 }
 
 const defaultGasPriceCoef = 128;
-const defaultExpiration = 60;
+const defaultExpiration = 720;
 
 const isArray = function (o: any):boolean {
   return Object.prototype.toString.call(o) == '[object Array]';
@@ -178,7 +182,7 @@ const toPrefixedHex = function (hexStr: string): string{
     return '0x' + hexStr;  
 }
 
-const santizeHex = function (hexStr: string): string {
+const sanitizeHex = function (hexStr: string): string {
   if (hexStr.indexOf('0x') === 0)
     return hexStr.substr(2);
   else
@@ -195,14 +199,40 @@ const checkRawTx = function (tx: RawTransaction):void {
   }
 }
 
+const hash = function (input: string | Buffer): string {
+  return '0x' + blake.blake2bHex(input, null, 32);
+}
+
+const sign = function (hash: Buffer, privateKey: Buffer): string {
+  let signature = secp256k1.keyFromPrivate(privateKey).sign(hash, { canonical: true });
+  return '0x' + Buffer.concat([signature.r.toBuffer(), signature.s.toBuffer(), Buffer.from([signature.recoveryParam])]).toString('hex');
+}
+
+const ECRecover = function (hash: Buffer, sig: Buffer): string {
+  let recovery = sig[64];
+  let signature = {
+    r: sig.slice(0, 32),
+    s: sig.slice(32, 64)
+  };
+
+  let ecPublicKey = secp256k1.recoverPubKey(hash, signature, recovery);
+  let publicKey = "0x" + ecPublicKey.encode("hex", false).slice(2);
+  let publicHash = EthLib.hash.keccak256(publicKey);
+  let address = EthLib.account.toChecksum("0x" + publicHash.slice(-40));
+  return address;
+}
+
 export default {
   formatBlockNumber,
   formatLogQuery,
   isArray,
   toPrefixedHex,
-  santizeHex,
+  sanitizeHex,
   isHex,
   defaultGasPriceCoef,
   defaultExpiration,
-  checkRawTx
+  checkRawTx,
+  hash,
+  ECRecover,
+  sign
 }

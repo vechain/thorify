@@ -3,7 +3,7 @@
 const Tx = require('thorjs-tx');
 const debug = require('debug')('thor:injector');
 import utils from '../utils';
-import { StringorNull, StringorNumber, RawTransaction, Clause, Transaction, Callback } from '../types';
+import { StringOrNull, StringOrNumber, RawTransaction, Clause, Transaction, Callback } from '../types';
 
 const extendMethod = function (web3: any) {
   web3.extend({

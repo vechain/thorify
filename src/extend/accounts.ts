@@ -2,14 +2,15 @@
 
 const Tx = require('thorjs-tx');
 const debug = require('debug')('thor:injector');
+const EthLib = require("eth-lib/lib");
 import utils from '../utils';
-import { StringorNull, StringorNumber, RawTransaction, Clause, Transaction, Callback } from '../types';
+import { StringOrNull, StringOrNumber, RawTransaction, Clause, Transaction, Callback } from '../types';
 
 const extendAccounts = function (web3: any): any {
   
   let proto = Object.getPrototypeOf(web3.eth.accounts);
   
-  // signTransaction supoorts both callback and promise style
+  // signTransaction supports both callback and promise style
   proto.signTransaction = function signTransaction(tx: RawTransaction, privateKey: any, callback: Callback) {
     debug('tx to sign: %O', tx);
     utils.checkRawTx(tx);
@@ -38,7 +39,7 @@ const extendAccounts = function (web3: any): any {
       }
       debug(tx);
       let thorTx = Tx(tx);
-      let rawTx = thorTx.serialize(utils.santizeHex(privateKey));
+      let rawTx = thorTx.serialize(utils.sanitizeHex(privateKey));
       let result = {
         rawTransaction: utils.toPrefixedHex(rawTx.toString('hex'))
       };
@@ -58,7 +59,52 @@ const extendAccounts = function (web3: any): any {
     }
   }
 
-}
+  proto.recoverTransaction = function recoverTransaction(encodedRawTx:string) {
+    let values = EthLib.RLP.decode(encodedRawTx);
 
+    let signingDataHex = EthLib.RLP.encode(values.slice(0, 9));
+    let signingHash = utils.hash(Buffer.from(utils.sanitizeHex(signingDataHex), 'hex'));
+    let signature = values[9];
+
+    let address = utils.ECRecover(Buffer.from(utils.sanitizeHex(signingHash), 'hex'), Buffer.from(utils.sanitizeHex(signature), 'hex'))
+
+    return address;
+  };
+
+  proto.hashMessage = function hashMessage(data: string | Buffer) {
+    var message = web3.extend.utils.isHexStrict(data) ? web3.extend.utils.hexToBytes(data) : data;
+    var messageBuffer = Buffer.from(message);
+
+    return utils.hash(messageBuffer);
+  };
+  
+  proto.sign = function sign(data:string|Buffer, privateKey:string) {
+    let hash = this.hashMessage(data);
+    let signature = utils.sign(Buffer.from(utils.sanitizeHex(hash), 'hex'), Buffer.from(utils.sanitizeHex(privateKey), 'hex'));
+
+    return {
+      message: data,
+      messageHash: utils.toPrefixedHex(hash),
+      signature: utils.toPrefixedHex(signature)
+    };
+  };
+
+  proto.recover = function recover(message: any, signature: string, preFixed: boolean) {
+    var args = [].slice.apply(arguments);
+
+
+    if (web3.extend.utils._.isObject(message)) {
+      return this.recover(message.messageHash, message.signature, true);
+    }
+
+    if (!preFixed) {
+      message = this.hashMessage(message);
+    }
+
+
+    return utils.ECRecover(Buffer.from(utils.sanitizeHex(message), 'hex'), Buffer.from(utils.sanitizeHex(signature), 'hex'));
+  }
+
+}
 
 export default extendAccounts;

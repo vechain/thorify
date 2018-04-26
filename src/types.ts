@@ -1,41 +1,41 @@
 'use strict';
-export type StringorNull = string | null;
-export type StringorNumber = string | number;
+export type StringOrNull = string | null;
+export type StringOrNumber = string | number;
 export type Callback = (err: Error | null, result?: any) => void
 
 export interface RawTransaction {
-  ChainTag?: StringorNumber;
-  BlockRef?: StringorNumber;
-  Expiration?: StringorNumber;
-  GasPriceCoef?: StringorNumber;
-  Gas?: StringorNumber;
+  ChainTag?: StringOrNumber;
+  BlockRef?: StringOrNumber;
+  Expiration?: StringOrNumber;
+  GasPriceCoef?: StringOrNumber;
+  Gas?: StringOrNumber;
   DependsOn?: string;
-  Nonce?: StringorNumber;
+  Nonce?: StringOrNumber;
   Signature?: string;
   Clauses: Array<Clause>;
   from?: string;
-  to?: StringorNull;
-  gasPrice?: StringorNumber;
-  data?: StringorNull;
+  to?: StringOrNull;
+  gasPrice?: StringOrNumber;
+  data?: StringOrNull;
 }
 
 export interface Clause {
-  to?: StringorNull;
-  value: StringorNumber;
+  to?: StringOrNull;
+  value: StringOrNumber;
   data?: string;
 }
 
 export interface Transaction {
-  chainTag?: StringorNumber;
-  blockRef?: StringorNumber;
-  expiration?: StringorNumber;
-  gasPriceCoef?: StringorNumber;
-  gas?: StringorNumber;
+  chainTag?: StringOrNumber;
+  blockRef?: StringOrNumber;
+  expiration?: StringOrNumber;
+  gasPriceCoef?: StringOrNumber;
+  gas?: StringOrNumber;
   dependsOn?: string;
-  nonce?: StringorNumber;
+  nonce?: StringOrNumber;
   origin: string;
   clauses: Array<Clause>;
-  // for competibale with web3, add from, to, value
+  // for compatible with web3, add from, to, value
   to?: string;
   from?: string;
   value?: number;

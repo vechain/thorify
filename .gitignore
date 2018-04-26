@@ -4,3 +4,4 @@ typedocs/
 package/
 *.tgz
 .DS_Store
+.vscode

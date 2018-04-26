@@ -13,29 +13,3 @@ const extend = function (web3: any) {
 }
 
 export default extend;
-
-/*
-Accout
-  'signTransaction',
-
-  'create',
-  'recoverTransaction',
-  'hashMessage',
-  'sign',
-  'recover',
-
-
-  _addAccountFunctions',
-  
-  'privateKeyToAccount',
-
-  'decrypt',
-  'encrypt'
-Wallet 
-  'create',
-  'add',
-  'remove',
-  'clear',
-  'encrypt',
-  'decrypt
- */

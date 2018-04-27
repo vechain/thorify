@@ -14,17 +14,17 @@ npm install --save thorify
 import Thorify from 'thorify'
 const Web3 = require('web3');
 
-const thorProvider = new Thorify.ThorHttpProvider('http://localhost:8669')
+const thorProvider = new Thorify.ThorHttpProvider('http://localhost:8669');
 const web3 = new Web3(thorProvider);
 
 Thorify.extend(web3);
 
-web3.eth.getBlock('latest').then(v=>console.log(v))
+web3.eth.getBlock('latest').then(v=>console.log(v));
 ```
 
 ## Special Reminder
 
-- There are three special blocknumber in ethereum: `earliest`,`latest`,`pending`. In VeChain Thor, we introduced `best` block and there is no `pending` block, so they will be replaced to `0`(aka genesis),`best`,`best`
+- There are three special blocknumber in Ethereum: `earliest`,`latest`,`pending`. In VeChain Thor, we introduced `best` block and there is no `pending` block, so they will be replaced with `0` (aka genesis), `best`, `best`
 
 ## Current Web3 method supported:
 

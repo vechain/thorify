@@ -44,7 +44,7 @@ web3.eth.getBlock('latest').then(v=>console.log(v));
 ## Extended Web3 method
 
 - [x] eth_getEnergy
-- [x] eth_getChainId
+- [x] eth_getChainTag
 - [x] eth_getBlockRef
 
 ## Licence

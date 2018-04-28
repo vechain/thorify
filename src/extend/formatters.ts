@@ -1,62 +1,64 @@
-'use strict';
-const debug = require('debug')('thor:injector');
-import utils from '../utils';
-import { StringOrNull, StringOrNumber, RawTransaction, Clause, Transaction } from '../types';
+"use strict";
+const debug = require("debug")("thor:injector");
+import { IClause, IRawTransaction, ITransaction, StringOrNull, StringOrNumber } from "../types";
+import utils from "../utils";
+/* tslint:disable:max-line-length */
 
-const extendFormatters = function (web3: any) {
+const extendFormatters = function(web3: any) {
 
   const maxUint8 = new web3.extend.utils.BN(2).pow(new web3.extend.utils.BN(8));
   const maxUint32 = new web3.extend.utils.BN(2).pow(new web3.extend.utils.BN(32));
   const maxUint64 = new web3.extend.utils.BN(2).pow(new web3.extend.utils.BN(64));
 
-  const toUint8 = function (input: number | string): StringOrNull {
-    if (typeof input !== 'number' && !input) {
+  const toUint8 = function(input: number | string): StringOrNull {
+    if (typeof input !== "number" && !input) {
       return null;
     }
-    return '0x' + web3.extend.utils.toBN(input).mod(maxUint8).toString(16);
-  }
+    return "0x" + web3.extend.utils.toBN(input).mod(maxUint8).toString(16);
+  };
 
-  const toUint64 = function (input: number | string): StringOrNull {
-    if (typeof input !== 'number' && !input) {
+  const toUint64 = function(input: number | string): StringOrNull {
+    if (typeof input !== "number" && !input) {
       return null;
     }
-    return '0x' + web3.extend.utils.toBN(input).mod(maxUint64).toString(16);
-  }
+    return "0x" + web3.extend.utils.toBN(input).mod(maxUint64).toString(16);
+  };
 
-  const toUint32 = function (input: number | string): StringOrNull {
-    if (typeof input !== 'number' && !input) {
+  const toUint32 = function(input: number | string): StringOrNull {
+    if (typeof input !== "number" && !input) {
       return null;
     }
-    return '0x'+ web3.extend.utils.toBN(input).mod(maxUint32).toString(16);
-  }
+    return "0x" + web3.extend.utils.toBN(input).mod(maxUint32).toString(16);
+  };
 
-  const formatClauses = function (clauses: Array<Clause>): Array<Clause> | null {
-    if (!web3.extend.utils._.isAddress(clauses))
+  const formatClauses = function(clauses: Clause[]): Clause[] | null {
+    if (!web3.extend.utils._.isAddress(clauses)) {
       return null;
-    for (let clause of clauses) {
+    }
+    for (const clause of clauses) {
       if (clause.to) { // it might be contract creation
         clause.to = web3.extend.formatters.inputAddressFormatter(clause.to);
       }
 
       if (clause.data && !web3.extend.utils.isHex(clause.data)) {
-        throw new Error('The data field must be HEX encoded data.');
+        throw new Error("The data field must be HEX encoded data.");
       }
 
-      clause.value = web3.extend.utils.numberToHex(clause.value)
+      clause.value = web3.extend.utils.numberToHex(clause.value);
     }
     return clauses;
-  }
+  };
 
-  web3.extend.formatters.outputTransactionFormatter = function (tx: Transaction) {
-    debug('outputTransactionFormatter')
+  web3.extend.formatters.outputTransactionFormatter = function(tx: Transaction) {
+    debug("outputTransactionFormatter");
     tx.gas = web3.extend.utils.hexToNumber(tx.gas);
-    tx.chainTag = web3.extend.utils.numberToHex(tx.chainTag)
+    tx.chainTag = web3.extend.utils.numberToHex(tx.chainTag);
 
     if (tx.origin) {
       tx.origin = web3.extend.utils.toChecksumAddress(tx.origin);
     }
 
-    for (let clause of tx.clauses) {
+    for (const clause of tx.clauses) {
       clause.value = web3.extend.formatters.outputBigNumberFormatter(clause.value);
       if (clause.to && web3.extend.utils.isAddress(clause.to)) { // tx.to could be `0x0` or `null` while contract creation
         clause.to = web3.extend.utils.toChecksumAddress(clause.to);
@@ -65,18 +67,20 @@ const extendFormatters = function (web3: any) {
       }
     }
     return tx;
-  }
+  };
 
-  web3.extend.formatters.outputTransactionReceiptFormatter = function (receipt: any) {
-    debug('outputTransactionReceiptFormatter')
-    if (typeof receipt !== 'object') {
-      throw new Error('Received receipt is invalid: ' + receipt);
+  web3.extend.formatters.outputTransactionReceiptFormatter = function(receipt: any) {
+    debug("outputTransactionReceiptFormatter");
+    if (typeof receipt !== "object") {
+      throw new Error("Received receipt is invalid: " + receipt);
     }
 
-    if (receipt.hasOwnProperty('transactionIndex'))
-      delete receipt.transactionIndex
-    if (receipt.hasOwnProperty('cumulativeGasUsed'))
-      delete receipt.cumulativeGasUsed
+    if (receipt.hasOwnProperty("transactionIndex")) {
+      delete receipt.transactionIndex;
+    }
+    if (receipt.hasOwnProperty("cumulativeGasUsed")) {
+      delete receipt.cumulativeGasUsed;
+    }
 
     receipt.gasUsed = web3.extend.utils.hexToNumber(receipt.gasUsed);
 
@@ -87,7 +91,7 @@ const extendFormatters = function (web3: any) {
       receipt.tx.origin = web3.extend.utils.toChecksumAddress(receipt.tx.origin);
     }
 
-    for (let output of receipt.outputs) {
+    for (const output of receipt.outputs) {
       if (web3.extend.utils._.isArray(output.logs)) {
         output.logs = output.logs.map(web3.extend.formatters.outputLogFormatter);
       }
@@ -98,38 +102,38 @@ const extendFormatters = function (web3: any) {
     }
 
     return receipt;
-  }
+  };
 
-  web3.extend.formatters.inputTransactionFormatter = function (tx: Transaction): RawTransaction {
-    let rawTx: RawTransaction = {
-      Clauses: []
+  web3.extend.formatters.inputTransactionFormatter = function(tx: Transaction): RawTransaction {
+    const rawTx: RawTransaction = {
+      Clauses: [],
     };
     if (tx.chainTag === 0 || tx.chainTag) {
-      let chainTag = toUint8(tx.chainTag);
+      const chainTag = toUint8(tx.chainTag);
       if (chainTag) {
         rawTx.ChainTag = chainTag;
       }
     }
     if (tx.blockRef === 0 || tx.blockRef) {
-      let blockRef = toUint64(tx.blockRef);
+      const blockRef = toUint64(tx.blockRef);
       if (blockRef) {
         rawTx.BlockRef = blockRef;
       }
     }
     if (tx.expiration === 0 || tx.expiration) {
-      let expiration = toUint32(tx.expiration);
+      const expiration = toUint32(tx.expiration);
       rawTx.Expiration = expiration || utils.defaultExpiration;
     } else {
       rawTx.Expiration = utils.defaultExpiration;
     }
     if (tx.gasPriceCoef === 0 || tx.gasPriceCoef) {
-      let gasPriceCoef = toUint8(tx.gasPriceCoef);
+      const gasPriceCoef = toUint8(tx.gasPriceCoef);
       rawTx.GasPriceCoef = gasPriceCoef || utils.defaultGasPriceCoef;
     } else {
       rawTx.GasPriceCoef = utils.defaultGasPriceCoef;
     }
     if (tx.gas) {
-      let gas = toUint64(tx.gas);
+      const gas = toUint64(tx.gas);
       if (gas) {
         rawTx.Gas = gas;
       }
@@ -140,14 +144,14 @@ const extendFormatters = function (web3: any) {
       }
     }
     if (tx.nonce) {
-      let nonce = toUint64(tx.nonce);
+      const nonce = toUint64(tx.nonce);
       if (nonce) {
         rawTx.Nonce = nonce;
       }
     }
     // TODO: accept clauses
-    let clause: Clause = {
-      value: 0
+    const clause: Clause = {
+      value: 0,
     };
 
     if (tx.to) { // it might be contract creation
@@ -156,14 +160,14 @@ const extendFormatters = function (web3: any) {
 
     if (tx.data) {
       if (!web3.extend.utils.isHex(tx.data)) {
-        throw new Error('The data field must be HEX encoded data.');
+        throw new Error("The data field must be HEX encoded data.");
       } else {
         rawTx.data = tx.data;
         clause.data = tx.data;
       }
     }
 
-    let value = web3.extend.utils.numberToHex(tx.value)
+    const value = web3.extend.utils.numberToHex(tx.value);
     if (value) {
       clause.value = value;
     }
@@ -178,19 +182,23 @@ const extendFormatters = function (web3: any) {
     rawTx.gasPrice = 1;
 
     return rawTx;
-  }
+  };
 
-  web3.extend.formatters.outputLogFormatter = function (log: any) {
-    debug('outputLogFormatter');
-    if (log.hasOwnProperty('transactionIndex:'))
+  web3.extend.formatters.outputLogFormatter = function(log: any) {
+    debug("outputLogFormatter");
+    if (log.hasOwnProperty("transactionIndex:")) {
       delete log.transactionIndex;
-    if (log.hasOwnProperty('logIndex'))
+    }
+    if (log.hasOwnProperty("logIndex")) {
       delete log.logIndex;
-    if (log.hasOwnProperty('id'))
+    }
+    if (log.hasOwnProperty("id")) {
       delete log.id;
+    }
 
-    if (log.blockNumber !== null)
+    if (log.blockNumber !== null) {
       log.blockNumber = web3.extend.utils.hexToNumber(log.blockNumber);
+    }
 
     if (log.address) {
       log.address = web3.extend.utils.toChecksumAddress(log.address);

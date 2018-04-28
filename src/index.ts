@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-import ThorHttpProvider from './http-provider';
-import extend from './extend';
+import extend from "./extend";
+import ThorHttpProvider from "./http-provider";
 
 export default {
   ThorHttpProvider,
-  extend
+  extend,
 };

@@ -156,6 +156,8 @@ const extendFormatters = function(web3: any) {
 
     if (tx.to) { // it might be contract creation
       clause.to = web3.extend.formatters.inputAddressFormatter(tx.to);
+      // tricks for not being recognized as contract deployment
+      rawTx.to = tx.to;
     }
 
     if (tx.data) {

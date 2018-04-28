@@ -14,12 +14,15 @@ const extendAccounts = function(web3: any): any {
   proto.signTransaction = function signTransaction(tx: IRawTransaction, privateKey: any, callback: Callback) {
     debug("tx to sign: %O", tx);
     utils.checkRawTx(tx);
-    // remove
+    // remove properties for compatible with ethereum
     if (tx.hasOwnProperty("gasPrice")) {
       delete tx.gasPrice;
     }
     if (tx.hasOwnProperty("from")) {
-      delete tx.gasPrice;
+      delete tx.from;
+    }
+    if (tx.hasOwnProperty("to")) {
+      delete tx.to;
     }
 
     const sign = async function(tx: IRawTransaction) {

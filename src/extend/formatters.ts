@@ -31,7 +31,7 @@ const extendFormatters = function(web3: any) {
     return "0x" + web3.extend.utils.toBN(input).mod(maxUint32).toString(16);
   };
 
-  const formatClauses = function(clauses: Clause[]): Clause[] | null {
+  const formatClauses = function(clauses: IClause[]): IClause[] | null {
     if (!web3.extend.utils._.isAddress(clauses)) {
       return null;
     }
@@ -49,7 +49,7 @@ const extendFormatters = function(web3: any) {
     return clauses;
   };
 
-  web3.extend.formatters.outputTransactionFormatter = function(tx: Transaction) {
+  web3.extend.formatters.outputTransactionFormatter = function(tx: ITransaction) {
     debug("outputTransactionFormatter");
     tx.gas = web3.extend.utils.hexToNumber(tx.gas);
     tx.chainTag = web3.extend.utils.numberToHex(tx.chainTag);
@@ -104,8 +104,8 @@ const extendFormatters = function(web3: any) {
     return receipt;
   };
 
-  web3.extend.formatters.inputTransactionFormatter = function(tx: Transaction): RawTransaction {
-    const rawTx: RawTransaction = {
+  web3.extend.formatters.inputTransactionFormatter = function(tx: ITransaction): IRawTransaction {
+    const rawTx: IRawTransaction = {
       Clauses: [],
     };
     if (tx.chainTag === 0 || tx.chainTag) {
@@ -150,7 +150,7 @@ const extendFormatters = function(web3: any) {
       }
     }
     // TODO: accept clauses
-    const clause: Clause = {
+    const clause: IClause = {
       value: 0,
     };
 

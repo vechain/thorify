@@ -1,6 +1,5 @@
 "use strict";
 const debug = require("debug")("thor:injector");
-import { Clause, RawTransaction, StringOrNull, StringOrNumber, Transaction } from "../types";
 import utils from "../utils";
 
 const extendContract = function(web3: any) {

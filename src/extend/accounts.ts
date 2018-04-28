@@ -41,7 +41,8 @@ const extendAccounts = function(web3: any): any {
       }
       debug(tx);
       const thorTx = Tx(tx);
-      const rawTx = thorTx.serialize(utils.sanitizeHex(privateKey));
+      thorTx.sign(utils.sanitizeHex(privateKey));
+      const rawTx = thorTx.serialize();
       const result = {
         rawTransaction: utils.toPrefixedHex(rawTx.toString("hex")),
       };

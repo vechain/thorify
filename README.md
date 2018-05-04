@@ -4,8 +4,10 @@ A web3 adaptor for VeChain Thor RESTful HTTP API.
 
 ## Install
 
-```
-npm install --save thorify
+``` bash
+# npm install --save thorify
+# under developing now, not published to npm, so just install from git 
+npm install --save git+https://github.com/vechain/thorify#dev
 ```
 
 ## Usage
@@ -17,6 +19,7 @@ const Web3 = require('web3');
 const thorProvider = new Thorify.ThorHttpProvider('http://localhost:8669');
 const web3 = new Web3(thorProvider);
 
+// Must be called with web3 instance
 Thorify.extend(web3);
 
 web3.eth.getBlock('latest').then(v=>console.log(v));
@@ -24,7 +27,7 @@ web3.eth.getBlock('latest').then(v=>console.log(v));
 
 ## Special Reminder
 
-- There are three special blocknumber in Ethereum: `earliest`,`latest`,`pending`. In VeChain Thor, we introduced `best` block and there is no `pending` block, so they will be replaced with `0` (aka genesis), `best`, `best`
+- There are three special block number in Ethereum: `earliest`,`latest`,`pending`. In VeChain Thor, we introduced `best` block and there is no `pending` block, so they will be replaced with `0` (aka genesis), `best`, `best`
 
 ## Current Web3 method supported:
 
@@ -39,7 +42,7 @@ web3.eth.getBlock('latest').then(v=>console.log(v));
 - [x] eth_getTransactionReceipt
 - [x] eth_call
 - [x] eth_getLogs
-- [x] eth_sendTransaction(transaction signed with presetted wallet, the real API called behind is `eth_sendRawTransaction`)
+- [x] eth_sendTransaction(transaction signed with preset accounts, the real API called behind is `eth_sendRawTransaction`)
 
 ## Extended Web3 method
 

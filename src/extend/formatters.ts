@@ -57,13 +57,14 @@ const extendFormatters = function(web3: any) {
     if (tx.origin) {
       tx.origin = web3.extend.utils.toChecksumAddress(tx.origin);
     }
-
-    for (const clause of tx.clauses) {
-      clause.value = web3.extend.formatters.outputBigNumberFormatter(clause.value);
-      if (clause.to && web3.extend.utils.isAddress(clause.to)) { // tx.to could be `0x0` or `null` while contract creation
-        clause.to = web3.extend.utils.toChecksumAddress(clause.to);
-      } else {
-        clause.to = null; // set to `null` if invalid address
+    if (tx.clauses) {
+      for (const clause of tx.clauses) {
+        clause.value = web3.extend.formatters.outputBigNumberFormatter(clause.value);
+        if (clause.to && web3.extend.utils.isAddress(clause.to)) { // tx.to could be `0x0` or `null` while contract creation
+          clause.to = web3.extend.utils.toChecksumAddress(clause.to);
+        } else {
+          clause.to = null; // set to `null` if invalid address
+        }
       }
     }
     return tx;
@@ -122,15 +123,15 @@ const extendFormatters = function(web3: any) {
     }
     if (tx.expiration === 0 || tx.expiration) {
       const expiration = toUint32(tx.expiration);
-      rawTx.Expiration = expiration || utils.defaultExpiration;
+      rawTx.Expiration = expiration || utils.params.defaultExpiration;
     } else {
-      rawTx.Expiration = utils.defaultExpiration;
+      rawTx.Expiration = utils.params.defaultExpiration;
     }
     if (tx.gasPriceCoef === 0 || tx.gasPriceCoef) {
       const gasPriceCoef = toUint8(tx.gasPriceCoef);
-      rawTx.GasPriceCoef = gasPriceCoef || utils.defaultGasPriceCoef;
+      rawTx.GasPriceCoef = gasPriceCoef || utils.params.defaultGasPriceCoef;
     } else {
-      rawTx.GasPriceCoef = utils.defaultGasPriceCoef;
+      rawTx.GasPriceCoef = utils.params.defaultGasPriceCoef;
     }
     if (tx.gas) {
       const gas = toUint64(tx.gas);
@@ -149,15 +150,15 @@ const extendFormatters = function(web3: any) {
         rawTx.Nonce = nonce;
       }
     }
-    // TODO: accept clauses
+
     const clause: IClause = {
       value: 0,
     };
 
-    if (tx.to) { // it might be contract creation
+    if (tx.to) {
       clause.to = web3.extend.formatters.inputAddressFormatter(tx.to);
-      // tricks for not being recognized as contract deployment
-      rawTx.to = tx.to;
+      // tricks for not being always recognized as contract deployment
+      rawTx.to = clause.to;
     }
 
     if (tx.data) {
@@ -178,6 +179,7 @@ const extendFormatters = function(web3: any) {
     /* need to be compatible when sending tx in ethereum's format
       from: for sendTransaction method to recognize which account is sending transaction and load private-key from eth.account.wallet
       gasPrice: for sendTransaction method to ignore gasPrice
+      to: for  sendTransaction method to recognize contract deployment transaction
     */
 
     rawTx.from = tx.from;

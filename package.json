@@ -16,7 +16,8 @@
   "devDependencies": {
     "repl-x": "^0.1.4",
     "ts-node": "^5.0.1",
-    "tslint": "^5.9.1"
+    "tslint": "^5.9.1",
+    "web3": "1.0.0-beta.34"
   },
   "dependencies": {
     "@types/node": "^10.0.3",
@@ -26,7 +27,6 @@
     "eth-lib": "^0.2.8",
     "thorjs-tx": "git+ssh://git@gitlab.vechain.com:vechain/thor.js/thorjs-tx.git#master",
     "typescript": "^2.8.1",
-    "web3": "1.0.0-beta.34",
     "xhr2": "0.1.4"
   }
 }

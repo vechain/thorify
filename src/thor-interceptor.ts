@@ -180,8 +180,8 @@ ThorAPIMapping = {
 
       const body: any = {
         value: payload.params[0].value || "",
-        data: payload.params[0].data || "",
-        gas: payload.params[0].gas || 0,
+        data: payload.params[0].data || "0x",
+        gas: parseInt(utils.sanitizeHex(payload.params[0].gas), 16) || 0,
         gasPrice: payload.params[0].gasPrice || "",
       };
       if (payload.params[0].from) {
@@ -193,6 +193,45 @@ ThorAPIMapping = {
         Body: body,
         Request: request,
         ResFormatter: (v) => !v ? v : v.data,
+      };
+    },
+  },
+  eth_estimateGas: {
+    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
+      const request = new XHR2();
+      request.timeout = timeout;
+      request.open("POST", host + "/accounts/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]), true);
+
+      const body: any = {
+        value: payload.params[0].value || "0",
+        data: payload.params[0].data || "0x",
+        gasPrice: payload.params[0].gasPrice || "",
+      };
+      if (payload.params[0].from) {
+        body.caller = payload.params[0].from;
+      }
+
+      return {
+        Method: "POST",
+        Body: body,
+        Request: request,
+        ResFormatter: (v) => {
+          if (!v) {
+            return v;
+          } else {
+            if (v.reverted) {
+              return -1;
+            }
+            // ignore the overflow since block gas limit is uint64 and java script's max number is 2^53
+            const intrinsicGas = utils.calcIntrinsicGas(body);
+            const txGas = intrinsicGas + v.gasUsed;
+            if (v.gasUsed === 0 && ( body.data === "0x" || !body.data)) {
+              return intrinsicGas;
+            } else {
+              return Math.floor(txGas * 1.1); // increase gas with 10% for safe since it's estimated from current block state, final state for the transaction is not determined for now
+            }
+          }
+        },
       };
     },
   },

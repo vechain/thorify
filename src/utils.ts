@@ -3,44 +3,23 @@
 const blake = require("blakejs");
 const elliptic = require("elliptic");
 const EthLib = require("eth-lib/lib");
-import { IRawTransaction, StringOrNumber } from "./types";
+const BN = require("bn.js");
+/* tslint:disable:max-line-length */
+import { ILogQueryBody, ILogQueryOptions, ILogQueryRange, IRawTransaction, ITopicItem, ITopicSet, ITransaction, StringOrNumber, topicName } from "./types";
 
 const MaxUint32 = Math.pow(2, 32) - 1;
 const secp256k1 = new elliptic.ec("secp256k1");
 
-type topicName = "topic0" | "topic1" | "topic2" | "topic3" | "topic4";
-interface ITopicItem {
-  name: string;
-  array: [string];
-}
-
-export interface ITopicSet {
-  topic0?: string;
-  topic1?: string;
-  topic2?: string;
-  topic3?: string;
-  topic4?: string;
-}
-
-export interface ILogQueryBody {
-  range?: ILogQueryRange;
-  options?: ILogQueryOptions;
-  topicSets: ITopicSet[];
-}
-
-export interface ILogQueryRange {
-  unit ?: string;
-  from ?: number;
-  to ?: number;
-}
-
-export interface ILogQueryOptions {
-  offset?: number;
-  limit?: number;
-}
-
-const defaultGasPriceCoef = 128;
-const defaultExpiration = 720;
+// params from thor source code or vechain foundation's suggestion
+const params = {
+  defaultGasPriceCoef: 128,
+  defaultExpiration: 720,
+  TxGas: 5000,
+  ClauseGas: 21000 - 5000,
+  ClauseGasContractCreation: 53000 - 5000,
+  TxDataZeroGas: 4,
+  TxDataNonZeroGas: 68,
+};
 
 const isArray = function(o: any): boolean {
   return Object.prototype.toString.call(o) === "[object Array]";
@@ -233,6 +212,38 @@ const ECRecover = function(hash: Buffer, sig: Buffer): string {
   return address;
 };
 
+const calcIntrinsicGas = function(tx: ITransaction): number {
+  if (!tx.to && (!tx.data || !sanitizeHex(tx.data))) {
+    return params.TxGas + params.ClauseGas;
+  }
+
+  let totalGas = params.TxGas;
+
+  // calculate data gas
+  if (tx.data) {
+    const buffer = new Buffer(sanitizeHex(tx.data), "hex");
+    let z = 0;
+    let nz = 0;
+    for (const byte of buffer) {
+      if (byte) {
+        nz++;
+      } else {
+        z++;
+      }
+    }
+    totalGas += params.TxDataZeroGas * z;
+    totalGas += params.TxDataNonZeroGas * nz;
+  }
+
+  if (!!tx.to) {
+    totalGas += params.ClauseGas;
+  } else {
+    totalGas += params.ClauseGasContractCreation;
+  }
+
+  return totalGas;
+};
+
 export default {
   formatBlockNumber,
   formatLogQuery,
@@ -240,10 +251,10 @@ export default {
   toPrefixedHex,
   sanitizeHex,
   isHex,
-  defaultGasPriceCoef,
-  defaultExpiration,
+  params,
   checkRawTx,
   hash,
   ECRecover,
   sign,
+  calcIntrinsicGas,
 };

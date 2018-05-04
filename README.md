@@ -47,7 +47,7 @@ web3.eth.getBlock('latest').then(v=>console.log(v));
 - [x] eth_getChainTag
 - [x] eth_getBlockRef
 
-## Licence
+## License
 
 This project is licensed under the MIT license, Copyright (c) 2017 VeChain Foundation. For more information see LICENSE.md.
 

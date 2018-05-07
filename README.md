@@ -5,9 +5,7 @@ A web3 adaptor for VeChain Thor RESTful HTTP API.
 ## Install
 
 ``` bash
-# npm install --save thorify
-# under developing now, not published to npm, so just install from git 
-npm install --save git+https://github.com/vechain/thorify#dev
+npm install --save thorify
 ```
 
 ## Usage

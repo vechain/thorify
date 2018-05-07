@@ -1,7 +1,7 @@
 {
   "name": "thorify",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A web3 adaptor for VeChain Thor RESTful HTTP API.",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p .",
@@ -28,5 +28,24 @@
     "eth-lib": "^0.2.8",
     "thorjs-tx": "git+https://gitlab.vechain.com/vechain/thor.js/thorjs-tx.git#master",
     "xhr2": "0.1.4"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vechain/thorify.git"
+  },
+  "keywords": [
+    "thor",
+    "web3",
+    "vechain",
+    "blockchain",
+    "smart",
+    "contract"
+  ],
+  "bugs": {
+    "url": "https://github.com/vechain/thorify/issues"
+  },
+  "homepage": "https://github.com/vechain/thorify#readme"
 }

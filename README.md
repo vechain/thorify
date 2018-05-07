@@ -64,7 +64,14 @@ web3 instance
 
 ## Send Transaction
 
-  TODO
+  In thor's official implementation, unlike ethereum's, the client doesn't manage user's private key storage and transaction signing. So in thorify, web3 can't perform `eth_sendTransaction` and `contract.method.myMethod.send()`, thanks to `web3.eth.accounts` there is a way for developers sending transaction without dealing with transaction signing.Check the steps below:
+
+  + Add wallet via `web3.eth.accounts.wallet.add('privateKey')` or `web3.eth.accounts.wallet.create(numberOfAccounts [, entropy])` 
+  + Call `web3.eth.sendTransaction({from: 'AccountAddress'})`, `AccountAddress` should be present in  `web3.eth.accounts.wallet`， so that the web3 instance can sign the transaction within `web3.eth.accounts`
+
+  > This is not the only way for developers signing a transaction! <br>
+  > We encourage developers find a proper way to store private key and sign a transaction.
+
 
 ## Notes
 

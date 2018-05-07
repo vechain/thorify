@@ -223,7 +223,7 @@ ThorAPIMapping = {
               return -1;
             }
             // ignore the overflow since block gas limit is uint64 and java script's max number is 2^53
-            const intrinsicGas = utils.calcIntrinsicGas(body);
+            const intrinsicGas = utils.calcIntrinsicGas(Object.assign(body, { to: payload.params[0].to}));
             const txGas = intrinsicGas + v.gasUsed;
             if (v.gasUsed === 0 && ( body.data === "0x" || !body.data)) {
               return intrinsicGas;

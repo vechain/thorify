@@ -42,6 +42,19 @@ const extendAccounts = function(web3: any): any {
           throw new Error("error getting blockRef");
         }
       }
+      if (!tx.Gas) {
+        const gas = await web3.eth.estimateGas({
+          from: EthLib.account.fromPrivate(utils.toPrefixedHex(privateKey)).address,
+          to: tx.Clauses[0].to,
+          value: tx.Clauses[0].value,
+          data: tx.Clauses[0].data,
+        });
+        if (gas) {
+          tx.Gas = gas;
+        } else {
+          throw new Error("error getting gas");
+        }
+      }
       debug(tx);
       const thorTx = Tx(tx);
       thorTx.sign(utils.sanitizeHex(privateKey));

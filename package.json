@@ -26,7 +26,7 @@
     "debug": "^3.1.0",
     "elliptic": "^6.4.0",
     "eth-lib": "^0.2.8",
-    "thorjs-tx": "git+ssh://git@gitlab.vechain.com:vechain/thor.js/thorjs-tx.git#master",
+    "thorjs-tx": "git+https://gitlab.vechain.com/vechain/thor.js/thorjs-tx.git#master",
     "xhr2": "0.1.4"
   }
 }

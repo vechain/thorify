@@ -25,30 +25,54 @@ Thorify.extend(web3);
 web3.eth.getBlock('latest').then(v=>console.log(v));
 ```
 
-## Special Reminder
+## Current Web3 method supported:
+
+```
+
+web3 instance
+├── eth
+│   ├── getBlockNumber
+│   ├── getBalance
+│   ├── getStorageAt
+│   ├── getCode
+│   ├── getBlock
+│   ├── getTransaction
+│   ├── getTransactionReceipt
+│   ├── sendTransaction
+│   ├── sendSignedTransaction
+│   ├── sign
+│   ├── call
+│   ├── estimateGas
+│   ├── getPastLogs
+│   ├── getEnergy
+│   ├── getChainTag
+│   ├── getBlockRef
+│   ├── accounts
+│   └── Contract
+│       ├── Constructor(new Contract())
+│       ├── clone
+│       ├── deploy
+│       ├── methods
+│       ├── methods.myMethod.call
+│       ├── methods.myMethod.send
+│       ├── methods.myMethod.estimateGas
+│       ├── methods.myMethod.encodeABI
+│       └── getPastEvents
+└── utils
+
+```
+
+## Send Transaction
+
+  TODO
+
+## Notes
 
 - There are three special block number in Ethereum: `earliest`,`latest`,`pending`. In VeChain Thor, we introduced `best` block and there is no `pending` block, so they will be replaced with `0` (aka genesis), `best`, `best`
 
-## Current Web3 method supported:
+## Compatibility
 
-- [x] eth_getBlockByNumber
-- [x] eth_getBlockByHash
-- [x] eth_blockNumber
-- [x] eth_getBalance
-- [x] eth_getCode
-- [x] eth_getStorageAt
-- [x] eth_sendRawTransaction
-- [x] eth_getTransactionByHash
-- [x] eth_getTransactionReceipt
-- [x] eth_call
-- [x] eth_getLogs
-- [x] eth_sendTransaction(transaction signed with preset accounts, the real API called behind is `eth_sendRawTransaction`)
-
-## Extended Web3 method
-
-- [x] eth_getEnergy
-- [x] eth_getChainTag
-- [x] eth_getBlockRef
+  TODO
 
 ## License
 

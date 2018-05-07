@@ -48,6 +48,7 @@ const extendAccounts = function(web3: any): any {
       const rawTx = thorTx.serialize();
       const result = {
         rawTransaction: utils.toPrefixedHex(rawTx.toString("hex")),
+        tx,
       };
 
       return result;

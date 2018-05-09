@@ -278,7 +278,7 @@ ThorAPIMapping = {
       query = query.replace("&", "?");
       const body = utils.formatLogQuery(payload.params[0]);
 
-      request.open("POST", host + "/logs" + query, true);
+      request.open("POST", host + "/events" + query, true);
 
       return {
         Method: "POST",

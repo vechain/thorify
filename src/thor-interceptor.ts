@@ -176,14 +176,26 @@ ThorAPIMapping = {
     formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
       const request = new XHR2();
       request.timeout = timeout;
-      request.open("POST", host + "/accounts/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]), true);
+
+      let extraURI = "";
+      if (payload.params[0].to) {
+        extraURI = "/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]);
+      }
+
+      request.open("POST", host + "/accounts" + extraURI, true);
 
       const body: any = {
         value: payload.params[0].value || "",
         data: payload.params[0].data || "0x",
-        gas: parseInt(utils.sanitizeHex(payload.params[0].gas), 16) || 0,
         gasPrice: payload.params[0].gasPrice || "",
       };
+      if (payload.params[0].gas) {
+        if (typeof payload.params[0].gas === "number") {
+          body.gas = payload.params[0].gas;
+        } else {
+          body.gas = parseInt(utils.sanitizeHex(payload.params[0].gas), 16);
+        }
+      }
       if (payload.params[0].from) {
         body.caller = payload.params[0].from;
       }
@@ -192,7 +204,17 @@ ThorAPIMapping = {
         Method: "POST",
         Body: body,
         Request: request,
-        ResFormatter: (v) => !v ? v : v.data,
+        ResFormatter: (v) => {
+          if (!v) {
+            return v;
+          } else {
+            if (v.reverted) {
+              return null;
+            } else {
+              return v.data;
+            }
+          }
+        },
       };
     },
   },
@@ -200,7 +222,13 @@ ThorAPIMapping = {
     formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
       const request = new XHR2();
       request.timeout = timeout;
-      request.open("POST", host + "/accounts/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]), true);
+
+      let extraURI = "";
+      if (payload.params[0].to) {
+        extraURI = "/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]);
+      }
+
+      request.open("POST", host + "/accounts" + extraURI, true);
 
       const body: any = {
         value: payload.params[0].value || "0",
@@ -220,7 +248,7 @@ ThorAPIMapping = {
             return v;
           } else {
             if (v.reverted) {
-              return -1;
+              return null;
             }
             // ignore the overflow since block gas limit is uint64 and java script's max number is 2^53
             const intrinsicGas = utils.calcIntrinsicGas(Object.assign(body, { to: payload.params[0].to}));

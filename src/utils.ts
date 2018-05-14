@@ -213,10 +213,6 @@ const ECRecover = function(hash: Buffer, sig: Buffer): string {
 };
 
 const calcIntrinsicGas = function(tx: ITransaction): number {
-  if (!tx.to && (!tx.data || !sanitizeHex(tx.data))) {
-    return params.TxGas + params.ClauseGas;
-  }
-
   let totalGas = params.TxGas;
 
   // calculate data gas

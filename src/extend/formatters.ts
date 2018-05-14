@@ -1,7 +1,7 @@
 "use strict";
 const debug = require("debug")("thor:injector");
 import { IClause, IRawTransaction, ITransaction, StringOrNull, StringOrNumber } from "../types";
-import utils from "../utils";
+import * as utils from "../utils";
 /* tslint:disable:max-line-length */
 
 const extendFormatters = function(web3: any) {

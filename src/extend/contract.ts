@@ -1,6 +1,6 @@
 "use strict";
 const debug = require("debug")("thor:injector");
-import utils from "../utils";
+import * as utils from "../utils";
 
 const extendContract = function(web3: any) {
   const _encodeEventABI = web3.eth.Contract.prototype._encodeEventABI;

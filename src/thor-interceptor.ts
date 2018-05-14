@@ -1,6 +1,6 @@
 "use strict";
 const XHR2 = require("xhr2");
-import utils from "./utils";
+import * as utils from "./utils";
 /* tslint:disable:max-line-length */
 
 export type formatter = (payload: any) => any;

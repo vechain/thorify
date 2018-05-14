@@ -1,31 +1,15 @@
 "use strict";
-
-const blake = require("blakejs");
-const elliptic = require("elliptic");
-const EthLib = require("eth-lib/lib");
-const BN = require("bn.js");
 /* tslint:disable:max-line-length */
-import { ILogQueryBody, ILogQueryOptions, ILogQueryRange, IRawTransaction, ITopicItem, ITopicSet, ITransaction, StringOrNumber, topicName } from "./types";
 
-const MaxUint32 = Math.pow(2, 32) - 1;
-const secp256k1 = new elliptic.ec("secp256k1");
-
-// params from thor source code or vechain foundation's suggestion
-const params = {
-  defaultGasPriceCoef: 128,
-  defaultExpiration: 720,
-  TxGas: 5000,
-  ClauseGas: 21000 - 5000,
-  ClauseGasContractCreation: 53000 - 5000,
-  TxDataZeroGas: 4,
-  TxDataNonZeroGas: 68,
-};
+import { ILogQueryBody, ILogQueryOptions, ILogQueryRange, IRawTransaction, ITopicItem, ITopicSet, ITransaction, StringOrNumber, topicName } from "../types";
+import * as utils from "./";
+import params from "./params";
 
 const isArray = function(o: any): boolean {
   return Object.prototype.toString.call(o) === "[object Array]";
 };
 
-const formatBlockNumber = function(blockNumber: StringOrNumber): StringOrNumber {
+export const formatBlockNumber = function(blockNumber: StringOrNumber): StringOrNumber {
   if (typeof blockNumber === "number") {
     return blockNumber;
   } else if (typeof blockNumber === "string") {
@@ -33,15 +17,15 @@ const formatBlockNumber = function(blockNumber: StringOrNumber): StringOrNumber 
       return 0;
     } else if (blockNumber === "latest" || blockNumber === "pending") {
       return "best";
-         } else {
+    } else {
       return blockNumber;
-         }
+    }
   } else {
     return "best";
   }
 };
 
-const formatRange = function(range: any): ILogQueryRange|null {
+export const formatRange = function(range: any): ILogQueryRange | null {
   const ret: ILogQueryRange = {};
   if (range.unit !== "block" && range.unit !== "time") {
     return null;
@@ -63,12 +47,12 @@ const formatRange = function(range: any): ILogQueryRange|null {
       ret.to = Number.parseInt(range.to);
     }
   } catch {
-    ret.to = MaxUint32;
+    ret.to = utils.MaxUint32;
   }
   return ret;
 };
 
-const formatOptions = function(options: any): ILogQueryOptions|null {
+export const formatOptions = function(options: any): ILogQueryOptions | null {
   const ret: ILogQueryOptions = {};
   if (options.limit) {
     try {
@@ -83,7 +67,7 @@ const formatOptions = function(options: any): ILogQueryOptions|null {
   return ret;
 };
 
-const formatLogQuery = function(params: any): ILogQueryBody {
+export const formatLogQuery = function(params: any): ILogQueryBody {
   const body: ILogQueryBody = {
     topicSets: [],
   };
@@ -161,96 +145,4 @@ const formatLogQuery = function(params: any): ILogQueryBody {
   }
 
   return body;
-};
-
-const toPrefixedHex = function(hexStr: string): string {
-  if (hexStr.indexOf("0x") === 0) {
-    return hexStr;
-  } else {
-    return "0x" + hexStr;
-  }
-};
-
-const sanitizeHex = function(hexStr: string): string {
-  if (hexStr.indexOf("0x") === 0) {
-    return hexStr.substr(2);
-  } else {
-    return hexStr;
-  }
-};
-
-const isHex = function(hex: string): boolean {
-  return ((typeof hex === "string") && /^(-0x|0x)?[0-9a-f]*$/i.test(hex));
-};
-
-const checkRawTx = function(tx: IRawTransaction): void {
-  if (!tx.Nonce) {
-    throw new Error("Nonce is need for transaction");
-  }
-};
-
-const hash = function(input: string | Buffer): string {
-  return "0x" + blake.blake2bHex(input, null, 32);
-};
-
-const sign = function(hash: Buffer, privateKey: Buffer): string {
-  const signature = secp256k1.keyFromPrivate(privateKey).sign(hash, { canonical: true });
-  return "0x" + Buffer.concat([signature.r.toBuffer(), signature.s.toBuffer(), Buffer.from([signature.recoveryParam])]).toString("hex"); /* tslint:disable:max-line-length */
-};
-
-const ECRecover = function(hash: Buffer, sig: Buffer): string {
-  const recovery = sig[64];
-  const signature = {
-    r: sig.slice(0, 32),
-    s: sig.slice(32, 64),
-  };
-
-  const ecPublicKey = secp256k1.recoverPubKey(hash, signature, recovery);
-  const publicKey = "0x" + ecPublicKey.encode("hex", false).slice(2);
-  const publicHash = EthLib.hash.keccak256(publicKey);
-  const address = EthLib.account.toChecksum("0x" + publicHash.slice(-40));
-  return address;
-};
-
-const calcIntrinsicGas = function(tx: ITransaction): number {
-  let totalGas = params.TxGas;
-
-  // calculate data gas
-  if (tx.data) {
-    const buffer = new Buffer(sanitizeHex(tx.data), "hex");
-    let z = 0;
-    let nz = 0;
-    for (const byte of buffer) {
-      if (byte) {
-        nz++;
-      } else {
-        z++;
-      }
-    }
-    totalGas += params.TxDataZeroGas * z;
-    totalGas += params.TxDataNonZeroGas * nz;
-  }
-
-  if (!!tx.to) {
-    totalGas += params.ClauseGas;
-  } else {
-    totalGas += params.ClauseGasContractCreation;
-  }
-
-  return totalGas;
-};
-
-export default {
-  formatBlockNumber,
-  formatLogQuery,
-  isArray,
-  toPrefixedHex,
-  sanitizeHex,
-  isHex,
-  params,
-  checkRawTx,
-  hash,
-  ECRecover,
-  sign,
-  calcIntrinsicGas,
 };

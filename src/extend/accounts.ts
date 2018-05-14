@@ -4,7 +4,7 @@ const Tx = require("thorjs-tx");
 const debug = require("debug")("thor:injector");
 const EthLib = require("eth-lib/lib");
 import { Callback, IClause, IRawTransaction, ITransaction, StringOrNull, StringOrNumber } from "../types";
-import utils from "../utils";
+import * as utils from "../utils";
 
 const extendAccounts = function(web3: any): any {
 
@@ -88,7 +88,7 @@ const extendAccounts = function(web3: any): any {
 
     const singingHashBuffer = Buffer.from(utils.sanitizeHex(signingHash), "hex");
     const signatureBuffer = Buffer.from(utils.sanitizeHex(signature), "hex");
-    const address = utils.ECRecover(singingHashBuffer, signatureBuffer);
+    const address = utils.recover(singingHashBuffer, signatureBuffer);
 
     return address;
   };
@@ -126,7 +126,7 @@ const extendAccounts = function(web3: any): any {
 
     const hexBuffer = Buffer.from(utils.sanitizeHex(message), "hex");
     const signatureBuffer = Buffer.from(utils.sanitizeHex(signature), "hex");
-    return utils.ECRecover(hexBuffer, signatureBuffer);
+    return utils.recover(hexBuffer, signatureBuffer);
   };
 
 };

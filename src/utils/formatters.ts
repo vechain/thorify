@@ -1,7 +1,8 @@
 "use strict";
 /* tslint:disable:max-line-length */
 
-import { ILogQueryBody, ILogQueryOptions, ILogQueryRange, IRawTransaction, ITopicItem, ITopicSet, ITransaction, StringOrNumber, topicName } from "../types";
+const web3Utils = require("web3-utils");
+import { IClause, IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRange, IThorTransaction, ITopicItem, ITopicSet, StringOrNull, StringOrNumber, topicName } from "../types";
 import * as utils from "./";
 import params from "./params";
 
@@ -145,4 +146,92 @@ export const formatLogQuery = function(params: any): ILogQueryBody {
   }
 
   return body;
+};
+
+const maxUint8 = new web3Utils.BN(2).pow(new web3Utils.BN(8));
+const maxUint32 = new web3Utils.BN(2).pow(new web3Utils.BN(32));
+const maxUint64 = new web3Utils.BN(2).pow(new web3Utils.BN(64));
+
+const toUint8 = function(input: number | string): StringOrNull {
+  if (typeof input !== "number" && !input) {
+    return null;
+  }
+  return "0x" + web3Utils.toBN(input).mod(maxUint8).toString(16);
+};
+
+const toUint64 = function(input: number | string): StringOrNull {
+  if (typeof input !== "number" && !input) {
+    return null;
+  }
+  return "0x" + web3Utils.toBN(input).mod(maxUint64).toString(16);
+};
+
+const toUint32 = function(input: number | string): StringOrNull {
+  if (typeof input !== "number" && !input) {
+    return null;
+  }
+  return "0x" + web3Utils.toBN(input).mod(maxUint32).toString(16);
+};
+
+export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
+  const thorTx: IThorTransaction = {};
+
+  if (ethTx.chainTag === 0 || ethTx.chainTag) {
+    const chainTag = toUint8(ethTx.chainTag);
+    if (chainTag) {
+      thorTx.chainTag = chainTag;
+    }
+  }
+  if (ethTx.blockRef === 0 || ethTx.blockRef) {
+    const blockRef = toUint64(ethTx.blockRef);
+    if (blockRef) {
+      thorTx.blockRef = blockRef;
+    }
+  }
+  if (ethTx.expiration === 0 || ethTx.expiration) {
+    const expiration = toUint32(ethTx.expiration);
+    thorTx.expiration = expiration || utils.params.defaultExpiration;
+  } else {
+    thorTx.expiration = utils.params.defaultExpiration;
+  }
+  if (ethTx.gasPriceCoef === 0 || ethTx.gasPriceCoef) {
+    const gasPriceCoef = toUint8(ethTx.gasPriceCoef);
+    thorTx.gasPriceCoef = gasPriceCoef || utils.params.defaultGasPriceCoef;
+  } else {
+    thorTx.gasPriceCoef = utils.params.defaultGasPriceCoef;
+  }
+  if (ethTx.gas) {
+    const gas = toUint64(ethTx.gas);
+    if (gas) {
+      thorTx.gas = gas;
+    }
+  }
+  if (ethTx.dependsOn) {
+    if (web3Utils.isHex(ethTx.dependsOn)) {
+      thorTx.dependsOn = ethTx.dependsOn;
+    }
+  }
+  if (ethTx.nonce) {
+    const nonce = toUint64(ethTx.nonce);
+    if (nonce) {
+      thorTx.nonce = nonce;
+    }
+  }
+
+  const clause: IClause = {
+    value: 0,
+  };
+
+  if (ethTx.to) {
+    clause.to = ethTx.to;
+  }
+
+  if (ethTx.data) {
+    if (!web3Utils.isHex(ethTx.data)) {
+      throw new Error("The data field must be HEX encoded data.");
+    } else {
+      clause.data = ethTx.data;
+    }
+  }
+  return thorTx;
 };

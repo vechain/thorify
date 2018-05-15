@@ -1,9 +1,9 @@
 "use strict";
 /* tslint:disable:max-line-length */
-import { ILogQueryBody, ILogQueryOptions, ILogQueryRange, IRawTransaction, ITopicItem, ITopicSet, ITransaction, StringOrNumber, topicName } from "../types";
+import { IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRange, ITopicItem, ITopicSet, StringOrNumber, topicName } from "../types";
 import params from "./params";
 
-export const calcIntrinsicGas = function(tx: ITransaction): number {
+export const calcIntrinsicGas = function(tx: IEthTransaction): number {
   let totalGas = params.TxGas;
 
   // calculate data gas
@@ -53,8 +53,6 @@ export const isHex = function(hex: string): boolean {
   return ((typeof hex === "string") && /^(-0x|0x)?[0-9a-f]*$/i.test(hex));
 };
 
-export const checkRawTx = function(tx: IRawTransaction): void {
-  if (!tx.Nonce) {
-    throw new Error("Nonce is need for transaction");
-  }
+export const newNonce = function(): number {
+  return Math.floor((new Date().getTime() / 0xffff) * Math.random() * 0xffff);
 };

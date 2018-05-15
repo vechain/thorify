@@ -26,6 +26,7 @@
     "elliptic": "^6.4.0",
     "eth-lib": "^0.2.8",
     "thorjs-tx": "git+https://gitlab.vechain.com/vechain/thor.js/thorjs-tx.git#master",
+    "web3-utils": "1.0.0-beta.34",
     "xhr2": "0.1.4"
   },
   "directories": {

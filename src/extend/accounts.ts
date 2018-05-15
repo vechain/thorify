@@ -3,7 +3,7 @@
 const Tx = require("thorjs-tx");
 const debug = require("debug")("thor:injector");
 const EthLib = require("eth-lib/lib");
-import { Callback, IClause, IRawTransaction, ITransaction, StringOrNull, StringOrNumber } from "../types";
+import { Callback, IClause, IEthTransaction, IThorTransaction, StringOrNull, StringOrNumber } from "../types";
 import * as utils from "../utils";
 
 const extendAccounts = function(web3: any): any {
@@ -11,57 +11,68 @@ const extendAccounts = function(web3: any): any {
   const proto = Object.getPrototypeOf(web3.eth.accounts);
 
   // signTransaction supports both callback and promise style
-  proto.signTransaction = function signTransaction(tx: IRawTransaction, privateKey: any, callback: Callback) {
+  proto.signTransaction = function signTransaction(tx: IEthTransaction, privateKey: string, callback: Callback) {
     debug("tx to sign: %O", tx);
-    utils.checkRawTx(tx);
+
     // remove properties for compatible with ethereum
     if (tx.hasOwnProperty("gasPrice")) {
       delete tx.gasPrice;
-    }
-    if (tx.hasOwnProperty("from")) {
-      delete tx.from;
     }
     if (tx.hasOwnProperty("to")) {
       delete tx.to;
     }
 
-    const sign = async function(tx: IRawTransaction) {
-      if (!tx.ChainTag) {
+    const thorTx = utils.ethToThorTx(tx);
+
+    const sign = async function(tx: IThorTransaction) {
+      if (!tx.chainTag) {
         const chainTag = await web3.eth.getChainTag();
         if (chainTag) {
-          tx.ChainTag = chainTag;
+          tx.chainTag = chainTag;
         } else {
           throw new Error("error getting chainTag");
         }
       }
-      if (!tx.BlockRef) {
+      if (!tx.blockRef) {
         const blockRef = await web3.eth.getBlockRef();
         if (blockRef) {
-          tx.BlockRef = blockRef;
+          tx.blockRef = blockRef;
         } else {
           throw new Error("error getting blockRef");
         }
       }
-      if (!tx.Gas) {
+      if (!tx.gas) {
         const gas = await web3.eth.estimateGas({
           from: EthLib.account.fromPrivate(utils.toPrefixedHex(privateKey)).address,
-          to: tx.Clauses[0].to,
-          value: tx.Clauses[0].value,
-          data: tx.Clauses[0].data,
+          to: (tx.clauses as IClause[])[0].to,
+          value: (tx.clauses as IClause[])[0].value,
+          data: (tx.clauses as IClause[])[0].data,
         });
         if (gas) {
-          tx.Gas = gas;
+          tx.gas = gas;
         } else {
           throw new Error("error getting gas");
         }
       }
+      if (!tx.nonce) {
+        tx.nonce = utils.newNonce();
+      }
       debug(tx);
-      const thorTx = Tx(tx);
+      const thorTx = Tx({
+        ChainTag: tx.chainTag,
+        BlockRef: tx.blockRef,
+        Expiration: tx.expiration,
+        Clauses: tx.clauses,
+        GasPriceCoef: tx.gasPriceCoef,
+        Gas: tx.gas,
+        DependsOn: tx.dependsOn,
+        Nonce: tx.nonce,
+      });
       thorTx.sign(utils.sanitizeHex(privateKey));
       const rawTx = thorTx.serialize();
       const result = {
         rawTransaction: utils.toPrefixedHex(rawTx.toString("hex")),
-        tx,
+        messageHash: utils.toPrefixedHex(thorTx.signatureHash()),
       };
 
       return result;
@@ -69,13 +80,13 @@ const extendAccounts = function(web3: any): any {
 
     // for supporting both callback and promise
     if (callback instanceof Function) {
-      sign(tx).then((ret) => {
+      sign(thorTx).then((ret) => {
         return callback(null, ret);
       }).catch((e) => {
         return callback(e);
       });
     } else {
-      return sign(tx);
+      return sign(thorTx);
     }
   };
 

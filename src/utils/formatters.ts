@@ -235,5 +235,7 @@ export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
       clause.data = ethTx.data;
     }
   }
+
+  thorTx.clauses.push(clause);
   return thorTx;
 };

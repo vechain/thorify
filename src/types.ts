@@ -12,7 +12,7 @@ export interface IThorTransaction {
   dependsOn?: string;
   nonce?: StringOrNumber;
   signature?: string;
-  clauses?: IClause[];
+  clauses: IClause[];
   origin?: string;
 }
 

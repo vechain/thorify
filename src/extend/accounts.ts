@@ -44,9 +44,9 @@ const extendAccounts = function(web3: any): any {
       if (!tx.gas) {
         const gas = await web3.eth.estimateGas({
           from: EthLib.account.fromPrivate(utils.toPrefixedHex(privateKey)).address,
-          to: (tx.clauses as IClause[])[0].to,
-          value: (tx.clauses as IClause[])[0].value,
-          data: (tx.clauses as IClause[])[0].data,
+          to: tx.clauses.length ? tx.clauses[0].to : "",
+          value: tx.clauses.length ? tx.clauses[0].value : 0,
+          data: tx.clauses.length ? tx.clauses[0].data : "0x",
         });
         if (gas) {
           tx.gas = gas;

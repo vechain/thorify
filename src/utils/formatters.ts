@@ -174,7 +174,9 @@ const toUint32 = function(input: number | string): StringOrNull {
 };
 
 export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
-  const thorTx: IThorTransaction = {};
+  const thorTx: IThorTransaction = {
+    clauses: [],
+  };
 
   if (ethTx.chainTag === 0 || ethTx.chainTag) {
     const chainTag = toUint8(ethTx.chainTag);

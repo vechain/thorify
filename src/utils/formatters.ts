@@ -236,6 +236,10 @@ export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
     }
   }
 
+  const value = web3Utils.numberToHex(ethTx.value);
+  if (value) {
+    clause.value = value;
+  }
   thorTx.clauses.push(clause);
   return thorTx;
 };

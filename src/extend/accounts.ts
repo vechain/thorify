@@ -14,14 +14,6 @@ const extendAccounts = function(web3: any): any {
   proto.signTransaction = function signTransaction(tx: IEthTransaction, privateKey: string, callback: Callback) {
     debug("tx to sign: %O", tx);
 
-    // remove properties for compatible with ethereum
-    if (tx.hasOwnProperty("gasPrice")) {
-      delete tx.gasPrice;
-    }
-    if (tx.hasOwnProperty("to")) {
-      delete tx.to;
-    }
-
     const thorTx = utils.ethToThorTx(tx);
 
     const sign = async function(tx: IThorTransaction) {

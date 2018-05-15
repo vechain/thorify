@@ -100,8 +100,8 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
   - `data` - `String`: (optional) Either a [ABI byte string](http://solidity.readthedocs.io/en/latest/abi-spec.html) containing the data of the function call on a contract, or in the case of a contract-creation transaction the initialisation code.
   - `nonce` - `Number`: (optional) Integer of a nonce. This is different from ethereum's nonce as it's a transaction count,in Thor it's a random number. 
   - `chainTag` - `Number`: (optional) **last byte** of the genesis block ID.
-  - `blockRef` - `String`: (optional, Default first 8 bytes from **best block**) The BlockRef(an eight-byte array) includes two parts: the first four bytes contains the block height (number) and the rest four bytes a part of the referred block’s ID.if its future block should input blockNumber + "0000000".
-  - `expiration` - `Number`: (optional, Default 0, Suggested 720) Number of blocks that can be used to specify when the transaction expires.
+  - `blockRef` - `String`: (optional, Default first 8 bytes from **best block**) The BlockRef(an eight-byte array) includes two parts: the first four bytes contains the block height (number) and the rest four bytes a part of the referred block’s ID.if its future block should input blockNumber + "00000000".
+  - `expiration` - `Number`: (optional, Default 0, Suggested 720) Number of blocks that can be used to specify when the transaction expires.Specifically, expiration+blockRef defines the height of the latest block that the transaction can be packed into.
   - `gasPriceCoef` - `Number`: (optional, Default 0, Suggested 128, range of [0,256) Coefficient used to calculate the total gas price.
   - `dependsOn` - `String`: (optional) ID of the transaction on which the current transaction depends. When it's setted this transaction will be packed after the the depended transaction executed successfully(`revert` in receipt must be `false`).
 
@@ -120,7 +120,7 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
 
 ## License
 
-This project is licensed under the MIT license, Copyright (c) 2017 VeChain Foundation. For more information see LICENSE.md.
+This project is licensed under the MIT license, Copyright (c) 2017 VeChain Foundation. For more information see [LICENSE.md](LICENSE.md).
 
 ```
 The MIT License

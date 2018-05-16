@@ -2,7 +2,7 @@
 const debug = require("debug")("thor:injector");
 import * as utils from "../utils";
 
-const extendContract = function(web3: any) {
+const extendContracts = function(web3: any) {
   const _encodeEventABI = web3.eth.Contract.prototype._encodeEventABI;
   web3.eth.Contract.prototype._encodeEventABI = function(event: any, options: any): any {
     debug("_encodeEventABI");
@@ -20,4 +20,6 @@ const extendContract = function(web3: any) {
   };
 };
 
-export default extendContract;
+export {
+  extendContracts,
+};

@@ -86,4 +86,6 @@ const extendFormatters = function(web3: any) {
   };
 };
 
-export default extendFormatters;
+export {
+  extendFormatters,
+};

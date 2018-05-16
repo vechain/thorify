@@ -1,7 +1,7 @@
 "use strict";
 /* tslint:disable:max-line-length */
 import { IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRange, ITopicItem, ITopicSet, StringOrNumber, topicName } from "../types";
-import params from "./params";
+import {params} from "./params";
 
 export const calcIntrinsicGas = function(tx: IEthTransaction): number {
   let totalGas = params.TxGas;

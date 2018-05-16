@@ -5,7 +5,7 @@ const debug = require("debug")("thor:injector");
 import { Callback, IClause, StringOrNull, StringOrNumber } from "../types";
 import * as utils from "../utils";
 
-const extendMethod = function(web3: any) {
+const extendMethods = function(web3: any) {
   web3.extend({
     property: "eth",
     methods: [
@@ -51,4 +51,6 @@ const extendMethod = function(web3: any) {
   });
 };
 
-export default extendMethod;
+export {
+  extendMethods,
+};

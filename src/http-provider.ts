@@ -1,11 +1,11 @@
 "use strict";
+/* tslint:disable:max-line-length */
 // forked from ethjs-provider-http
 
 // workaround to use http provider in different envs
 const XHR2 = require("xhr2");
 const debug = require("debug")("thor:http-provider");
-import ThorInterceptor from "./thor-interceptor";
-/* tslint:disable:max-line-length */
+import { ThorAPIMapping} from "./thor-interceptor";
 
 class ThorHttpProvider {
   private host: string;
@@ -22,7 +22,7 @@ class ThorHttpProvider {
   public sendAsync(payload: any, callback: any) {
     debug("payload: %O", payload);
 
-    if (!ThorInterceptor[payload.method]) {
+    if (!ThorAPIMapping[payload.method]) {
       return callback(new Error("Method not supported!"), {
         id: payload.id || 0,
         jsonrpc: payload.jsonrpc || "2.0",
@@ -30,7 +30,7 @@ class ThorHttpProvider {
       });
     }
 
-    const Interceptor = ThorInterceptor[payload.method];
+    const Interceptor = ThorAPIMapping[payload.method];
     const ret = Interceptor.formatXHR(payload, this.host, this.timeout);
     const request = ret.Request;
 
@@ -65,7 +65,6 @@ class ThorHttpProvider {
       callback(`[thorify-provider-http] CONNECTION ERROR: Couldn't connect to node '${this.host}': ${JSON.stringify(error, null, 2)}`, null);
     }
   }
-
 }
 
 /**
@@ -76,4 +75,6 @@ function invalidResponseError(result: any, host: any) {
   return new Error(message);
 }
 
-export default ThorHttpProvider;
+export {
+  ThorHttpProvider,
+};

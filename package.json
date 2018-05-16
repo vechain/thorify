@@ -3,6 +3,7 @@
   "version": "0.1.6",
   "description": "A web3 adaptor for VeChain Thor RESTful HTTP API.",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p .",
     "lint": "tslint  --fix -p .",

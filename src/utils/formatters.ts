@@ -4,7 +4,7 @@
 const web3Utils = require("web3-utils");
 import { IClause, IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRange, IThorTransaction, ITopicItem, ITopicSet, StringOrNull, StringOrNumber, topicName } from "../types";
 import * as utils from "./";
-import params from "./params";
+import {params} from "./params";
 
 const isArray = function(o: any): boolean {
   return Object.prototype.toString.call(o) === "[object Array]";

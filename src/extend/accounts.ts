@@ -134,4 +134,6 @@ const extendAccounts = function(web3: any): any {
 
 };
 
-export default extendAccounts;
+export {
+  extendAccounts,
+};

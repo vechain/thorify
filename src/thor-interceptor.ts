@@ -340,4 +340,6 @@ ThorAPIMapping = {
   },
 };
 
-export default ThorAPIMapping;
+export {
+  ThorAPIMapping,
+};

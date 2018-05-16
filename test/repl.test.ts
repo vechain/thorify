@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 "use strict";
-
-import replx = require("repl-x");
-import { encode } from "rlp";
-import Thorify from "../src";
-const Web3 = require("web3");
 /* tslint:disable:max-line-length */
 
-const thorProvider = new Thorify.ThorHttpProvider("http://localhost:8669");
-const web3 = new Web3(thorProvider);
+import replx = require("repl-x");
+import { thorify} from "../src";
+const Web3 = require("web3");
+
+const web3 = new Web3();
+
+thorify(web3, "http://localhost:8669");
+
 const EnergyABI = [{ constant: true, inputs: [], name: "name", outputs: [{ name: "", type: "string" }], payable: false, stateMutability: "pure", type: "function" }, { constant: false, inputs: [{ name: "_reciever", type: "address" }, { name: "_amount", type: "uint256" }], name: "approve", outputs: [{ name: "success", type: "bool" }], payable: false, stateMutability: "nonpayable", type: "function" }, { constant: true, inputs: [], name: "totalSupply", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" }, { constant: false, inputs: [{ name: "_from", type: "address" }, { name: "_to", type: "address" }, { name: "_amount", type: "uint256" }], name: "transferFrom", outputs: [{ name: "success", type: "bool" }], payable: false, stateMutability: "nonpayable", type: "function" }, { constant: true, inputs: [], name: "decimals", outputs: [{ name: "", type: "uint8" }], payable: false, stateMutability: "pure", type: "function" }, { constant: true, inputs: [{ name: "_owner", type: "address" }], name: "balanceOf", outputs: [{ name: "balance", type: "uint256" }], payable: false, stateMutability: "view", type: "function" }, { constant: true, inputs: [], name: "symbol", outputs: [{ name: "", type: "string" }], payable: false, stateMutability: "pure", type: "function" }, { constant: false, inputs: [{ name: "_to", type: "address" }, { name: "_amount", type: "uint256" }], name: "transfer", outputs: [{ name: "success", type: "bool" }], payable: false, stateMutability: "nonpayable", type: "function" }, { constant: true, inputs: [], name: "totalBurned", outputs: [{ name: "", type: "uint256" }], payable: false, stateMutability: "view", type: "function" }, { constant: true, inputs: [{ name: "_owner", type: "address" }, { name: "_spender", type: "address" }], name: "allowance", outputs: [{ name: "remaining", type: "uint256" }], payable: false, stateMutability: "view", type: "function" }, { anonymous: false, inputs: [{ indexed: true, name: "_from", type: "address" }, { indexed: true, name: "_to", type: "address" }, { indexed: false, name: "_value", type: "uint256" }], name: "Transfer", type: "event" }, { anonymous: false, inputs: [{ indexed: true, name: "_owner", type: "address" }, { indexed: true, name: "_spender", type: "address" }, { indexed: false, name: "_value", type: "uint256" }], name: "Approval", type: "event" }];
 const EnergyAddress = "0x0000000000000000000000000000456e65726779";
 
@@ -24,8 +25,6 @@ web3.eth.accounts.wallet.add("0xfbb9e7ba5fe9969a71c6599052237b91adeb1e5fc0c96727
 web3.eth.accounts.wallet.add("0x547fb081e73dc2e22b4aae5c60e2970b008ac4fc3073aebc27d41ace9c4f53e9");
 web3.eth.accounts.wallet.add("0xc8c53657e41a8d669349fc287f57457bd746cb1fcfc38cf94d235deb2cfca81b");
 web3.eth.accounts.wallet.add("0x87e0eba9c86c494d98353800571089f316740b0cb84c9a7cdf2fe5c9997c7966");
-
-Thorify.extend(web3);
 
 const testContract = new web3.eth.Contract([{ constant: false, inputs: [{ name: "_tokenAddr", type: "address" }, { name: "_tokenSupplier", type: "address" }, { name: "_to", type: "address[]" }, { name: "_value", type: "uint256[]" }], name: "distribute", outputs: [{ name: "_success", type: "bool" }], payable: false, stateMutability: "nonpayable", type: "function" }, { constant: true, inputs: [], name: "owner", outputs: [{ name: "", type: "address" }], payable: false, stateMutability: "view", type: "function" }, { constant: false, inputs: [{ name: "newOwner", type: "address" }], name: "transferOwnership", outputs: [], payable: false, stateMutability: "nonpayable", type: "function" }, { inputs: [], payable: false, stateMutability: "nonpayable", type: "constructor" }, { anonymous: false, inputs: [{ indexed: true, name: "previousOwner", type: "address" }, { indexed: true, name: "newOwner", type: "address" }], name: "OwnershipTransferred", type: "event" }]);
 

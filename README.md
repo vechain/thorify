@@ -10,15 +10,12 @@ npm install --save thorify
 
 ## Usage
 
-``` js
-import Thorify from "thorify"
+``` javascript
+import { thorify } from "thorify"
 const Web3 = require("web3");
 
-const thorProvider = new Thorify.ThorHttpProvider("http://localhost:8669");
-const web3 = new Web3(thorProvider);
-
-// Must be called with web3 instance
-Thorify.extend(web3);
+const web3 = new Web3();
+thorify(web3, "http://localhost:8669");
 
 web3.eth.getBlock("latest").then(ret=>console.log(ret));
 // Best block info will be displayed
@@ -63,11 +60,11 @@ web3 instance
 
 ## Send Transaction
 
-In thor's official implementation, unlike ethereum's, the client doesn't manage user's private-key(or key-store) storage and transaction signing. So in thorify, web3 can't perform `eth_sendTransaction` but there is another way to do that. 
+In Thor official implementation , the client **DOES NOT** manage user's private-key/keyStore and using private key to sign a Transaction. unfortunately , thorify can not directly perform eth_sendTransaction but there is another way to sign a transaction. 
 
-There is a new module called `eth.accounts` in web3, if you add your private-key(the private-key is stored locally within the web3 instance, memory when Node.js and memory or LocalStorage when browser) to that module when you performing a send-transaction call the module will check if there is a private-key to the corresponding `from` parameter, if so the module will sign the transaction for you.
+In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#eth-accounts), it gives the opportunity to add your private-key (Node.js , stored in memory; Browser , stored in memory/local storage) to accounts module. when you trying to send a transaction , the module will check the private key correspond with `from` parameter. when private key and `from` are matched , then the module will sign the transaction. 
 
-  The APIs that follows the mechanism are:
+The APIs that follows the mechanism are:
 
 + `web3.eth.sendTransaction`
 + `contract.method.myMethod.send()`

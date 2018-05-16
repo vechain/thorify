@@ -11,7 +11,7 @@ npm install --save thorify
 ## Usage
 
 ``` javascript
-import { thorify } from "thorify"
+import { thorify } from "thorify";
 const Web3 = require("web3");
 
 const web3 = new Web3();
@@ -66,7 +66,7 @@ In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.htm
 
 The APIs that follows the mechanism are:
 
-+ `web3.eth.sendTransaction`
++ `web3.eth.sendTransaction()`
 + `contract.method.myMethod.send()`
 
 ``` javascript
@@ -76,14 +76,14 @@ web3.eth.accounts.wallet.add("0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536e
 web3.eth.sendTransaction({
   from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
   to: "0xd3ae78222beadb038203be21ed5ce7c9b1bff602",
-  value: 100
-}).then(ret=>console.log(ret))
+  value: 100,
+}).then(ret=>console.log(ret));
 // Transaction receipt will be displayed
 
 // Initiate the contract instance
 ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100).send({
- from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed"
-})
+ from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
+});
 // Transaction receipt will be displayed
 ```
 

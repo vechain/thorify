@@ -6,7 +6,7 @@ import { IClause, IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRan
 import * as utils from "./";
 import {params} from "./params";
 
-const isArray = function(o: any): boolean {
+export const isArray = function(o: any): boolean {
   return Object.prototype.toString.call(o) === "[object Array]";
 };
 
@@ -152,21 +152,21 @@ const maxUint8 = new web3Utils.BN(2).pow(new web3Utils.BN(8));
 const maxUint32 = new web3Utils.BN(2).pow(new web3Utils.BN(32));
 const maxUint64 = new web3Utils.BN(2).pow(new web3Utils.BN(64));
 
-const toUint8 = function(input: number | string): StringOrNull {
+export const toUint8 = function(input: number | string): StringOrNull {
   if (typeof input !== "number" && !input) {
     return null;
   }
   return "0x" + web3Utils.toBN(input).mod(maxUint8).toString(16);
 };
 
-const toUint64 = function(input: number | string): StringOrNull {
+export const toUint64 = function(input: number | string): StringOrNull {
   if (typeof input !== "number" && !input) {
     return null;
   }
   return "0x" + web3Utils.toBN(input).mod(maxUint64).toString(16);
 };
 
-const toUint32 = function(input: number | string): StringOrNull {
+export const toUint32 = function(input: number | string): StringOrNull {
   if (typeof input !== "number" && !input) {
     return null;
   }
@@ -240,6 +240,9 @@ export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
   if (value) {
     clause.value = value;
   }
-  thorTx.clauses.push(clause);
+
+  if (clause.data || clause.to) {
+    thorTx.clauses.push(clause);
+  }
   return thorTx;
 };

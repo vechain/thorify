@@ -8,7 +8,7 @@
     "build": "tsc -p .",
     "lint": "tslint  --fix -p .",
     "prepare": "rm -rf dist/; npm run build",
-    "test": "NODE_ENV=test mocha --require ts-node/register --recursive --timeout 20000 test/**.test.ts",
+    "test": "NODE_ENV=test mocha --require ts-node/register --timeout 20000 --recursive  './**/*.test.ts'",
     "cover": "NODE_ENV=test nyc npm t"
   },
   "nyc": {
@@ -17,7 +17,8 @@
     ],
     "exclude": [
       "test/",
-      "**/*.d.ts"
+      "**/*.d.ts",
+      "src/types.ts"
     ],
     "extension": [
       ".ts"

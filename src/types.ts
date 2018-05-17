@@ -14,6 +14,7 @@ export interface IThorTransaction {
   signature?: string;
   clauses: IClause[];
   origin?: string;
+  isThorified ?: () => boolean;
 }
 
 export interface IClause {

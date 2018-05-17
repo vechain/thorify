@@ -47,6 +47,11 @@ class ThorHttpProvider {
 
         debug("result: %O", result);
         result = ret.ResFormatter(result);
+
+        if (result) {
+          Object.getPrototypeOf(result).isThorified = () => true;
+        }
+
         callback(error, {
           id: payload.id || 0,
           jsonrpc: payload.jsonrpc || "2.0",

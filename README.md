@@ -92,10 +92,10 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
   - `from` - `String|Number`: Either The address of transaction sender's account or the address/index of a local wallet in `web3.eth.accounts.wallet `.
   - `to` - `String`: (optional) The destination address of the message, left undefined for a contract-creation transaction.
   - `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
-  - `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is refunded).
+  - `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is going to be refunded right after the transaction execution).
   - `data` - `String`: (optional) Either the [ABI byte string](http://solidity.readthedocs.io/en/latest/abi-spec.html) containing the data of the function call on a contract, or the initialisation code of a contract-creation transaction.
   - `nonce` - `Number`: (optional) A random 64-bit scalar value that is different from ethereum's nonce which is a transaction count. 
-  - `chainTag` - `Number`: (optional) **last byte** of the genesis block ID representing the identity of a chain.
+  - `chainTag` - `Number`: (optional) **the last byte** of the genesis block ID representing the identity of a chain.
   - `blockRef` - `String`: (optional, by default, the first 8 bytes of **best block** ID). The BlockRef (an eight-byte array) includes two parts: the first four bytes contains the block height (number) and the rest four bytes is part of the referred block’s ID. If the referred block is future block, blockNumber + "00000000" should be added.
   - `expiration` - `Number`: (optional, Default 0, Suggested 720) Number of  blocks that can be used to specify when the transaction expires. Specifically, expiration+blockRef defines the height of the latest block that the transaction can be packed into.
   - `gasPriceCoef` - `Number`: (optional, by default 0, Suggested 128, with the range of [0,256) Coefficient that is used to calculate the total gas price.

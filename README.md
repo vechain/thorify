@@ -60,10 +60,9 @@ web3 instance
 
 ## Send Transaction
 
-In Thor official implementation , the client **DOES NOT** manage user's private-key/keyStore and using private key to sign a Transaction. unfortunately , thorify can not directly perform eth_sendTransaction but there is another way to sign a transaction. 
+In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform eth_sendTransaction but there is another way to sign a transaction. 
 
-In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#eth-accounts), it gives the opportunity to add your private-key (Node.js , stored in memory; Browser , stored in memory/local storage) to accounts module. when you trying to send a transaction , the module will check the private key correspond with `from` parameter. when private key and `from` are matched , then the module will sign the transaction. 
-
+In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#eth-accounts), it gives the opportunity to add your private-key, stored in your runtime context (In Node.js context, it's stored in memory while in Browser context, it's stored in memory/local storage), to accounts module. When you're trying to send a transaction, the module will check the private key associated with from field. Once the private key and from have been matched, the module will sign the transaction.
 The APIs that follows the mechanism are:
 
 + `web3.eth.sendTransaction()`
@@ -90,17 +89,17 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
 ### Parameters 
 
 `Object` - The transaction object to send:
-  - `from` - `String|Number`: The address for the sending account. Or an address or index of a local wallet in `web3.eth.accounts.wallet `.
+  - `from` - `String|Number`: Either The address of transaction sender's account or the address/index of a local wallet in `web3.eth.accounts.wallet `.
   - `to` - `String`: (optional) The destination address of the message, left undefined for a contract-creation transaction.
-  - `value`- `Number|String|BN|BigNumber`: (optional) The value transferred for the transaction in `wei`, also the endowment if it's a contract-creation transaction.
-  - `gas`  - `Number`: (optional) The amount of gas to use for the transaction (unused gas is refunded).
-  - `data` - `String`: (optional) Either a [ABI byte string](http://solidity.readthedocs.io/en/latest/abi-spec.html) containing the data of the function call on a contract, or in the case of a contract-creation transaction the initialisation code.
-  - `nonce` - `Number`: (optional) Integer of a nonce. This is different from ethereum's nonce as it's a transaction count,in Thor it's a random number. 
-  - `chainTag` - `Number`: (optional) **last byte** of the genesis block ID.
-  - `blockRef` - `String`: (optional, Default first 8 bytes from **best block**) The BlockRef(an eight-byte array) includes two parts: the first four bytes contains the block height (number) and the rest four bytes a part of the referred block’s ID.if its future block should input blockNumber + "00000000".
-  - `expiration` - `Number`: (optional, Default 0, Suggested 720) Number of blocks that can be used to specify when the transaction expires.Specifically, expiration+blockRef defines the height of the latest block that the transaction can be packed into.
-  - `gasPriceCoef` - `Number`: (optional, Default 0, Suggested 128, range of [0,256) Coefficient used to calculate the total gas price.
-  - `dependsOn` - `String`: (optional) ID of the transaction on which the current transaction depends. When it's setted this transaction will be packed after the the depended transaction executed successfully(`revert` in receipt must be `false`).
+  - `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
+  - `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is refunded).
+  - `data` - `String`: (optional) Either the [ABI byte string](http://solidity.readthedocs.io/en/latest/abi-spec.html) containing the data of the function call on a contract, or the initialisation code of a contract-creation transaction.
+  - `nonce` - `Number`: (optional) A random 64-bit scalar value that is different from ethereum's nonce which is a transaction count. 
+  - `chainTag` - `Number`: (optional) **last byte** of the genesis block ID representing the identity of a chain.
+  - `blockRef` - `String`: (optional, by default, the first 8 bytes of **best block** ID). The BlockRef (an eight-byte array) includes two parts: the first four bytes contains the block height (number) and the rest four bytes is part of the referred block’s ID. If the referred block is future block, blockNumber + "00000000" should be added.
+  - `expiration` - `Number`: (optional, Default 0, Suggested 720) Number of  blocks that can be used to specify when the transaction expires. Specifically, expiration+blockRef defines the height of the latest block that the transaction can be packed into.
+  - `gasPriceCoef` - `Number`: (optional, by default 0, Suggested 128, with the range of [0,256) Coefficient that is used to calculate the total gas price.
+  - `dependsOn` - `String`: (optional) ID of the transaction on which the current transaction depends. When it's setted this transaction will be packed after the depended transaction is executed successfully (in this case, the `revert` in depended transaction receipt must be `false`).
 
 
 > This is not the only way for developers signing a transaction! <br>

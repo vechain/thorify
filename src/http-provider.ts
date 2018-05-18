@@ -48,6 +48,7 @@ class ThorHttpProvider {
         debug("result: %O", result);
         result = ret.ResFormatter(result);
 
+        // tricks for compatible with original web3 instance
         if (result) {
           Object.getPrototypeOf(result).isThorified = () => true;
         }

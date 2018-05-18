@@ -2,6 +2,7 @@
 /* tslint:disable:max-line-length */
 
 const web3Utils = require("web3-utils");
+import { isNumber } from "util";
 import { IClause, IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRange, IThorTransaction, ITopicItem, ITopicSet, StringOrNull, StringOrNumber, topicName } from "../types";
 import * as utils from "./";
 import {params} from "./params";
@@ -19,7 +20,7 @@ export const formatBlockNumber = function(blockNumber: StringOrNumber): StringOr
     } else if (blockNumber === "latest" || blockNumber === "pending") {
       return "best";
     } else {
-      return blockNumber;
+      return "best";
     }
   } else {
     return "best";
@@ -33,23 +34,27 @@ export const formatRange = function(range: any): ILogQueryRange | null {
   } else {
     ret.unit = range.unit;
   }
-
-  try {
-    const from = formatBlockNumber(range.from);
-    if (from !== "best") {
-      ret.from = Number.parseInt(from as string);
+  if (range.hasOwnProperty("from")) {
+    const temp = Number.parseInt(range.from);
+    if (Number.isInteger(temp)) {
+      ret.from = temp;
+    } else {
+      ret.from = 0;
     }
-  } catch {
+  } else {
     ret.from = 0;
   }
-  try {
-    const to = formatBlockNumber(range.to);
-    if (to !== "best") {
-      ret.to = Number.parseInt(range.to);
+  if (range.hasOwnProperty("to")) {
+    const temp = Number.parseInt(range.to);
+    if (Number.isInteger(temp)) {
+      ret.to = temp;
+    } else {
+      ret.to = Number.MAX_SAFE_INTEGER;
     }
-  } catch {
-    ret.to = utils.MaxUint32;
+  } else {
+    ret.to = Number.MAX_SAFE_INTEGER;
   }
+
   return ret;
 };
 

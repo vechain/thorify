@@ -4,7 +4,7 @@
 import { expect } from "chai";
 import * as utils from "../../src/utils";
 
-describe("EthTx to ThorTx", () => {
+describe("eth Tx to thor Tx", () => {
   it("Empty Object", () => {
     const ret = utils.ethToThorTx({});
     expect(ret.clauses).to.have.lengthOf(0);
@@ -16,7 +16,7 @@ describe("EthTx to ThorTx", () => {
     const ret = utils.ethToThorTx({
       chainTag: 0,
       blockRef: 100,
-      expiration: 100,
+      expiration: "100",
       gasPriceCoef: 100,
       gas: 100,
       dependsOn: "0xa975938d77903a388a2c2bd89fa8f76e5b54d5b7a0daf8a58452707bdd5c894c",
@@ -69,7 +69,57 @@ describe("toNumber series", () => {
 
 });
 
-describe("Others", () => {
+describe("formatBlockNumber", () => {
+
+  it("with number", () => {
+    expect(utils.formatBlockNumber(100)).to.be.equal(100);
+  });
+
+  it("with valid string", () => {
+    expect(utils.formatBlockNumber("earliest")).to.be.equal(0);
+    expect(utils.formatBlockNumber("latest")).to.be.equal("best");
+    expect(utils.formatBlockNumber("pending")).to.be.equal("best");
+  });
+
+  it("with invalid string", () => {
+    expect(utils.formatBlockNumber("invalid string")).to.be.equal("best");
+  });
+
+  it("with invalid type", () => {
+    expect(utils.formatBlockNumber({})).to.be.equal("best");
+  });
+
+});
+
+describe("formatRange", () => {
+
+  it("empty input", () => {
+    expect(utils.formatRange({})).to.be.null;
+  });
+
+  it("minimal input", () => {
+    const ret = utils.formatRange({ unit: "block" });
+    expect(ret.unit).to.be.equal("block");
+    expect(ret.from).to.be.equal(0);
+    expect(ret.to).to.be.equal(Number.MAX_SAFE_INTEGER);
+  });
+
+  it("normal input", () => {
+    const ret = utils.formatRange({ unit: "block" , from: 0 , to: 1000});
+    expect(ret.unit).to.be.equal("block");
+    expect(ret.from).to.be.equal(0);
+    expect(ret.to).to.be.equal(1000);
+  });
+
+  it("invalid input", () => {
+    const ret = utils.formatRange({ unit: "time", from: "invalid-number", to: "invalid-number"});
+    expect(ret.unit).to.be.equal("time");
+    expect(ret.from).to.be.equal(0);
+    expect(ret.to).to.be.equal(Number.MAX_SAFE_INTEGER);
+  });
+});
+
+describe("others", () => {
 
   it("isArray with valid input", () => {
     expect(utils.isArray([])).to.be.true;

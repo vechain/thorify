@@ -20,7 +20,8 @@ export const formatBlockNumber = function(blockNumber: StringOrNumber): StringOr
     } else if (blockNumber === "latest" || blockNumber === "pending") {
       return "best";
     } else {
-      return "best";
+      const num = utils.toInteger(blockNumber);
+      return num ? num : "best";
     }
   } else {
     return "best";
@@ -35,22 +36,14 @@ export const formatRange = function(range: any): ILogQueryRange | null {
     ret.unit = range.unit;
   }
   if (range.hasOwnProperty("from")) {
-    const temp = Number.parseInt(range.from);
-    if (Number.isInteger(temp)) {
-      ret.from = temp;
-    } else {
-      ret.from = 0;
-    }
+    const temp = formatBlockNumber(range.from);
+    if (temp !== "best") { ret.from = temp as number; } else { ret.from = 0; }
   } else {
     ret.from = 0;
   }
   if (range.hasOwnProperty("to")) {
-    const temp = Number.parseInt(range.to);
-    if (Number.isInteger(temp)) {
-      ret.to = temp;
-    } else {
-      ret.to = Number.MAX_SAFE_INTEGER;
-    }
+    const temp = utils.formatBlockNumber(range.to);
+    if (temp !== "best") { ret.to = temp as number; } else { ret.to = Number.MAX_SAFE_INTEGER; }
   } else {
     ret.to = Number.MAX_SAFE_INTEGER;
   }
@@ -60,15 +53,13 @@ export const formatRange = function(range: any): ILogQueryRange | null {
 
 export const formatOptions = function(options: any): ILogQueryOptions | null {
   const ret: ILogQueryOptions = {};
-  if (options.limit) {
-    try {
-      ret.limit = Number.parseInt(options.limit);
-    } finally { }/* tslint:disable:no-empty */
+  if (options.hasOwnProperty("limit")) {
+    const temp = utils.toInteger(options.limit);
+    if (temp) { ret.limit = temp; }
   }
-  if (options.offset) {
-    try {
-      ret.offset = Number.parseInt(options.offset);
-    } finally { }/* tslint:disable:no-empty */
+  if (options.hasOwnProperty("offset")) {
+    const temp = utils.toInteger(options.offset);
+    if (temp) { ret.offset = temp; }
   }
   return ret;
 };
@@ -93,43 +84,45 @@ export const formatLogQuery = function(params: any): ILogQueryBody {
   }
 
   if (!body.range) {
-    if (params.fromBlock) {
-      try {
-        const from = formatBlockNumber(params.fromBlock);
-        if (from !== "best") {
-          body.range = body.range ? body.range : {};
-          body.range.from = Number.parseInt(from as string);
-        }
-      } finally { }/* tslint:disable:no-empty */
+
+    if (params.hasOwnProperty("fromBlock")) {
+      const from = formatBlockNumber(params.fromBlock);
+      if (from !== "best") {
+        body.range = body.range ? body.range : {};
+        body.range.from = Number.parseInt(from as string);
+      }
     }
-    if (params.toBlock) {
-      try {
-        const to = formatBlockNumber(params.toBlock);
-        if (to !== "best") {
-          body.range = body.range ? body.range : {};
-          body.range.to = Number.parseInt(to as string);
-        }
-      } finally { }/* tslint:disable:no-empty */
+
+    if (params.hasOwnProperty("toBlock")) {
+      const to = formatBlockNumber(params.toBlock);
+      if (to !== "best") {
+        body.range = body.range ? body.range : {};
+        body.range.to = Number.parseInt(to as string);
+      }
     }
+
     if (body.range) {
       body.range.unit = "block";
     }
+
   }
 
   body.topicSets = [];
   const topics: ITopicItem[] = [];
 
-  for (let i = 0; i < params.topics.length; i++) {
-    if (typeof params.topics[i] === "string") {
-      topics.push({
-        name: "topic" as topicName + i,
-        array: [params.topics[i]],
-      });
-    } else if (isArray(params.topics[i]) && params.topics[i].length) {
-      topics.push({
-        name: "topic" as topicName + i,
-        array: params.topics[i],
-      });
+  if (params.topics && params.topics.length) {
+    for (let i = 0; i < params.topics.length; i++) {
+      if (typeof params.topics[i] === "string") {
+        topics.push({
+          name: "topic" as topicName + i,
+          array: [params.topics[i]],
+        });
+      } else if (isArray(params.topics[i]) && params.topics[i].length) {
+        topics.push({
+          name: "topic" as topicName + i,
+          array: params.topics[i],
+        });
+      }
     }
   }
 

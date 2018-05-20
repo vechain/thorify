@@ -56,3 +56,12 @@ export const isHex = function(hex: string): boolean {
 export const newNonce = function(): number {
   return Math.floor((new Date().getTime() / 0xffff) * Math.random() * 0xffff);
 };
+
+export const toInteger = function(input: any): number | null {
+  const num = Number.parseInt(input);
+  if (Number.isInteger(num)) {
+    return num;
+  } else {
+    return null;
+  }
+};

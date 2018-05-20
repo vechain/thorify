@@ -119,6 +119,52 @@ describe("formatRange", () => {
   });
 });
 
+describe("formatOptions", () => {
+
+  it("empty input", () => {
+    const ret = utils.formatOptions({});
+    expect(ret).to.not.have.property("limit");
+    expect(ret).to.not.have.property("offset");
+  });
+
+  it("valid input", () => {
+    const ret = utils.formatOptions({ limit: 100, offset: 100 });
+    expect(ret.limit).to.be.equal(100);
+    expect(ret.offset).to.be.equal(100);
+  });
+
+});
+
+describe("formatLogQuery", () => {
+
+  it("empty input", () => {
+    const ret = utils.formatLogQuery({});
+    expect(ret).to.not.have.property("options");
+    expect(ret).to.not.have.property("range");
+  });
+
+  it("valid options", () => {
+    const ret = utils.formatLogQuery({ options: { limit: 100, offset: 100 } });
+    expect(ret.options.limit).to.be.equal(100);
+    expect(ret.options.offset).to.be.equal(100);
+  });
+
+  it("valid range", () => {
+    const ret = utils.formatLogQuery({ range: { unit: "block", from: 0, to: 1000 } });
+    expect(ret.range.unit).to.be.equal("block");
+    expect(ret.range.from).to.be.equal(0);
+    expect(ret.range.to).to.be.equal(1000);
+  });
+
+  // it("valid from block", () => {
+  //   const ret = utils.formatLogQuery({ fromBlock });
+  //   expect(ret.range.unit).to.be.equal("block");
+  //   expect(ret.range.from).to.be.equal(0);
+  //   expect(ret.range.to).to.be.equal(1000);
+  // });
+
+});
+
 describe("others", () => {
 
   it("isArray with valid input", () => {

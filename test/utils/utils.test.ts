@@ -41,4 +41,12 @@ describe("utils", () => {
     expect(utils.sanitizeHex("0001")).to.be.equal("0001");
   });
 
+  it("toInteger with valid input", () => {
+    expect(utils.toInteger("0x64")).to.be.equal(100);
+  });
+
+  it("toInteger with invalid input", () => {
+    expect(utils.toInteger("invalid input")).to.be.null;
+  });
+
 });

@@ -4,7 +4,7 @@
 import { expect } from "chai";
 import * as utils from "../../src/utils";
 
-describe("utils", () => {
+describe("utils:utilities", () => {
 
   it("calcIntrinsicGas with empty code contract creation", () => {
     const ret = utils.calcIntrinsicGas({});

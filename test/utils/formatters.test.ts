@@ -4,7 +4,7 @@
 import { expect } from "chai";
 import * as utils from "../../src/utils";
 
-describe("eth Tx to thor Tx", () => {
+describe("utils:eth Tx to thor Tx", () => {
   it("Empty Object", () => {
     const ret = utils.ethToThorTx({});
     expect(ret.clauses).to.have.lengthOf(0);
@@ -53,7 +53,7 @@ describe("eth Tx to thor Tx", () => {
 
 });
 
-describe("toNumber series", () => {
+describe("utils:toNumber series", () => {
 
   it("toUint8 With invalid type", () => {
     expect(utils.toUint8(null)).to.be.null;
@@ -69,7 +69,7 @@ describe("toNumber series", () => {
 
 });
 
-describe("formatBlockNumber", () => {
+describe("utils:formatBlockNumber", () => {
 
   it("with number", () => {
     expect(utils.formatBlockNumber(100)).to.be.equal(100);
@@ -91,7 +91,7 @@ describe("formatBlockNumber", () => {
 
 });
 
-describe("formatRange", () => {
+describe("utils:formatRange", () => {
 
   it("empty input", () => {
     expect(utils.formatRange({})).to.be.null;
@@ -119,7 +119,7 @@ describe("formatRange", () => {
   });
 });
 
-describe("formatOptions", () => {
+describe("utils:formatOptions", () => {
 
   it("empty input", () => {
     const ret = utils.formatOptions({});
@@ -135,7 +135,7 @@ describe("formatOptions", () => {
 
 });
 
-describe("formatLogQuery", () => {
+describe("utils:formatLogQuery", () => {
 
   it("empty input", () => {
     const ret = utils.formatLogQuery({});
@@ -156,16 +156,55 @@ describe("formatLogQuery", () => {
     expect(ret.range.to).to.be.equal(1000);
   });
 
-  // it("valid from block", () => {
-  //   const ret = utils.formatLogQuery({ fromBlock });
-  //   expect(ret.range.unit).to.be.equal("block");
-  //   expect(ret.range.from).to.be.equal(0);
-  //   expect(ret.range.to).to.be.equal(1000);
-  // });
+  it("valid from block", () => {
+    const ret = utils.formatLogQuery({ fromBlock: "0x64" });
+    expect(ret.range.unit).to.be.equal("block");
+    expect(ret.range.from).to.be.equal(100);
+    expect(ret.range).to.not.have.property("to");
+  });
+
+  it("valid to block", () => {
+    const ret = utils.formatLogQuery({ toBlock: "0x64" });
+    expect(ret.range.unit).to.be.equal("block");
+    expect(ret.range.to).to.be.equal(100);
+    expect(ret.range).to.not.have.property("from");
+  });
+
+  it("valid from & to block", () => {
+    const ret = utils.formatLogQuery({ fromBlock: "0x64", toBlock: "0x65" });
+    expect(ret.range.unit).to.be.equal("block");
+    expect(ret.range.from).to.be.equal(100);
+    expect(ret.range.to).to.be.equal(101);
+  });
+
+  it("with valid topics", () => {
+    const ret = utils.formatLogQuery({
+      topics: [
+        ["topic00", "topic01"],
+        ["topic10", "topic11"],
+        "topic2",
+      ],
+    });
+
+    expect(ret).to.have.property("topicSets");
+    expect(ret.topicSets).to.be.instanceof(Array);
+    expect(ret.topicSets).to.have.length(2 * 2 * 1);
+    for (let i = 0; i < 3; i++) {
+      expect(ret.topicSets[i]).to.have.property("topic0");
+      expect(ret.topicSets[i]).to.have.property("topic1");
+      expect(ret.topicSets[i]).to.have.property("topic2");
+    }
+    expect(ret.topicSets[0].topic2).to.be.equal("topic2");
+
+    expect(ret.topicSets[0].topic1).to.be.equal("topic10");
+    expect(ret.topicSets[1].topic0).to.be.equal("topic00");
+    expect(ret.topicSets[2].topic0).to.be.equal("topic01");
+    expect(ret.topicSets[3].topic1).to.be.equal("topic11");
+  });
 
 });
 
-describe("others", () => {
+describe("utils:others", () => {
 
   it("isArray with valid input", () => {
     expect(utils.isArray([])).to.be.true;

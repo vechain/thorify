@@ -5,7 +5,7 @@
 import { expect } from "chai";
 import * as utils from "../../src/utils";
 
-describe("crypto", () => {
+describe("utils:crypto", () => {
 
   it("empty Hash", () => {
     expect(utils.hash(new Buffer([]))).to.be.equal("0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8");

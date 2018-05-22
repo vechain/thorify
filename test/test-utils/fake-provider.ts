@@ -17,8 +17,11 @@ class ThorHttpProvider {
       });
     }
 
-    const ret = ThorAPIMapping[payload.method];
-    Object.getPrototypeOf(ret).getReqBody = () => payload;
+    const ret = ThorAPIMapping[payload.method].ret;
+    if (ret) {
+      Object.getPrototypeOf(ret).getReqBody = () => payload;
+      Object.getPrototypeOf(ret).isThorified = () => true;
+    }
 
     callback(null, {
       id: payload.id || 0,

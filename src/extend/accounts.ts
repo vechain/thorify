@@ -1,5 +1,6 @@
 "use strict";
 
+const web3Utils = require("web3-utils");
 const Tx = require("thorjs-tx");
 const debug = require("debug")("thor:injector");
 const EthLib = require("eth-lib/lib");
@@ -97,7 +98,7 @@ const extendAccounts = function(web3: any): any {
   };
 
   proto.hashMessage = function hashMessage(data: string | Buffer) {
-    const message = web3.extend.utils.isHexStrict(data) ? web3.extend.utils.hexToBytes(data) : data;
+    const message = web3Utils.isHexStrict(data) ? web3Utils.hexToBytes(data) : data;
     const messageBuffer = Buffer.from(message);
 
     return utils.hash(messageBuffer);
@@ -119,7 +120,7 @@ const extendAccounts = function(web3: any): any {
   proto.recover = function recover(message: any, signature: string, preFixed: boolean) {
     const args = [].slice.apply(arguments);
 
-    if (web3.extend.utils._.isObject(message)) {
+    if (web3Utils._.isObject(message)) {
       return this.recover(message.messageHash, message.signature, true);
     }
 

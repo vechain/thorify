@@ -14,9 +14,6 @@ export interface IThorInterceptor {
   prepare(payload: object): InterceptorRet;
 }
 
-/* tslint:disable:no-empty */
-const noop = () => { };
-
 let ThorAPIMapping: { [key: string]: IThorInterceptor };
 
 ThorAPIMapping = {
@@ -35,7 +32,7 @@ ThorAPIMapping = {
       return {
         Method: "GET",
         Body: {},
-        URL: "/blocks/" + utils.formatBlockNumber(payload.params[0]),
+        URL: "/blocks/" + utils.formatBlockHash(payload.params[0]),
         ResFormatter: (v) => v,
       };
     },

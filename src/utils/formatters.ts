@@ -28,6 +28,14 @@ export const formatBlockNumber = function(blockNumber: StringOrNumber): StringOr
   }
 };
 
+export const formatBlockHash = function(blockHash: string): string {
+  if (utils.isHex(blockHash)) {
+    return blockHash;
+  } else {
+    return "best";
+  }
+};
+
 export const formatRange = function(range: any): ILogQueryRange | null {
   const ret: ILogQueryRange = {};
   if (range.unit !== "block" && range.unit !== "time") {

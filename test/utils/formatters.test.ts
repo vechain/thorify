@@ -1,6 +1,6 @@
 "use strict";
 /*tslint:disable:no-unused-expression*/
-
+/* tslint:disable:max-line-length */
 import { expect } from "chai";
 import * as utils from "../../src/utils";
 
@@ -87,6 +87,18 @@ describe("utils:formatBlockNumber", () => {
 
   it("with invalid type", () => {
     expect(utils.formatBlockNumber({})).to.be.equal("best");
+  });
+
+});
+
+describe("utils:formatBlockHash", () => {
+
+  it("with valid hex string", () => {
+    expect(utils.formatBlockHash("0x0002be0c92b2a1d8f47a6e2cab583cbcbb0ae1125a83c31c93521b0e0a2c4fa6")).to.be.equal("0x0002be0c92b2a1d8f47a6e2cab583cbcbb0ae1125a83c31c93521b0e0a2c4fa6");
+  });
+
+  it("with invalid type", () => {
+    expect(utils.formatBlockHash({})).to.be.equal("best");
   });
 
 });

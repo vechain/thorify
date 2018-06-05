@@ -58,8 +58,13 @@ const extendFormatters = function(web3: any) {
       }
 
       for (const output of receipt.outputs) {
-        if (web3Utils._.isArray(output.logs)) {
-          output.logs = output.logs.map(web3.extend.formatters.outputLogFormatter);
+        if (web3Utils._.isArray(output.events)) {
+          output.events = output.events.map((event: any) => {
+            if (!event.isThorified) {
+              Object.defineProperty(event, "isThorified", { get: () => true});
+            }
+            return web3.extend.formatters.outputLogFormatter(event);
+          });
         }
 
         if (output.contractAddress) {
@@ -77,7 +82,7 @@ const extendFormatters = function(web3: any) {
   web3.extend.formatters.outputLogFormatter = function(log: any) {
     if (log && log.isThorified) {
       debug("outputLogFormatter");
-      if (log.hasOwnProperty("transactionIndex:")) {
+      if (log.hasOwnProperty("transactionIndex")) {
         delete log.transactionIndex;
       }
       if (log.hasOwnProperty("logIndex")) {
@@ -85,10 +90,6 @@ const extendFormatters = function(web3: any) {
       }
       if (log.hasOwnProperty("id")) {
         delete log.id;
-      }
-
-      if (log.blockNumber !== null) {
-        log.blockNumber = web3.extend.utils.hexToNumber(log.blockNumber);
       }
 
       if (log.address) {

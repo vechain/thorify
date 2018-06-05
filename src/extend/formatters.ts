@@ -93,7 +93,7 @@ const extendFormatters = function(web3: any) {
       }
 
       if (log.address) {
-        log.address = web3.extend.utils.toChecksumAddress(log.address);
+        log.address = web3Utils.toChecksumAddress(log.address);
       }
 
       return log;

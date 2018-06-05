@@ -49,8 +49,10 @@ class ThorHttpProvider {
         result = ret.ResFormatter(result);
 
         // tricks for compatible with original web3 instance
-        if (result) {
-          Object.getPrototypeOf(result).isThorified = () => true;
+        // non-objects does't need isThorified property since thorify just overwritten 3 formatters
+        // which all accept object as input
+        if (result && typeof result === "object") {
+          Object.defineProperty(ret, "isThorified", { get: () => true, set: () => null });
         }
 
         callback(error, {

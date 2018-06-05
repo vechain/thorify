@@ -9,7 +9,7 @@ const extendFormatters = function(web3: any) {
 
   const outputTransactionFormatter = web3.extend.formatters.outputTransactionFormatter;
   web3.extend.formatters.outputTransactionFormatter = function(tx: IThorTransaction) {
-    if (tx && tx.isThorified && tx.isThorified()) {
+    if (tx && tx.isThorified) {
       debug("outputTransactionFormatter");
       tx.gas = web3Utils.hexToNumber(tx.gas);
       tx.chainTag = web3Utils.numberToHex(tx.chainTag);
@@ -35,7 +35,7 @@ const extendFormatters = function(web3: any) {
 
   const outputTransactionReceiptFormatter = web3.extend.formatters.outputTransactionReceiptFormatter;
   web3.extend.formatters.outputTransactionReceiptFormatter = function(receipt: any) {
-    if (receipt && receipt.isThorified && receipt.isThorified()) {
+    if (receipt && receipt.isThorified) {
       debug("outputTransactionReceiptFormatter");
       if (typeof receipt !== "object") {
         throw new Error("Received receipt is invalid: " + receipt);
@@ -75,7 +75,7 @@ const extendFormatters = function(web3: any) {
 
   const outputLogFormatter = web3.extend.formatters.outputLogFormatter;
   web3.extend.formatters.outputLogFormatter = function(log: any) {
-    if (log && log.isThorified && log.isThorified()) {
+    if (log && log.isThorified) {
       debug("outputLogFormatter");
       if (log.hasOwnProperty("transactionIndex:")) {
         delete log.transactionIndex;

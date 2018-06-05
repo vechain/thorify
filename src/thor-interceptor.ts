@@ -1,5 +1,4 @@
 "use strict";
-const XHR2 = require("xhr2");
 import * as utils from "./utils";
 /* tslint:disable:max-line-length */
 
@@ -7,12 +6,12 @@ export type formatter = (payload: any) => any;
 export interface InterceptorRet {
   Method: "GET"|"POST";
   Body: object;
-  Request: any;
+  URL: string;
   ResFormatter: formatter;
 }
 
 export interface IThorInterceptor {
-  formatXHR(payload: object, host: string, timeout: number): InterceptorRet;
+  prepare(payload: object): InterceptorRet;
 }
 
 /* tslint:disable:no-empty */
@@ -22,120 +21,93 @@ let ThorAPIMapping: { [key: string]: IThorInterceptor };
 
 ThorAPIMapping = {
   eth_getBlockByNumber: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/blocks/" + utils.formatBlockNumber(payload.params[0]), true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/blocks/" + utils.formatBlockNumber(payload.params[0]),
         ResFormatter: (v) => v,
       };
     },
   },
   eth_getBlockByHash: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/blocks/" + utils.formatBlockNumber(payload.params[0]), true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/blocks/" + utils.formatBlockNumber(payload.params[0]),
         ResFormatter: (v) => v,
       };
     },
   },
   eth_blockNumber: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/blocks/best", true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/blocks/best",
         ResFormatter: (v) => !v ? v : v.number,
       };
     },
   },
   eth_getBalance: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/accounts/" + payload.params[0] + "?revision=" + utils.formatBlockNumber(payload.params[1]), true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/accounts/" + payload.params[0] + "?revision=" + utils.formatBlockNumber(payload.params[1]),
         ResFormatter: (v) => !v ? v : v.balance,
       };
     },
   },
   eth_getEnergy: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/accounts/" + payload.params[0] + "?revision=" + utils.formatBlockNumber(payload.params[1]), true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/accounts/" + payload.params[0] + "?revision=" + utils.formatBlockNumber(payload.params[1]),
         ResFormatter: (v) => !v ? v : v.energy,
       };
     },
   },
   eth_getCode: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/accounts/" + payload.params[0] + "/code?revision=" + utils.formatBlockNumber(payload.params[1]), true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/accounts/" + payload.params[0] + "/code?revision=" + utils.formatBlockNumber(payload.params[1]),
         ResFormatter: (v) => !v ? v : v.code,
       };
     },
   },
   eth_getStorageAt: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/accounts/" + payload.params[0] + "/storage/" + payload.params[1] + "?revision=" + utils.formatBlockNumber(payload.params[2]), true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/accounts/" + payload.params[0] + "/storage/" + payload.params[1] + "?revision=" + utils.formatBlockNumber(payload.params[2]),
         ResFormatter: (v) => !v ? v : v.value,
       };
     },
   },
   eth_sendRawTransaction: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("POST", host + "/transactions", true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "POST",
         Body: {
           raw: payload.params[0],
         },
-        Request: request,
+        URL: "/transactions",
         ResFormatter: (v) => !v ? v : v.id,
       };
     },
   },
   eth_getTransactionByHash: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/transactions/" + payload.params[0], true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/transactions/" + payload.params[0],
         ResFormatter: (v) => {
           if (!v) { return v; }
           v.blockNumber = v.block.number;
@@ -145,14 +117,11 @@ ThorAPIMapping = {
     },
   },
   eth_getTransactionReceipt: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/transactions/" + payload.params[0] + "/receipt", true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/transactions/" + payload.params[0] + "/receipt",
         ResFormatter: (v) => {
           if (!v) { return v; }
           v.blockNumber = v.block.number;
@@ -173,16 +142,11 @@ ThorAPIMapping = {
     },
   },
   eth_call: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-
+    prepare(payload: any): InterceptorRet {
       let extraURI = "";
       if (payload.params[0].to) {
         extraURI = "/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]);
       }
-
-      request.open("POST", host + "/accounts" + extraURI, true);
 
       const body: any = {
         value: payload.params[0].value || "",
@@ -203,7 +167,7 @@ ThorAPIMapping = {
       return {
         Method: "POST",
         Body: body,
-        Request: request,
+        URL: "/accounts" + extraURI,
         ResFormatter: (v) => {
           if (!v) {
             return v;
@@ -219,16 +183,11 @@ ThorAPIMapping = {
     },
   },
   eth_estimateGas: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-
+    prepare(payload: any): InterceptorRet {
       let extraURI = "";
       if (payload.params[0].to) {
         extraURI = "/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]);
       }
-
-      request.open("POST", host + "/accounts" + extraURI, true);
 
       const body: any = {
         value: payload.params[0].value || "0",
@@ -242,7 +201,7 @@ ThorAPIMapping = {
       return {
         Method: "POST",
         Body: body,
-        Request: request,
+        URL: "/accounts" + extraURI,
         ResFormatter: (v) => {
           if (!v) {
             return v;
@@ -264,10 +223,7 @@ ThorAPIMapping = {
     },
   },
   eth_getLogs: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-
+    prepare(payload: any): InterceptorRet {
       let query = "";
       if (payload.params[0].address) {
         query = "&address=" + payload.params[0].address;
@@ -278,12 +234,10 @@ ThorAPIMapping = {
       query = query.replace("&", "?");
       const body = utils.formatLogQuery(payload.params[0]);
 
-      request.open("POST", host + "/events" + query, true);
-
       return {
         Method: "POST",
         Body: body,
-        Request: request,
+        URL: "/events" + query,
         ResFormatter: (v) => {
           if (!v) { return v; }
           for (const item of v) {
@@ -297,14 +251,11 @@ ThorAPIMapping = {
     },
   },
   eth_getBlockRef: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/blocks/best", true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/blocks/best",
         ResFormatter: (v) => {
           if (!v) {
             return null;
@@ -318,14 +269,11 @@ ThorAPIMapping = {
     },
   },
   eth_getChainTag: {
-    formatXHR(payload: any, host: string, timeout: number): InterceptorRet {
-      const request = new XHR2();
-      request.timeout = timeout;
-      request.open("GET", host + "/blocks/0", true);
+    prepare(payload: any): InterceptorRet {
       return {
         Method: "GET",
         Body: {},
-        Request: request,
+        URL: "/blocks/0",
         ResFormatter: (v) => {
           if (!v) {
             return null;

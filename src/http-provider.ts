@@ -32,8 +32,11 @@ class ThorHttpProvider {
     }
 
     const Interceptor = ThorAPIMapping[payload.method];
-    const ret = Interceptor.formatXHR(payload, this.host, this.timeout);
-    const request = ret.Request;
+    const preparation = Interceptor.prepare(payload);
+
+    const request = new XHR2();
+    request.timeout = this.timeout;
+    request.open(preparation.Method, this.host + preparation.URL, true);
 
     request.onreadystatechange = () => {
       if (request.readyState === 4 && request.timeout !== 1) {
@@ -47,7 +50,7 @@ class ThorHttpProvider {
         }
 
         debug("result: %O", result);
-        result = ret.ResFormatter(result);
+        result = preparation.ResFormatter(result);
 
         // tricks for compatible with original web3 instance
         // non-objects or non-arrays does't need isThorified property since thorify just overwritten 3 formatters
@@ -75,7 +78,7 @@ class ThorHttpProvider {
     };
 
     try {
-      request.send(ret.Method === "POST" ? JSON.stringify(ret.Body) : null);
+      request.send(preparation.Method === "POST" ? JSON.stringify(preparation.Body) : null);
     } catch (error) {
       callback(`[thorify-provider-http] CONNECTION ERROR: Couldn't connect to node '${this.host}': ${JSON.stringify(error, null, 2)}`, null);
     }

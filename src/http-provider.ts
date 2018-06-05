@@ -4,6 +4,7 @@
 
 // workaround to use http provider in different envs
 const XHR2 = require("xhr2");
+const web3Utils = require("web3-utils");
 const debug = require("debug")("thor:http-provider");
 import { ThorAPIMapping} from "./thor-interceptor";
 
@@ -49,10 +50,16 @@ class ThorHttpProvider {
         result = ret.ResFormatter(result);
 
         // tricks for compatible with original web3 instance
-        // non-objects does't need isThorified property since thorify just overwritten 3 formatters
+        // non-objects or non-arrays does't need isThorified property since thorify just overwritten 3 formatters
         // which all accept object as input
-        if (result && typeof result === "object") {
-          Object.defineProperty(ret, "isThorified", { get: () => true, set: () => null });
+        if (web3Utils._.isObject(result)) {
+          Object.defineProperty(result, "isThorified", { get: () => true});
+        }
+        if (web3Utils._.isArray(result)) {
+          result = result.map((item: any) => {
+            Object.defineProperty(item, "isThorified", { get: () => true});
+            return item;
+          });
         }
 
         callback(error, {

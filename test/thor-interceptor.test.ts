@@ -64,6 +64,7 @@ describe("interceptor", () => {
     expect(preparation.URL).to.be.equal("/transactions");
     expect(preparation.Method).to.be.equal("POST");
     expect(preparation.Body).to.have.property("raw", "0x07855b46a623a8ecabac76ed697aa4e13631e3b6718c8a0d342860c13c30d2fc");
+    expect(preparation.ResFormatter(null)).to.be.equal(null);
     expect(preparation.ResFormatter({ id: "0xdead" })).to.be.equal("0xdead");
   });
 
@@ -97,6 +98,112 @@ describe("interceptor", () => {
       reverted: true,
       outputs: [{contractAddress: "contractAddress"}],
     })).to.have.property("status", "0x0");
+  });
+
+  it("eth_call", () => {
+    let preparation = ThorAPIMapping.eth_call.prepare({
+      params: [{
+        to: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+        from: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+        gas: 100,
+        value: "0x64",
+        gasPrice: "0x64",
+      }]});
+    expect(preparation.URL).to.be.equal("/accounts/0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed?revision=best");
+    expect(preparation.Method).to.be.equal("POST");
+    expect(preparation.Body).to.have.property("value", "0x64");
+    expect(preparation.Body).to.have.property("gas", 100);
+    expect(preparation.Body).to.have.property("gasPrice", "0x64");
+    expect(preparation.Body).to.have.property("caller", "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed");
+    expect(preparation.ResFormatter(null)).to.be.equal(null);
+    expect(preparation.ResFormatter({ reverted: true })).to.be.equal(null);
+    expect(preparation.ResFormatter({ data: "data" })).to.be.equal("data");
+    preparation = ThorAPIMapping.eth_call.prepare({
+      params: [{
+        to: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+        from: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+        gas: "0x64",
+        value: "0x64",
+        gasPrice: "0x64",
+      }],
+    });
+    expect(preparation.Body).to.have.property("gas", 100);
+    preparation = ThorAPIMapping.eth_call.prepare({
+      params: [{
+        from: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+      }],
+    });
+    expect(preparation.URL).to.be.equal("/accounts?revision=best");
+  });
+
+  it("eth_estimateGas", () => {
+    let preparation = ThorAPIMapping.eth_estimateGas.prepare({
+      params: [{
+        to: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+        from: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+        value: "0x64",
+        gasPrice: "0x64",
+      }],
+    });
+    expect(preparation.URL).to.be.equal("/accounts/0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed?revision=best");
+    expect(preparation.Method).to.be.equal("POST");
+    expect(preparation.Body).to.have.property("value", "0x64");
+    expect(preparation.Body).to.have.property("gasPrice", "0x64");
+    expect(preparation.Body).to.have.property("caller", "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed");
+    expect(preparation.ResFormatter(null)).to.be.equal(null);
+    expect(preparation.ResFormatter({ reverted: true })).to.be.equal(null);
+    expect(preparation.ResFormatter({ gasUsed: 0 })).to.be.equal(21000);
+    expect(preparation.ResFormatter({ gasUsed: 10 })).to.be.equal(23111);
+    preparation = ThorAPIMapping.eth_estimateGas.prepare({
+      params: [{
+        from: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+      }],
+    });
+    expect(preparation.URL).to.be.equal("/accounts?revision=best");
+  });
+
+  it("eth_getLogs", () => {
+    let preparation = ThorAPIMapping.eth_getLogs.prepare({
+      params: [{
+        address: "0x0000000000000000000000417574686f72697479",
+        order: "ASC",
+    }] });
+    expect(preparation.URL).to.be.equal("/events?address=0x0000000000000000000000417574686f72697479&order=ASC");
+    expect(preparation.Method).to.be.equal("POST");
+    expect(preparation.ResFormatter(null)).to.be.equal(null);
+    const ret = preparation.ResFormatter([{
+      block: { number: 100, id: "block-id" },
+      tx: { id: "tx-id" },
+    }]);
+    expect(ret).to.have.lengthOf(1);
+    expect(ret[0]).to.have.property("blockNumber", 100);
+    expect(ret[0]).to.have.property("blockHash", "block-id");
+    expect(ret[0]).to.have.property("transactionHash", "tx-id");
+    preparation = ThorAPIMapping.eth_getLogs.prepare({
+      params: [{
+        address: "0x0000000000000000000000417574686f72697479",
+        order: "DESC",
+      }],
+    });
+    expect(preparation.URL).to.be.equal("/events?address=0x0000000000000000000000417574686f72697479&order=DESC");
+  });
+
+  it("eth_getBlockRef", () => {
+    const preparation = ThorAPIMapping.eth_getBlockRef.prepare({});
+    expect(preparation.URL).to.be.equal("/blocks/best");
+    expect(preparation.Method).to.be.equal("GET");
+    expect(preparation.ResFormatter(null)).to.be.equal(null);
+    expect(preparation.ResFormatter({})).to.be.equal(null);
+    expect(preparation.ResFormatter({ id: "0x0002d18ea07596b0f63402763de425be7c6939b00b712c9d576b41bc2ef60256" })).to.be.equal("0x0002d18ea07596b0");
+  });
+
+  it("eth_getChainTag", () => {
+    const preparation = ThorAPIMapping.eth_getChainTag.prepare({});
+    expect(preparation.URL).to.be.equal("/blocks/0");
+    expect(preparation.Method).to.be.equal("GET");
+    expect(preparation.ResFormatter(null)).to.be.equal(null);
+    expect(preparation.ResFormatter({})).to.be.equal(null);
+    expect(preparation.ResFormatter({ id: "0x0002d18ea07596b0f63402763de425be7c6939b00b712c9d576b41bc2ef60256" })).to.be.equal("0x56");
   });
 
 });

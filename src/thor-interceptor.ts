@@ -142,8 +142,9 @@ ThorAPIMapping = {
     prepare(payload: any): InterceptorRet {
       let extraURI = "";
       if (payload.params[0].to) {
-        extraURI = "/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]);
+        extraURI = "/" + payload.params[0].to;
       }
+      extraURI += "?revision=" + utils.formatBlockNumber(payload.params[1]);
 
       const body: any = {
         value: payload.params[0].value || "",
@@ -183,8 +184,9 @@ ThorAPIMapping = {
     prepare(payload: any): InterceptorRet {
       let extraURI = "";
       if (payload.params[0].to) {
-        extraURI = "/" + payload.params[0].to + "?revision=" + utils.formatBlockNumber(payload.params[1]);
+        extraURI = "/" + payload.params[0].to;
       }
+      extraURI += "?revision=" + utils.formatBlockNumber(payload.params[1]);
 
       const body: any = {
         value: payload.params[0].value || "0",
@@ -206,7 +208,7 @@ ThorAPIMapping = {
             if (v.reverted) {
               return null;
             }
-            // ignore the overflow since block gas limit is uint64 and java script's max number is 2^53
+            // ignore the overflow since block gas limit is uint64 and javascript's max number is 2^53
             const intrinsicGas = utils.calcIntrinsicGas(Object.assign(body, { to: payload.params[0].to}));
             const txGas = intrinsicGas + v.gasUsed;
             if (v.gasUsed === 0 && ( body.data === "0x" || !body.data)) {

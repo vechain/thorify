@@ -37,9 +37,6 @@ const extendFormatters = function(web3: any) {
   web3.extend.formatters.outputTransactionReceiptFormatter = function(receipt: any) {
     if (receipt && receipt.isThorified) {
       debug("outputTransactionReceiptFormatter");
-      if (typeof receipt !== "object") {
-        throw new Error("Received receipt is invalid: " + receipt);
-      }
 
       if (receipt.hasOwnProperty("transactionIndex")) {
         delete receipt.transactionIndex;

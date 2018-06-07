@@ -1,6 +1,6 @@
 {
   "name": "thorify",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "description": "A web3 adaptor for VeChain Thor RESTful HTTP API.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

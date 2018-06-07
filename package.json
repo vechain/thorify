@@ -9,7 +9,8 @@
     "lint": "tslint  --fix -p .",
     "prepare": "rm -rf dist/; npm run build",
     "test": "NODE_ENV=test mocha --require ts-node/register --timeout 20000 --recursive  './**/*.test.ts'",
-    "cover": "NODE_ENV=test nyc npm t"
+    "cover": "NODE_ENV=test nyc npm t",
+    "coverall": "NODE_ENV=test nyc npm t && nyc report --reporter=text-lcov | coveralls"
   },
   "nyc": {
     "include": [
@@ -40,6 +41,7 @@
     "@types/mocha": "^5.2.0",
     "@types/node": "^10.0.3",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.1",
     "mocha": "^5.1.1",
     "nyc": "^11.8.0",
     "repl-x": "^0.1.4",

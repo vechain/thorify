@@ -21,7 +21,7 @@ export const formatBlockNumber = function(blockNumber: StringOrNumber): StringOr
       return "best";
     } else {
       const num = utils.toInteger(blockNumber);
-      return num ? num : "best";
+      return num || num === 0 ? num : "best";
     }
   } else {
     return "best";

@@ -75,6 +75,14 @@ describe("utils:formatBlockNumber", () => {
     expect(utils.formatBlockNumber(100)).to.be.equal(100);
   });
 
+  it("with number 0", () => {
+    expect(utils.formatBlockNumber(0)).to.be.equal(0);
+  });
+
+  it("with string 0x0", () => {
+    expect(utils.formatBlockNumber("0x0")).to.be.equal(0);
+  });
+
   it("with valid string", () => {
     expect(utils.formatBlockNumber("earliest")).to.be.equal(0);
     expect(utils.formatBlockNumber("latest")).to.be.equal("best");

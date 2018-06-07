@@ -1,5 +1,9 @@
 ## Thorify
 
+[![NPM Version](https://badge.fury.io/js/thorify.svg)](https://www.npmjs.com/package/thorify)
+[![Build Status](https://travis-ci.org/vechain/thorify.svg)](https://travis-ci.org/vechain/thorify)
+[![Coverage Status](https://coveralls.io/repos/github/vechain/thorify/badge.svg?branch=master)](https://coveralls.io/github/vechain/thorify?branch=master)
+
 A web3 adaptor for VeChain Thor RESTful HTTP API.
 
 ## Install

@@ -211,7 +211,7 @@ ThorAPIMapping = {
             // ignore the overflow since block gas limit is uint64 and javascript's max number is 2^53
             const intrinsicGas = utils.calcIntrinsicGas(Object.assign(body, { to: payload.params[0].to}));
             const txGas = intrinsicGas + v.gasUsed;
-            if (v.gasUsed === 0 && ( body.data === "0x" || !body.data)) {
+            if (v.gasUsed === 0 && ( body.data === "0x" )) {
               return intrinsicGas;
             } else {
               return Math.floor(txGas * 1.1); // increase gas with 10% for safe since it's estimated from current block state, final state for the transaction is not determined for now
@@ -282,6 +282,16 @@ ThorAPIMapping = {
             return null;
           }
         },
+      };
+    },
+  },
+  thor_test: {
+    prepare(payload: any): InterceptorRet {
+      return {
+        Method: payload.testMethod && payload.testMethod === "POST" ? "POST" : "GET",
+        Body: payload.testBody || {} ,
+        URL: "/thor/test",
+        ResFormatter: () => { if (payload.testResult) { return payload.testResult; } else { return {}; } },
       };
     },
   },

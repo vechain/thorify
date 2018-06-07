@@ -18,6 +18,7 @@ const extendAccounts = function(web3: any): any {
     const thorTx = utils.ethToThorTx(tx);
 
     const sign = async function(tx: IThorTransaction) {
+      debug("transformed tx: %O", tx);
       if (!tx.chainTag) {
         const chainTag = await web3.eth.getChainTag();
         if (chainTag) {
@@ -38,7 +39,7 @@ const extendAccounts = function(web3: any): any {
         const gas = await web3.eth.estimateGas({
           from: EthLib.account.fromPrivate(utils.toPrefixedHex(privateKey)).address,
           to: tx.clauses.length ? tx.clauses[0].to : "",
-          value: tx.clauses.length ? tx.clauses[0].value : 0,
+          value: tx.clauses.length ? tx.clauses[0].value  : 0,
           data: tx.clauses.length ? tx.clauses[0].data : "0x",
         });
         if (gas) {
@@ -50,7 +51,6 @@ const extendAccounts = function(web3: any): any {
       if (!tx.nonce) {
         tx.nonce = utils.newNonce();
       }
-      debug(tx);
       const thorTx = Tx({
         ChainTag: tx.chainTag,
         BlockRef: tx.blockRef,

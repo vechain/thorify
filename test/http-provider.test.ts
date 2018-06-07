@@ -1,0 +1,159 @@
+"use strict";
+/* tslint:disable:max-line-length */
+import { expect } from "chai";
+import rewiremock from "rewiremock";
+
+// inject xhr2 with fake xhr2 to perform test
+rewiremock("xhr2").with(require("./test-utils/fake-xhr2"));
+rewiremock.enable();
+import { ThorHttpProvider } from "../src/http-provider";
+
+describe("http-provider", () => {
+
+  it("should throw error if called without empty host", () => {
+    expect(() => { const provider = new ThorHttpProvider(""); return provider; }).to.throw(Error);
+  });
+
+  it("not supported method should throw error", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "not supported method",
+    }, (err) => {
+      try {
+        expect(err).to.be.an("error");
+        expect(() => { throw err; }).to.throw("Method not supported!");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("normal request should not throw error", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+    }, (err, ret) => {
+      try {
+        expect(err).to.not.be.an("error");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("normal request should return result", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+    }, (err, ret) => {
+      try {
+        expect(ret).to.have.property("result");
+        expect(ret.result).to.have.property("isThorified", true);
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("invalid response text return throw error", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testBody: {
+        type: "invalid response text",
+      },
+    }, (err) => {
+      try {
+        expect(err).to.be.an("error");
+        expect(() => { throw err; }).to.throw("[thorify-provider-http] Invalid JSON RPC response from host provider");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("isThorified with object", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testResult: {
+        test: true,
+      },
+    }, (err, ret) => {
+      try {
+        expect(ret).to.have.property("result");
+        expect(ret.result).to.have.property("isThorified", true);
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("isThorified with array", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testResult: [{
+        test: true,
+      }],
+    }, (err, ret) => {
+      try {
+        expect(ret).to.have.property("result");
+        expect(ret.result[0]).to.have.property("isThorified", true);
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("timeout", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testBody: {
+        type: "timeout",
+      },
+    }, (err) => {
+      try {
+        expect(err).to.be.an("Error");
+        expect(() => { throw err; }).to.throw("[thorify-provider-http] CONNECTION TIMEOUT:");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("timeout", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testBody: {
+        type: "connect error",
+      },
+    }, (err) => {
+      try {
+        expect(err).to.be.an("Error");
+        expect(() => { throw err; }).to.throw("[thorify-provider-http] CONNECTION ERROR: Couldn't connect to node");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  after(() => { rewiremock.disable(); });
+
+});

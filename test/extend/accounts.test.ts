@@ -13,10 +13,8 @@ describe("extend:accounts", () => {
 
   it("normal sign Transaction", async () => {
     const ret = await web3.eth.accounts.signTransaction({
-      clauses: [{
-        to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
-        value: "0x3e8",
-      }],
+      to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
+      value: "0x3e8",
       expiration: 720,
       gasPriceCoef: 128,
       chainTag: "0x89",
@@ -34,10 +32,8 @@ describe("extend:accounts", () => {
     ThorAPIMapping.eth_estimateGas = { ret: 53000 };
 
     const ret = await web3.eth.accounts.signTransaction({
-      clauses: [{
-        to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
-        value: "0x3e8",
-      }],
+      to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
+      value: "0x3e8",
     }, "0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65");
     expect(ret).to.have.property("rawTransaction");
     expect(ret).to.have.property("messageHash");
@@ -45,10 +41,8 @@ describe("extend:accounts", () => {
 
   it("sign Transaction with callback", (done) => {
     web3.eth.accounts.signTransaction({
-      clauses: [{
-        to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
-        value: "0x3e8",
-      }],
+      to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
+      value: "0x3e8",
       expiration: 720,
       gasPriceCoef: 128,
       chainTag: "0x89",
@@ -70,10 +64,8 @@ describe("extend:accounts", () => {
     ThorAPIMapping.eth_getChainTag = { ret: null };
 
     web3.eth.accounts.signTransaction({
-      clauses: [{
-        to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
-        value: "0x3e8",
-      }],
+      to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
+      value: "0x3e8",
       expiration: 720,
       gasPriceCoef: 128,
       blockRef: "0x000000352985d99d",
@@ -93,10 +85,8 @@ describe("extend:accounts", () => {
     ThorAPIMapping.eth_getChainTag = { ret: null };
 
     web3.eth.accounts.signTransaction({
-      clauses: [{
-        to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
-        value: "0x3e8",
-      }],
+      to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
+      value: "0x3e8",
       expiration: 720,
       gasPriceCoef: 128,
       blockRef: "0x000000352985d99d",
@@ -116,10 +106,8 @@ describe("extend:accounts", () => {
     ThorAPIMapping.eth_getBlockRef = { ret: null };
 
     web3.eth.accounts.signTransaction({
-      clauses: [{
-        to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
-        value: "0x3e8",
-      }],
+      to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
+      value: "0x3e8",
       expiration: 720,
       gasPriceCoef: 128,
       chainTag: "0x89",
@@ -139,10 +127,8 @@ describe("extend:accounts", () => {
     ThorAPIMapping.eth_estimateGas = { ret: null };
 
     web3.eth.accounts.signTransaction({
-      clauses: [{
-        to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
-        value: "0x3e8",
-      }],
+      to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
+      value: "0x3e8",
       expiration: 720,
       gasPriceCoef: 128,
       chainTag: "0x89",
@@ -159,12 +145,32 @@ describe("extend:accounts", () => {
 
   });
 
+  it("sign Transaction without gas and 0-length clause should not throw error", async () => {
+    ThorAPIMapping.eth_estimateGas = { ret: 21000 };
+    await  web3.eth.accounts.signTransaction({
+      expiration: 720,
+      gasPriceCoef: 128,
+      chainTag: "0x89",
+      blockRef: "0x000000352985d99d",
+      nonce: 1198344495087,
+    }, "0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65");
+
+    await web3.eth.accounts.signTransaction({
+      to: null,
+      value: null,
+      data: null,
+      expiration: 720,
+      gasPriceCoef: 128,
+      chainTag: "0x89",
+      blockRef: "0x000000352985d99d",
+      nonce: 1198344495087,
+    }, "0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65");
+  });
+
   it("sign Transaction without nonce won\'t throw error", async () => {
     await web3.eth.accounts.signTransaction({
-      clauses: [{
-        to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
-        value: "0x3e8",
-      }],
+      to: "0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602",
+      value: "0x3e8",
       expiration: 720,
       gasPriceCoef: 128,
       chainTag: "0x89",
@@ -180,6 +186,11 @@ describe("extend:accounts", () => {
 
   it("hash message", async () => {
     const message = "test message";
+    expect(web3.eth.accounts.hashMessage(message)).to.be.equal("0xf1d201623965f4a21390705e83ba1fb2c33600a529bd2fab2373c2558bf4cb5e");
+  });
+
+  it("hash message with hexadecimal string", async () => {
+    const message = "0x74657374206d657373616765";
     expect(web3.eth.accounts.hashMessage(message)).to.be.equal("0xf1d201623965f4a21390705e83ba1fb2c33600a529bd2fab2373c2558bf4cb5e");
   });
 

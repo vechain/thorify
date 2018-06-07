@@ -13,8 +13,7 @@ class ThorHttpProvider {
   private timeout: number;
 
   constructor(host: string, timeout = 0) {
-    if (!(this instanceof ThorHttpProvider)) { throw new Error('[thorify-provider-http] the ThorHttpProvider instance requires the "new" flag in order to function normally (e.g. `const thor = new Web3(new ThorHttpProvider());`).'); }
-    if (typeof host !== "string") { throw new Error('[thorify-provider-http] the ThorHttpProvider instance requires that the host be specified (e.g. `new HttpProvider("http://localhost:8545")` or via service like infura `new HttpProvider("http://ropsten.infura.io")`)'); }
+    if (!host) { throw new Error('[thorify-provider-http] the ThorHttpProvider instance requires that the host be specified (e.g. `new HttpProvider("http://localhost:8545")` or via service like infura `new HttpProvider("http://ropsten.infura.io")`)'); }
 
     this.host = host;
     this.timeout = timeout;
@@ -46,7 +45,12 @@ class ThorHttpProvider {
         try {
           result = JSON.parse(result);
         } catch (e) {
-          error = invalidResponseError(request.responseText, this.host);
+          error = invalidResponseError(e);
+          return callback(error, {
+            id: payload.id || 0,
+            jsonrpc: payload.jsonrpc || "2.0",
+            result: null,
+          });
         }
 
         debug("result: %O", result);
@@ -64,7 +68,6 @@ class ThorHttpProvider {
             return item;
           });
         }
-
         callback(error, {
           id: payload.id || 0,
           jsonrpc: payload.jsonrpc || "2.0",
@@ -74,13 +77,13 @@ class ThorHttpProvider {
     };
 
     request.ontimeout = () => {
-      callback(`[thorify-provider-http] CONNECTION TIMEOUT: http request timeout after ${this.timeout} ms. (i.e. your connect has timed out for whatever reason, check your provider).`, null);
+      callback(new Error(`[thorify-provider-http] CONNECTION TIMEOUT: http request timeout after ${this.timeout} ms. (i.e. your connect has timed out for whatever reason, check your provider).`), null);
     };
 
     try {
       request.send(preparation.Method === "POST" ? JSON.stringify(preparation.Body) : null);
     } catch (error) {
-      callback(`[thorify-provider-http] CONNECTION ERROR: Couldn't connect to node '${this.host}': ${JSON.stringify(error, null, 2)}`, null);
+      callback(new Error(`[thorify-provider-http] CONNECTION ERROR: Couldn't connect to node '${this.host}': ${JSON.stringify(error, null, 2)}`), null);
     }
   }
 }
@@ -88,8 +91,8 @@ class ThorHttpProvider {
 /**
  * InvalidResponseError helper for invalid errors.
  */
-function invalidResponseError(result: any, host: any) {
-  const message = !!result && !!result.error && !!result.error.message ? `[thorify-provider-http] ${result.error.message}` : `[thorify-provider-http] Invalid JSON RPC response from host provider ${host}: ${JSON.stringify(result, null, 2)}`;
+function invalidResponseError(error: any) {
+  const message = `[thorify-provider-http] Invalid JSON RPC response from host provider :${error.message}`;
   return new Error(message);
 }
 

@@ -215,7 +215,7 @@ export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
     }
   }
   if (ethTx.dependsOn) {
-    if (web3Utils.isHex(ethTx.dependsOn)) {
+    if (utils.isHex(ethTx.dependsOn)) {
       thorTx.dependsOn = ethTx.dependsOn;
     }
   }
@@ -235,7 +235,7 @@ export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
   }
 
   if (ethTx.data) {
-    if (!web3Utils.isHex(ethTx.data)) {
+    if (!utils.isHex(ethTx.data)) {
       throw new Error("The data field must be HEX encoded data.");
     } else {
       clause.data = ethTx.data;

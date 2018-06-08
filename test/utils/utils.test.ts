@@ -33,6 +33,10 @@ describe("utils:utilities", () => {
     expect(utils.isHex("0001")).to.be.true;
   });
 
+  it("isHex", () => {
+    expect(utils.isHex("0x")).to.be.false;
+  });
+
   it("newNonce", () => {
     expect(utils.newNonce()).is.a("number");
   });

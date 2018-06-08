@@ -76,6 +76,23 @@ const thorTxWithNullTo = {
   },
 };
 
+const thorTxWithUnsafeFields = {
+  id: "0x6f73c93a2f4ea12e3e9bf9db9bc7b59ada3b5d97637d66b9aa05d28309d80057",
+  size: 1059,
+  chainTag: 207,
+  blockRef: "0x0002511e9f2943a5",
+  expiration: 720,
+  gasPriceCoef: 0,
+  gas: 500000,
+  dependsOn: null,
+  nonce: "0x64",
+  block: {
+    id: "0x0002511f9dafcc645588beef15e2d8d1ed6b0a65800463bccbb87d87c9126c2e",
+    number: 151839,
+    timestamp: 1527922040,
+  },
+};
+
 const ethTxReceipt = {
   blockHash: "0xf7e2fb83191da98ab0dbc59596113058ed5d393634c87b5efac7f609bf010538",
   blockNumber: "0x56e87f",
@@ -146,9 +163,30 @@ const thorTxReceipt = {
   ],
 };
 
+const thorTxReceiptWithUnsafeFields = {
+  gasUsed: 55365,
+  paid: "0x7aef5bddbe52000",
+  reward: "0x24e1685c1f7f000",
+  reverted: false,
+  block: {
+    id: "0x0000309f8c2bf8f43ec1c396994c2f6e5f0c352ac3e1888d62372c5bb4c09c23",
+    number: 12447,
+    timestamp: 1526524470,
+  },
+  outputs: [
+    {
+      contractAddress: null,
+      events: {},
+      transfers: [],
+    },
+  ],
+};
+
 Object.defineProperty(thorTx, "isThorified", { get: () => true, set: () => null });
 Object.defineProperty(thorTxWithNullTo, "isThorified", { get: () => true, set: () => null });
+Object.defineProperty(thorTxWithUnsafeFields, "isThorified", { get: () => true, set: () => null });
 Object.defineProperty(thorTxReceipt, "isThorified", { get: () => true, set: () => null });
+Object.defineProperty(thorTxReceiptWithUnsafeFields, "isThorified", { get: () => true, set: () => null });
 
 describe("web3 formatters", () => {
 
@@ -162,9 +200,14 @@ describe("web3 formatters", () => {
     expect(tx).to.have.all.keys("block", "blockRef", "chainTag", "clauses", "dependsOn", "expiration", "gas", "gasPriceCoef", "id", "nonce", "origin", "size");
   });
 
-  it("Format thor with null to transaction", () => {
+  it("Format thor transaction with null to", () => {
     const tx = web3.extend.formatters.outputTransactionFormatter(thorTxWithNullTo);
     expect(tx).to.have.all.keys("block", "blockRef", "chainTag", "clauses", "dependsOn", "expiration", "gas", "gasPriceCoef", "id", "nonce", "origin", "size");
+  });
+
+  it("Format thor transaction with unsafe input", () => {
+    const tx = web3.extend.formatters.outputTransactionFormatter(thorTxWithUnsafeFields);
+    expect(tx).to.have.all.keys("block", "blockRef", "chainTag", "dependsOn", "expiration", "gas", "gasPriceCoef", "id", "nonce", "size");
   });
 
   it("Format eth transaction receipt", () => {
@@ -175,6 +218,11 @@ describe("web3 formatters", () => {
   it("Format thor transaction receipt", () => {
     const tx = web3.extend.formatters.outputTransactionReceiptFormatter(thorTxReceipt);
     expect(tx).to.have.all.keys("block", "gasPayer", "gasUsed", "outputs", "paid", "reverted", "reward", "tx");
+  });
+
+  it("Format thor transaction receipt with unsafe input", () => {
+    const tx = web3.extend.formatters.outputTransactionReceiptFormatter(thorTxReceiptWithUnsafeFields);
+    expect(tx).to.have.all.keys("block", "gasUsed", "outputs", "paid", "reverted", "reward");
   });
 
   it("Format thor transaction receipt with eth receipt properties", () => {
@@ -195,7 +243,18 @@ describe("web3 formatters", () => {
     Object.defineProperty(log, "transactionIndex", { value: 1, configurable: true });
     Object.defineProperty(log, "logIndex", { value: 1, configurable: true });
     Object.defineProperty(log, "id", { value: 1, configurable: true });
-    const ret = web3.extend.formatters.outputLogFormatter(log);
+    let ret = web3.extend.formatters.outputLogFormatter(log);
     expect(ret).to.have.all.keys("address", "data", "topics");
+    const logWithUnsafeFields = {
+      topics: [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        "0x000000000000000000000000e59d475abe695c7f67a8a2321f33a856b0b4c71d",
+        "0x000000000000000000000000bedc3de64693b96005c801423f5127bc4dd4c606",
+      ],
+      data: "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+    };
+    Object.defineProperty(logWithUnsafeFields, "isThorified", { get: () => true });
+    ret = web3.extend.formatters.outputLogFormatter(logWithUnsafeFields);
+    expect(ret).to.have.all.keys("data", "topics");
   });
 });

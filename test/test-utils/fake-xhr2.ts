@@ -3,6 +3,7 @@ import { expect } from "chai";
 const FakeXHR2 = function() {
   this.responseText = undefined;
   this.readyState = 4;
+  this.status = 200;
   this.onreadystatechange = null;
   this.async = true;
   this.headers = {
@@ -29,6 +30,10 @@ FakeXHR2.prototype.send = function(payload) {
     return;
   } else if (ret && ret.type === "connect error") {
     throw new Error();
+  } else if (ret && ret.type === "invalid status code") {
+    this.status = 400;
+  } else if (ret && ret.type === "wrong ready state") {
+    this.readyState = 3;
   } else {
     this.responseText = payload;
   }

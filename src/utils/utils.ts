@@ -50,7 +50,7 @@ export const sanitizeHex = function(hexStr: string): string {
 };
 
 export const isHex = function(hex: string): boolean {
-  return ((typeof hex === "string") && /^(-0x|0x)?[0-9a-f]*$/i.test(hex));
+  return !!hex && ((typeof hex === "string") && /^(-0x|0x)?[0-9a-f]+$/i.test(hex));
 };
 
 export const newNonce = function(): number {

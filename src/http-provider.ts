@@ -38,7 +38,14 @@ class ThorHttpProvider {
     request.open(preparation.Method, this.host + preparation.URL, true);
 
     request.onreadystatechange = () => {
-      if (request.readyState === 4 && request.timeout !== 1) {
+      if (request.readyState === 4) {
+        if (request.status !== 200) {
+          return callback(new Error("[thorify-provider-http] Invalid response code from provider: " + request.status), {
+            id: payload.id || 0,
+            jsonrpc: payload.jsonrpc || "2.0",
+            result: null,
+          });
+        }
         let result = request.responseText;
         let error = null;
 
@@ -59,7 +66,7 @@ class ThorHttpProvider {
         // tricks for compatible with original web3 instance
         // non-objects or non-arrays does't need isThorified property since thorify just overwritten 3 formatters
         // which all accept object as input
-        if (web3Utils._.isObject(result)) {
+        if (web3Utils._.isObject(result) && !web3Utils._.isArray(result)) {
           Object.defineProperty(result, "isThorified", { get: () => true});
         }
         if (web3Utils._.isArray(result)) {
@@ -92,7 +99,7 @@ class ThorHttpProvider {
  * InvalidResponseError helper for invalid errors.
  */
 function invalidResponseError(error: any) {
-  const message = `[thorify-provider-http] Invalid JSON RPC response from host provider :${error.message}`;
+  const message = `[thorify-provider-http] Invalid response from host provider :${error.message}`;
   return new Error(message);
 }
 

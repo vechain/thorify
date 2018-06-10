@@ -70,7 +70,7 @@ describe("http-provider", () => {
     }, (err) => {
       try {
         expect(err).to.be.an("error");
-        expect(() => { throw err; }).to.throw("[thorify-provider-http] Invalid JSON RPC response from host provider");
+        expect(() => { throw err; }).to.throw("[thorify-provider-http] Invalid response from host provider");
       } catch (e) {
         return done(e);
       }
@@ -135,7 +135,7 @@ describe("http-provider", () => {
     });
   });
 
-  it("timeout", (done) => {
+  it("connect error", (done) => {
     const provider = new ThorHttpProvider("host");
     provider.sendAsync({
       method: "thor_test",
@@ -152,6 +152,39 @@ describe("http-provider", () => {
       }
       done();
     });
+  });
+
+  it("invalid status code", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testBody: {
+        type: "invalid status code",
+      },
+    }, (err) => {
+      try {
+        expect(err).to.be.an("Error");
+        expect(() => { throw err; }).to.throw("[thorify-provider-http] Invalid response code from provider:");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("wrong ready state should not callback", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testBody: {
+        type: "wrong ready state",
+      },
+    }, () => {
+      done(new Error());
+    });
+    setTimeout(done, 50);
   });
 
   after(() => { rewiremock.disable(); });

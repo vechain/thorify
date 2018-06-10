@@ -81,7 +81,7 @@ describe("interceptor", () => {
     expect(preparation.URL).to.be.equal("/transactions/0xa5b3d1dbafe79a41dce8ec33a83e68cf506cdcd1df7776c3afd8fc67a76cecf2/receipt");
     expect(preparation.Method).to.be.equal("GET");
     expect(preparation.ResFormatter(null)).to.be.equal(null);
-    const receipt = preparation.ResFormatter({
+    let receipt = preparation.ResFormatter({
       block: { id: "block-id", number: 100 },
       tx: { id: "tx-id" },
       reverted: false,
@@ -92,6 +92,13 @@ describe("interceptor", () => {
     expect(receipt).to.have.property("transactionHash", "tx-id");
     expect(receipt).to.have.property("status", "0x1");
     expect(receipt).to.have.property("contractAddress", "contractAddress");
+    receipt = preparation.ResFormatter({
+      block: { id: "block-id", number: 100 },
+      tx: { id: "tx-id" },
+      reverted: true,
+      outputs: [{ contractAddress: "contractAddress" }, { contractAddress: "contractAddress" }],
+    });
+    expect(receipt).to.have.not.property("contractAddress");
     expect(preparation.ResFormatter({
       block: {id: "block-id", number: 100},
       tx: {id: "tx-id"},
@@ -121,13 +128,13 @@ describe("interceptor", () => {
     preparation = ThorAPIMapping.eth_call.prepare({
       params: [{
         to: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
-        from: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
         gas: "0x64",
         value: "0x64",
         gasPrice: "0x64",
       }],
     });
     expect(preparation.Body).to.have.property("gas", 100);
+    expect(preparation.Body).to.not.have.property("caller");
     preparation = ThorAPIMapping.eth_call.prepare({
       params: [{
         from: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
@@ -160,6 +167,14 @@ describe("interceptor", () => {
       }],
     });
     expect(preparation.URL).to.be.equal("/accounts?revision=best");
+    preparation = ThorAPIMapping.eth_estimateGas.prepare({
+      params: [{
+        to: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
+        value: "0x64",
+        gasPrice: "0x64",
+      }],
+    });
+    expect(preparation.Body).to.not.have.property("caller");
   });
 
   it("eth_getLogs", () => {
@@ -186,6 +201,11 @@ describe("interceptor", () => {
       }],
     });
     expect(preparation.URL).to.be.equal("/events?address=0x0000000000000000000000417574686f72697479&order=DESC");
+    preparation = ThorAPIMapping.eth_getLogs.prepare({
+      params: [{
+      }],
+    });
+    expect(preparation.URL).to.be.equal("/events");
   });
 
   it("eth_getBlockRef", () => {

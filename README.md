@@ -374,10 +374,10 @@ eth.sendSignedTransaction(signedTransaction).then(result => {
 
 `PromiseEvent`(same as web3): A promise combined event emitter. Will be resolved when the transaction receipt is available. Additionally the following events are available:
 
-`transactionHash` returns `String`: Is fired right after the transaction is send and a transaction hash is available.
-`receipt` returns `TransactionReceipt Object`: Is fired when the transaction receipt is available.
-`confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
-`error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
++ `transactionHash` returns `String`: Is fired right after the transaction is send and a transaction hash is available.
++ `receipt` returns `TransactionReceipt Object`: Is fired when the transaction receipt is available.
++ `confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
++ `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
 
 
 ### Send Transaction
@@ -428,10 +428,10 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
 
 `PromiseEvent`(same as web3): A promise combined event emitter. Will be resolved when the transaction receipt is available. Additionally the following events are available:
 
-`transactionHash` returns `String`: Is fired right after the transaction is send and a transaction hash is available.
-`receipt` returns `TransactionReceipt Object`: Is fired when the transaction receipt is available.
-`confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
-`error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
++ `transactionHash` returns `String`: Is fired right after the transaction is send and a transaction hash is available.
++ `receipt` returns `TransactionReceipt Object`: Is fired when the transaction receipt is available.
++ `confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
++ `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
 
 
 > This is not the only way for developers signing a transaction! <br>

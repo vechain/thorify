@@ -258,7 +258,7 @@ return `TransactionReceipt Object`:
 + `blockNumber`: same as `block.number`
 + `blockHash`: same as `block.id`
 + `transactionHash`: same as `tx.id`
-+ `statues`: `0x0` when `revert` is true and `0x1` when `revert` is false
++ `status`: `0x0` when `revert` is true and `0x1` when `revert` is false
 
 `BlockContext Object`
 
@@ -338,12 +338,12 @@ returns `Block Object`
 + `gasLimit` - `Uint64`: Gas limit of the block
 + `beneficiary` - `String`: address of account to receive block reward
 + `gasUsed` - `Uint64`: actual gas used of block
-+ `totalscore` - `Uint64`: score of the main chain
++ `totalScore` - `Uint64`: score of the main chain
 + `txRoot` - `String`: root hash of transaction in the block(bytes32)
 + `stateRoot` - `String`: root hash of state(bytes32)
 + `singer` - `String`:address of who signed the block(bytes20)
 + `isTrunk` - `Boolean`: whether the block is in trunck
-+ `Transactions` - `Array of String`: array of transaction IDs
++ `transactions` - `Array of String`: array of transaction IDs
 
 ### Get chainTag
 

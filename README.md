@@ -358,7 +358,7 @@ eth.getChainTag().then(result => {
 
 ###  Send raw transaction
 
-send a raw transaction to the network.
+Send a raw transaction to the network.
 
 ``` javascript
 eth.sendSignedTransaction(signedTransaction).then(result => {

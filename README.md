@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/vechain/thorify.svg)](https://travis-ci.org/vechain/thorify)
 [![Coverage Status](https://coveralls.io/repos/github/vechain/thorify/badge.svg?branch=master)](https://coveralls.io/github/vechain/thorify?branch=master)
 
-A web3 adaptor for VeChain Thor RESTful HTTP API.
+A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 
 ## Install
 
@@ -16,26 +16,28 @@ npm install --save thorify
 ## Usage
 
 ``` javascript
-import { thorify } from "thorify";      // ES6 style
-const Web3 = require("web3");
+// ES6 style
+import { thorify } from "thorify";
+const Web3 = require("web3");		// recommand use require() instead of import here
+
 const web3 = new Web3();
 thorify(web3, "http://localhost:8669");
 
-web3.eth.getBlock("latest").then(ret=>console.log(ret));
+web3.eth.getBlock("latest").then(res => console.log(res));
 // Best block info will be displayed
 ```
 
 If you would like to write code in ES5, check below for the initialization code. 
 
 ``` javascript
-const thorjs =require("thorify");
-const thorify = thorjs.thorify;
+// ES5 style
+const thorify = require("thorify").thorify;
 const Web3 = require("web3");
 
 const web3 = new Web3();
 thorify(web3, "http://localhost:8669");
 
-web3.eth.getBlock("latest").then(ret=>console.log(ret));
+web3.eth.getBlock("latest").then(res => console.log(res));
 // Best block info will be displayed
 ```
 

@@ -1,6 +1,5 @@
 "use strict";
 
-const Tx = require("thorjs-tx");
 const debug = require("debug")("thor:injector");
 import { Callback, IClause, StringOrNull, StringOrNumber } from "../types";
 import * as utils from "../utils";

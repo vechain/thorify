@@ -1,14 +1,13 @@
 "use strict";
 const debug = require("debug")("thor:injector");
 const web3Utils = require("web3-utils");
-import { IClause, IEthTransaction, IThorTransaction, StringOrNull, StringOrNumber } from "../types";
 import * as utils from "../utils";
 /* tslint:disable:max-line-length */
 
 const extendFormatters = function(web3: any) {
 
   const outputTransactionFormatter = web3.extend.formatters.outputTransactionFormatter;
-  web3.extend.formatters.outputTransactionFormatter = function(tx: IThorTransaction) {
+  web3.extend.formatters.outputTransactionFormatter = function(tx: any) {
     if (tx && tx.isThorified) {
       debug("outputTransactionFormatter");
       tx.gas = web3Utils.hexToNumber(tx.gas);

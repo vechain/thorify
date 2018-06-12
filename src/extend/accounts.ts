@@ -1,10 +1,10 @@
 "use strict";
 
 const web3Utils = require("web3-utils");
-const Tx = require("thorjs-tx");
 const debug = require("debug")("thor:injector");
 const EthLib = require("eth-lib/lib");
-import { Callback, IClause, IEthTransaction, IThorTransaction, StringOrNull, StringOrNumber } from "../types";
+import { Bytes32, Secp256k1 } from "thor-model-kit";
+import { Callback, IClause, IEthTransaction } from "../types";
 import * as utils from "../utils";
 
 const extendAccounts = function(web3: any): any {
@@ -15,10 +15,7 @@ const extendAccounts = function(web3: any): any {
   proto.signTransaction = function signTransaction(tx: IEthTransaction, privateKey: string, callback: Callback) {
     debug("tx to sign: %O", tx);
 
-    const thorTx = utils.ethToThorTx(tx);
-
-    const sign = async function(tx: IThorTransaction) {
-      debug("transformed tx: %O", tx);
+    const sign = async function(tx: IEthTransaction) {
       if (!tx.chainTag) {
         const chainTag = await web3.eth.getChainTag();
         if (chainTag) {
@@ -38,9 +35,9 @@ const extendAccounts = function(web3: any): any {
       if (!tx.gas) {
         const gas = await web3.eth.estimateGas({
           from: EthLib.account.fromPrivate(utils.toPrefixedHex(privateKey)).address,
-          to: tx.clauses.length ? tx.clauses[0].to : "",
-          value: tx.clauses.length ? tx.clauses[0].value  : 0,
-          data: tx.clauses.length ? tx.clauses[0].data : "0x",
+          to: tx.to ? tx.to : "",
+          value: tx.value ? tx.value  : 0,
+          data: utils.isHex(tx.data as string) ? tx.data : "0x",
         });
         if (gas) {
           tx.gas = gas;
@@ -51,21 +48,16 @@ const extendAccounts = function(web3: any): any {
       if (!tx.nonce) {
         tx.nonce = utils.newNonce();
       }
-      const thorTx = Tx({
-        ChainTag: tx.chainTag,
-        BlockRef: tx.blockRef,
-        Expiration: tx.expiration,
-        Clauses: tx.clauses,
-        GasPriceCoef: tx.gasPriceCoef,
-        Gas: tx.gas,
-        DependsOn: tx.dependsOn,
-        Nonce: tx.nonce,
-      });
-      thorTx.sign(utils.sanitizeHex(privateKey));
-      const rawTx = thorTx.serialize();
+
+      const thorTx = utils.ethToThorTx(tx);
+      const priKey = new Bytes32(Buffer.from(utils.sanitizeHex(privateKey), "hex"));
+
+      thorTx.signature = Secp256k1.sign(thorTx.signingHash, priKey);
+
+      const rawTx = thorTx.encode();
       const result = {
         rawTransaction: utils.toPrefixedHex(rawTx.toString("hex")),
-        messageHash: utils.toPrefixedHex(thorTx.signatureHash()),
+        messageHash: thorTx.signingHash.toString("0x"),
       };
 
       return result;
@@ -73,13 +65,13 @@ const extendAccounts = function(web3: any): any {
 
     // for supporting both callback and promise
     if (callback instanceof Function) {
-      sign(thorTx).then((ret) => {
+      sign(tx).then((ret) => {
         return callback(null, ret);
       }).catch((e) => {
         return callback(e);
       });
     } else {
-      return sign(thorTx);
+      return sign(tx);
     }
   };
 

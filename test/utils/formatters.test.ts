@@ -5,67 +5,79 @@ import { expect } from "chai";
 import * as utils from "../../src/utils";
 
 describe("utils:eth Tx to thor Tx", () => {
-  it("Empty Object", () => {
-    const ret = utils.ethToThorTx({});
-    expect(ret.clauses).to.have.lengthOf(0);
-    expect(ret.expiration).to.be.equal(utils.params.defaultExpiration);
-    expect(ret.gasPriceCoef).to.be.equal(utils.params.defaultGasPriceCoef);
+  it("input without blockRef should throw error!", () => {
+    expect(() => { utils.ethToThorTx({}); }).to.throw("input can\'t be null or undefined");
   });
 
   it("With valid properties", () => {
     const ret = utils.ethToThorTx({
-      chainTag: 0,
-      blockRef: 100,
-      expiration: "100",
+      chainTag: 100,
+      blockRef: "0x64",
+      expiration: 100,
       gasPriceCoef: 100,
-      gas: 100,
+      gas: 21000,
       dependsOn: "0xa975938d77903a388a2c2bd89fa8f76e5b54d5b7a0daf8a58452707bdd5c894c",
-      nonce: 100,
+      nonce: "0x975938d7",
       to: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
-      value: 100,
+      value: "100",
     });
-    expect(ret.chainTag).to.be.equal("0x0");
-    expect(ret.blockRef).to.be.equal("0x64");
-    expect(ret.expiration).to.be.equal("0x64");
-    expect(ret.expiration).to.be.equal("0x64");
-    expect(ret.dependsOn).to.be.equal("0xa975938d77903a388a2c2bd89fa8f76e5b54d5b7a0daf8a58452707bdd5c894c");
-    expect(ret.nonce).to.be.equal("0x64");
-    expect(ret.clauses).to.have.lengthOf(1);
-    expect(ret.clauses[0].to).to.be.equal("0x7567d83b7b8d80addcb281a71d54fc7b3364ffed");
-    expect(ret.clauses[0].value).to.be.equal("0x64");
-    expect(ret.clauses[0].value).to.be.equal("0x64");
-    expect(ret.clauses[0]).to.not.have.property("data");
-  });
-
-  it("With invalid dependsOn", () => {
-    const ret = utils.ethToThorTx({ dependsOn: "invalid dependsOn" });
-    expect(ret).to.not.have.property("dependsOn");
-  });
-
-  it("With valid data", () => {
-    const ret = utils.ethToThorTx({ data: "0xdead", to: null });
-    expect(ret.clauses[0].data).to.be.equal("0xdead");
+    expect(ret.body.chainTag).to.be.equal(0x64);
+    expect(ret.body.blockRef.toString("hex")).to.be.equal("0000000000000064");
+    expect(ret.body.expiration).to.be.equal(100);
+    expect(ret.body.dependsOn.toString("")).to.be.equal("a975938d77903a388a2c2bd89fa8f76e5b54d5b7a0daf8a58452707bdd5c894c");
+    expect(ret.body.nonce.toString(16)).to.be.equal("0x975938d7");
+    expect(ret.body.clauses).to.have.lengthOf(1);
+    expect(ret.body.clauses[0].to.toString("0x")).to.be.equal("0x7567d83b7b8d80addcb281a71d54fc7b3364ffed");
+    expect(ret.body.clauses[0].value.toString(16)).to.be.equal("0x64");
+    expect(ret.body.clauses[0].data).deep.equal(Buffer.alloc(0));
   });
 
   it("With invalid data", () => {
-    expect(() => utils.ethToThorTx({ data: "invalid data" })).to.throw("The data field must be HEX encoded data.");
+    const ret = utils.ethToThorTx({
+      chainTag: 100,
+      blockRef: "0x64",
+      expiration: 100,
+      gasPriceCoef: 100,
+      gas: 21000,
+      dependsOn: "0xa975938d77903a388a2c2bd89fa8f76e5b54d5b7a0daf8a58452707bdd5c894c",
+      nonce: "0x975938d7",
+      value: "100",
+      data: "0xdead",
+    });
+    expect(ret.body.clauses[0].to).to.be.equal(null);
+
   });
 
-});
-
-describe("utils:toNumber series", () => {
-
-  it("toUint8 With invalid type", () => {
-    expect(utils.toUint8(null)).to.be.null;
+  it("With valid data and without to", () => {
+    expect(() => {
+      utils.ethToThorTx({
+        chainTag: 100,
+        blockRef: "0x64",
+        expiration: 100,
+        gasPriceCoef: 100,
+        gas: 21000,
+        dependsOn: "0xa975938d77903a388a2c2bd89fa8f76e5b54d5b7a0daf8a58452707bdd5c894c",
+        nonce: "0x975938d7",
+        to: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
+        value: "100",
+        data: "rrrr",
+      });
+    }).to.throw("The data field must be HEX encoded data.");
   });
 
-  it("toUint32 With invalid type", () => {
-    expect(utils.toUint32(null)).to.be.null;
-  });
+  // it("With invalid dependsOn", () => {
+  //   const ret = utils.ethToThorTx({ dependsOn: "invalid dependsOn" });
+  //   expect(ret).to.not.have.property("dependsOn");
+  // });
 
-  it("toUint64 With invalid type", () => {
-    expect(utils.toUint64(null)).to.be.null;
-  });
+  // it("With valid data", () => {
+  //   const ret = utils.ethToThorTx({ data: "0xdead", to: null });
+  //   expect(ret.clauses[0].data).to.be.equal("0xdead");
+  // });
+
+  // it("With invalid data", () => {
+  //   expect(() => { utils.ethToThorTx({ chainTag: "0x9a", gas: 21000, nonce: "0xdead", data: "invalid data" }); }).to.throw("The data field must be HEX encoded data.");
+  // });
 
 });
 
@@ -143,14 +155,18 @@ describe("utils:formatOptions", () => {
 
   it("empty input", () => {
     const ret = utils.formatOptions({});
-    expect(ret).to.not.have.property("limit");
-    expect(ret).to.not.have.property("offset");
+    expect(ret).to.be.equal(null);
   });
 
   it("valid input", () => {
     const ret = utils.formatOptions({ limit: 100, offset: 100 });
     expect(ret.limit).to.be.equal(100);
     expect(ret.offset).to.be.equal(100);
+  });
+
+  it("valid invalid input", () => {
+    const ret = utils.formatOptions({ limit: "invalid", offset: "invalid" });
+    expect(ret).to.be.equal(null);
   });
 
 });
@@ -169,6 +185,11 @@ describe("utils:formatLogQuery", () => {
     expect(ret.options.offset).to.be.equal(100);
   });
 
+  it("invalid options", () => {
+    const ret = utils.formatLogQuery({ options: { } });
+    expect(ret).to.not.have.property("options");
+  });
+
   it("valid range", () => {
     const ret = utils.formatLogQuery({ range: { unit: "block", from: 0, to: 1000 } });
     expect(ret.range.unit).to.be.equal("block");
@@ -176,11 +197,21 @@ describe("utils:formatLogQuery", () => {
     expect(ret.range.to).to.be.equal(1000);
   });
 
+  it("invalid range", () => {
+    const ret = utils.formatLogQuery({ range: { unit: "invalid"} });
+    expect(ret).to.not.have.property("range");
+  });
+
   it("valid from block", () => {
     const ret = utils.formatLogQuery({ fromBlock: "0x64" });
     expect(ret.range.unit).to.be.equal("block");
     expect(ret.range.from).to.be.equal(100);
     expect(ret.range).to.not.have.property("to");
+  });
+
+  it("invalid from and to block", () => {
+    const ret = utils.formatLogQuery({ fromBlock: "latest", toBlock: "latest" });
+    expect(ret).to.not.have.property("range");
   });
 
   it("valid to block", () => {
@@ -195,6 +226,16 @@ describe("utils:formatLogQuery", () => {
     expect(ret.range.unit).to.be.equal("block");
     expect(ret.range.from).to.be.equal(100);
     expect(ret.range.to).to.be.equal(101);
+  });
+
+  it("with empty topics", () => {
+    const ret = utils.formatLogQuery({
+      topics: [
+       null,
+      ],
+    });
+    expect(ret).to.have.property("topicSets");
+    expect(ret.topicSets).to.be.instanceof(Array);
   });
 
   it("with valid topics", () => {
@@ -220,6 +261,81 @@ describe("utils:formatLogQuery", () => {
     expect(ret.topicSets[1].topic0).to.be.equal("topic00");
     expect(ret.topicSets[2].topic0).to.be.equal("topic01");
     expect(ret.topicSets[3].topic1).to.be.equal("topic11");
+  });
+
+});
+
+describe("utils:mustToBN", () => {
+
+  it("input null", () => {
+    expect(() => { utils.mustToBN(null); }).to.throw("input can't be null or undefined");
+  });
+
+  it("input undefined", () => {
+    expect(() => { utils.mustToBN(undefined); }).to.throw("input can't be null or undefined");
+  });
+
+  it("input number", () => {
+    const ret = utils.mustToBN(100);
+    expect(ret.toString()).to.be.equal("100");
+  });
+
+  it("input string", () => {
+    const ret = utils.mustToBN("100");
+    expect(ret.toString()).to.be.equal("100");
+  });
+
+  it("input hex string", () => {
+    const ret = utils.mustToBN("0x64");
+    expect(ret.toString()).to.be.equal("100");
+  });
+
+});
+
+describe("utils:validNumberOrDefault", () => {
+
+  it("input hex string", () => {
+    const ret = utils.validNumberOrDefault("0x64", 1);
+    expect(ret).to.be.equal(100);
+  });
+
+  it("input string", () => {
+    const ret = utils.validNumberOrDefault("100", 1);
+    expect(ret).to.be.equal(100);
+  });
+
+  it("input negative string", () => {
+    const ret = utils.validNumberOrDefault("-100", 1);
+    expect(ret).to.be.equal(100);
+  });
+
+  it("input negative number", () => {
+    const ret = utils.validNumberOrDefault(-100, 1);
+    expect(ret).to.be.equal(100);
+  });
+
+  it("input number", () => {
+    const ret = utils.validNumberOrDefault(100, 1);
+    expect(ret).to.be.equal(100);
+  });
+
+  it("input NaN", () => {
+    const ret = utils.validNumberOrDefault(NaN, 1);
+    expect(ret).to.be.equal(1);
+  });
+
+});
+
+describe("utils:leftPadBuffer", () => {
+
+  it("normal input", () => {
+    const ret = utils.leftPadBuffer(Buffer.from("64", "hex"), 4);
+    expect(ret.toString("hex")).to.be.equal("00000064");
+  });
+
+  it("buffer length more than length", () => {
+    const ret = utils.leftPadBuffer(Buffer.from("00000064", "hex"), 3);
+    expect(ret.toString("hex")).to.be.equal("00000064");
   });
 
 });

@@ -4,13 +4,13 @@ export type StringOrNumber = string | number;
 export type Callback = (err: Error | null, result?: any) => void;
 
 export interface IThorTransaction {
-  chainTag?: StringOrNumber;
-  blockRef?: StringOrNumber;
+  chainTag?: number;
+  blockRef?: Buffer;
   expiration?: StringOrNumber;
   gasPriceCoef?: StringOrNumber;
-  gas?: StringOrNumber;
-  dependsOn?: string;
-  nonce?: StringOrNumber;
+  gas?: string;
+  dependsOn?: Buffer|null;
+  nonce?: string;
   signature?: string;
   clauses: IClause[];
   origin?: string;
@@ -19,14 +19,14 @@ export interface IThorTransaction {
 
 export interface IClause {
   to?: StringOrNull;
-  value: StringOrNumber;
-  data?: string;
+  value: string;
+  data?: Buffer;
 }
 
 export interface IEthTransaction {
   chainId?: StringOrNumber;
   to?: StringOrNull;
-  value?: StringOrNumber;
+  value?: string;
   data?: string;
   gas?: StringOrNumber;
   gasPrice?: StringOrNumber;

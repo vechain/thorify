@@ -1,10 +1,9 @@
 "use strict";
 
 const web3Utils = require("web3-utils");
-const Tx = require("thorjs-tx");
 const debug = require("debug")("thor:injector");
 const EthLib = require("eth-lib/lib");
-import { Bytes32, Secp256k1, Transaction } from "thor-model-kit";
+import { Bytes32, Secp256k1 } from "thor-model-kit";
 import { Callback, IClause, IEthTransaction } from "../types";
 import * as utils from "../utils";
 

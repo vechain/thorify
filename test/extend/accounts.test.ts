@@ -133,6 +133,7 @@ describe("extend:accounts", () => {
       gasPriceCoef: 128,
       chainTag: "0x89",
       blockRef: "0x000000352985d99d",
+      data: "0xdead",
       nonce: 1198344495087,
     }, "0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65").catch((e) => {
       try {

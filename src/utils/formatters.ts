@@ -190,10 +190,11 @@ export const ethToThorTx = function(ethTx: IEthTransaction): Transaction {
   thorTx.expiration = validNumberOrDefault(ethTx.expiration, utils.params.defaultExpiration);
   thorTx.gasPriceCoef = validNumberOrDefault(ethTx.gasPriceCoef, utils.params.defaultGasPriceCoef);
   thorTx.dependsOn = !ethTx.dependsOn ? null : mustToBN(ethTx.dependsOn).toBuffer();
-  thorTx.nonce = utils.toPrefixedHex(mustToBN(ethTx.nonce).toString());
+  thorTx.nonce = utils.toPrefixedHex(mustToBN(ethTx.nonce).toString(16));
 
   const clause: IClause = {
     value: ethTx.value || "0",
+    to: null,
   };
 
   if (ethTx.to) {
@@ -214,7 +215,7 @@ export const ethToThorTx = function(ethTx: IEthTransaction): Transaction {
     clause.value = ethTx.value;
   }
 
-  if (clause.data || clause.to) {
+  if (ethTx.data || ethTx.to) {
     thorTx.clauses.push(clause);
   }
 

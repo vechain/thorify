@@ -68,7 +68,11 @@ export const formatOptions = function(options: any): ILogQueryOptions | null {
     const temp = utils.toInteger(options.offset);
     if (temp) { ret.offset = temp; }
   }
-  return ret;
+  if (ret.hasOwnProperty("limit") || ret.hasOwnProperty("offset")) {
+    return ret;
+  } else {
+    return null;
+  }
 };
 
 export const formatLogQuery = function(params: any): ILogQueryBody {
@@ -95,7 +99,7 @@ export const formatLogQuery = function(params: any): ILogQueryBody {
     if (params.hasOwnProperty("fromBlock")) {
       const from = formatBlockNumber(params.fromBlock);
       if (from !== "best") {
-        body.range = body.range ? body.range : {};
+        body.range = {};
         body.range.from = Number.parseInt(from as string);
       }
     }

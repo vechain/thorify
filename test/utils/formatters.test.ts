@@ -155,14 +155,18 @@ describe("utils:formatOptions", () => {
 
   it("empty input", () => {
     const ret = utils.formatOptions({});
-    expect(ret).to.not.have.property("limit");
-    expect(ret).to.not.have.property("offset");
+    expect(ret).to.be.equal(null);
   });
 
   it("valid input", () => {
     const ret = utils.formatOptions({ limit: 100, offset: 100 });
     expect(ret.limit).to.be.equal(100);
     expect(ret.offset).to.be.equal(100);
+  });
+
+  it("valid invalid input", () => {
+    const ret = utils.formatOptions({ limit: "invalid", offset: "invalid" });
+    expect(ret).to.be.equal(null);
   });
 
 });
@@ -181,6 +185,11 @@ describe("utils:formatLogQuery", () => {
     expect(ret.options.offset).to.be.equal(100);
   });
 
+  it("invalid options", () => {
+    const ret = utils.formatLogQuery({ options: { } });
+    expect(ret).to.not.have.property("options");
+  });
+
   it("valid range", () => {
     const ret = utils.formatLogQuery({ range: { unit: "block", from: 0, to: 1000 } });
     expect(ret.range.unit).to.be.equal("block");
@@ -188,11 +197,21 @@ describe("utils:formatLogQuery", () => {
     expect(ret.range.to).to.be.equal(1000);
   });
 
+  it("invalid range", () => {
+    const ret = utils.formatLogQuery({ range: { unit: "invalid"} });
+    expect(ret).to.not.have.property("range");
+  });
+
   it("valid from block", () => {
     const ret = utils.formatLogQuery({ fromBlock: "0x64" });
     expect(ret.range.unit).to.be.equal("block");
     expect(ret.range.from).to.be.equal(100);
     expect(ret.range).to.not.have.property("to");
+  });
+
+  it("invalid from and to block", () => {
+    const ret = utils.formatLogQuery({ fromBlock: "latest", toBlock: "latest" });
+    expect(ret).to.not.have.property("range");
   });
 
   it("valid to block", () => {
@@ -207,6 +226,16 @@ describe("utils:formatLogQuery", () => {
     expect(ret.range.unit).to.be.equal("block");
     expect(ret.range.from).to.be.equal(100);
     expect(ret.range.to).to.be.equal(101);
+  });
+
+  it("with empty topics", () => {
+    const ret = utils.formatLogQuery({
+      topics: [
+       null,
+      ],
+    });
+    expect(ret).to.have.property("topicSets");
+    expect(ret.topicSets).to.be.instanceof(Array);
   });
 
   it("with valid topics", () => {

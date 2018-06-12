@@ -2,10 +2,9 @@
 /* tslint:disable:max-line-length */
 
 const web3Utils = require("web3-utils");
-import { isNumber } from "util";
+import { Address, BigInt, Bytes32, Transaction } from "thor-model-kit";
 import { IClause, IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRange, IThorTransaction, ITopicItem, ITopicSet, StringOrNull, StringOrNumber, topicName } from "../types";
 import * as utils from "./";
-import {params} from "./params";
 
 export const isArray = function(o: any): boolean {
   return Object.prototype.toString.call(o) === "[object Array]";
@@ -154,80 +153,47 @@ export const formatLogQuery = function(params: any): ILogQueryBody {
   return body;
 };
 
-const maxUint8 = new web3Utils.BN(2).pow(new web3Utils.BN(8));
-const maxUint32 = new web3Utils.BN(2).pow(new web3Utils.BN(32));
-const maxUint64 = new web3Utils.BN(2).pow(new web3Utils.BN(64));
-
-export const toUint8 = function(input: number | string): StringOrNull {
-  if (typeof input !== "number" && !input) {
-    return null;
+export const mustToBN = function(value: any) {
+  if (web3Utils._.isNull(value) || web3Utils._.isUndefined(value)) {
+    throw new Error("input can't be null or undefined");
   }
-  return "0x" + web3Utils.toBN(input).mod(maxUint8).toString(16);
+
+  const num = web3Utils.toBN(value);
+  return num.abs();
 };
 
-export const toUint64 = function(input: number | string): StringOrNull {
-  if (typeof input !== "number" && !input) {
-    return null;
+export const validNumberOrDefault = function(value: any, defaultValue: number) {
+  if (typeof value === "number" && Number.isInteger(value) ) {
+    return Math.abs(value);
   }
-  return "0x" + web3Utils.toBN(input).mod(maxUint64).toString(16);
+  if (Number.isNaN(Number.parseInt(value)) === false) {
+    return Math.abs(Number.parseInt(value));
+  }
+  return defaultValue;
 };
 
-export const toUint32 = function(input: number | string): StringOrNull {
-  if (typeof input !== "number" && !input) {
-    return null;
+export const leftPadBuffer = function(buf: Buffer, length: number) {
+  if (buf.length > length) {
+    return buf;
   }
-  return "0x" + web3Utils.toBN(input).mod(maxUint32).toString(16);
+  return Buffer.concat([Buffer.alloc(length - buf.length), buf]);
 };
 
-export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
+export const ethToThorTx = function(ethTx: IEthTransaction): Transaction {
   const thorTx: IThorTransaction = {
     clauses: [],
   };
 
-  if (ethTx.chainTag === 0 || ethTx.chainTag) {
-    const chainTag = toUint8(ethTx.chainTag);
-    if (chainTag) {
-      thorTx.chainTag = chainTag;
-    }
-  }
-  if (ethTx.blockRef === 0 || ethTx.blockRef) {
-    const blockRef = toUint64(ethTx.blockRef);
-    if (blockRef) {
-      thorTx.blockRef = blockRef;
-    }
-  }
-  if (ethTx.expiration === 0 || ethTx.expiration) {
-    const expiration = toUint32(ethTx.expiration);
-    thorTx.expiration = expiration || utils.params.defaultExpiration;
-  } else {
-    thorTx.expiration = utils.params.defaultExpiration;
-  }
-  if (ethTx.gasPriceCoef === 0 || ethTx.gasPriceCoef) {
-    const gasPriceCoef = toUint8(ethTx.gasPriceCoef);
-    thorTx.gasPriceCoef = gasPriceCoef || utils.params.defaultGasPriceCoef;
-  } else {
-    thorTx.gasPriceCoef = utils.params.defaultGasPriceCoef;
-  }
-  if (ethTx.gas) {
-    const gas = toUint64(ethTx.gas);
-    if (gas) {
-      thorTx.gas = gas;
-    }
-  }
-  if (ethTx.dependsOn) {
-    if (utils.isHex(ethTx.dependsOn)) {
-      thorTx.dependsOn = ethTx.dependsOn;
-    }
-  }
-  if (ethTx.nonce) {
-    const nonce = toUint64(ethTx.nonce);
-    if (nonce) {
-      thorTx.nonce = nonce;
-    }
-  }
+  thorTx.chainTag = validNumberOrDefault(ethTx.chainTag, 0);
+  thorTx.blockRef = leftPadBuffer(mustToBN(ethTx.blockRef).toBuffer() as Buffer, 8);
+  thorTx.gas = utils.toPrefixedHex(mustToBN(ethTx.gas).toString(16));
+  thorTx.expiration = validNumberOrDefault(ethTx.expiration, utils.params.defaultExpiration);
+  thorTx.gasPriceCoef = validNumberOrDefault(ethTx.gasPriceCoef, utils.params.defaultGasPriceCoef);
+  thorTx.dependsOn = !ethTx.dependsOn ? null : mustToBN(ethTx.dependsOn).toBuffer();
+  thorTx.nonce = utils.toPrefixedHex(mustToBN(ethTx.nonce).toString());
 
   const clause: IClause = {
-    value: 0,
+    value: ethTx.value || "0",
   };
 
   if (ethTx.to) {
@@ -238,17 +204,37 @@ export const ethToThorTx = function(ethTx: IEthTransaction): IThorTransaction {
     if (!utils.isHex(ethTx.data)) {
       throw new Error("The data field must be HEX encoded data.");
     } else {
-      clause.data = ethTx.data;
+      clause.data = Buffer.from(utils.sanitizeHex(ethTx.data), "hex");
     }
+  } else {
+    clause.data = Buffer.alloc(0);
   }
 
-  const value = web3Utils.numberToHex(ethTx.value);
-  if (value) {
-    clause.value = value;
+  if (ethTx.value) {
+    clause.value = ethTx.value;
   }
 
   if (clause.data || clause.to) {
     thorTx.clauses.push(clause);
   }
-  return thorTx;
+
+  const body: Transaction.Body = {
+    chainTag: thorTx.chainTag,
+    blockRef: thorTx.blockRef,
+    expiration: thorTx.expiration,
+    gasPriceCoef: thorTx.gasPriceCoef,
+    gas: BigInt.from(thorTx.gas),
+    clauses: [],
+    dependsOn: thorTx.dependsOn ? new Bytes32(thorTx.dependsOn) : null ,
+    nonce: BigInt.from(thorTx.nonce),
+    reserved: [],
+  };
+  if (thorTx.clauses.length) {
+    body.clauses.push({
+      to: thorTx.clauses[0].to ? Address.fromHex(thorTx.clauses[0].to as string) : null,
+      value: BigInt.from(thorTx.clauses[0].value),
+      data: thorTx.clauses[0].data as Buffer,
+    });
+  }
+  return new Transaction(body);
 };

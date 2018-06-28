@@ -50,7 +50,7 @@ const extendFormatters = function(web3: any) {
         receipt.gasPayer = web3Utils.toChecksumAddress(receipt.gasPayer);
       }
       if (receipt.tx && receipt.tx.origin) {
-        receipt.tx.origin = web3Utils.toChecksumAddress(receipt.tx.origin);
+        receipt.meta.txOrigin = web3Utils.toChecksumAddress(receipt.meta.txOrigin);
       }
 
       for (const output of receipt.outputs) {

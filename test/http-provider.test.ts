@@ -173,6 +173,26 @@ describe("http-provider", () => {
     });
   });
 
+  it("invalid status code with response text", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testBody: {
+        type: "invalid status code with response text",
+        responseText: "bad request"
+      },
+    }, (err) => {
+      try {
+        expect(err).to.be.an("Error");
+        expect(() => { throw err; }).to.throw("[thorify-provider-http] Invalid response code from provider: 400, response: bad request");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
   it("wrong ready state should not callback", (done) => {
     const provider = new ThorHttpProvider("host");
     provider.sendAsync({

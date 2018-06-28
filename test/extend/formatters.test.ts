@@ -130,14 +130,12 @@ const thorTxReceipt = {
   paid: "0x7aef5bddbe52000",
   reward: "0x24e1685c1f7f000",
   reverted: false,
-  block: {
-    id: "0x0000309f8c2bf8f43ec1c396994c2f6e5f0c352ac3e1888d62372c5bb4c09c23",
-    number: 12447,
-    timestamp: 1526524470,
-  },
-  tx: {
-    id: "0xca2585be2e1a38f08bc3d433ed7fcb5ea100f42f068aa7d4229e2e6c0569de47",
-    origin: "0xe59d475abe695c7f67a8a2321f33a856b0b4c71d",
+  meta: {
+    blockID: "0x00000001c458949985a6d86b7139690b8811dd3b4647c02d4f41cdefb7d32327",
+    blockNumber: 1,
+    blockTimestamp: 1523156271,
+    txID: "0x4de71f2d588aa8a1ea00fe8312d92966da424d9939a511fc0be81e65fad52af8",
+    txOrigin: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed"
   },
   outputs: [
     {
@@ -168,10 +166,10 @@ const thorTxReceiptWithUnsafeFields = {
   paid: "0x7aef5bddbe52000",
   reward: "0x24e1685c1f7f000",
   reverted: false,
-  block: {
-    id: "0x0000309f8c2bf8f43ec1c396994c2f6e5f0c352ac3e1888d62372c5bb4c09c23",
-    number: 12447,
-    timestamp: 1526524470,
+  meta: {
+    blockID: "0x00000001c458949985a6d86b7139690b8811dd3b4647c02d4f41cdefb7d32327",
+    blockNumber: 1,
+    blockTimestamp: 1523156271
   },
   outputs: [
     {
@@ -217,19 +215,19 @@ describe("web3 formatters", () => {
 
   it("Format thor transaction receipt", () => {
     const tx = web3.extend.formatters.outputTransactionReceiptFormatter(thorTxReceipt);
-    expect(tx).to.have.all.keys("block", "gasPayer", "gasUsed", "outputs", "paid", "reverted", "reward", "tx");
+    expect(tx).to.have.all.keys("meta", "gasPayer", "gasUsed", "outputs", "paid", "reverted", "reward");
   });
 
   it("Format thor transaction receipt with unsafe input", () => {
     const tx = web3.extend.formatters.outputTransactionReceiptFormatter(thorTxReceiptWithUnsafeFields);
-    expect(tx).to.have.all.keys("block", "gasUsed", "outputs", "paid", "reverted", "reward");
+    expect(tx).to.have.all.keys("gasUsed", "outputs", "paid", "reverted", "reward", "meta");
   });
 
   it("Format thor transaction receipt with eth receipt properties", () => {
     Object.defineProperty(thorTxReceipt, "transactionIndex", { value: 1, configurable: true});
     Object.defineProperty(thorTxReceipt, "cumulativeGasUsed", { value: 1000000, configurable: true});
     const tx = web3.extend.formatters.outputTransactionReceiptFormatter(thorTxReceipt);
-    expect(tx).to.have.all.keys("block", "gasPayer", "gasUsed", "outputs", "paid", "reverted", "reward", "tx");
+    expect(tx).to.have.all.keys("gasPayer", "gasUsed", "outputs", "paid", "reverted", "reward", "meta");
   });
 
   it("Format eth log", () => {

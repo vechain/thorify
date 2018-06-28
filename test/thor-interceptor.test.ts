@@ -73,7 +73,7 @@ describe("interceptor", () => {
     expect(preparation.URL).to.be.equal("/transactions/0xa5b3d1dbafe79a41dce8ec33a83e68cf506cdcd1df7776c3afd8fc67a76cecf2");
     expect(preparation.Method).to.be.equal("GET");
     expect(preparation.ResFormatter(null)).to.be.equal(null);
-    expect(preparation.ResFormatter({ block: { number: 100 } })).to.have.property("blockNumber", 100);
+    expect(preparation.ResFormatter({ meta: { blockNumber: 100 } })).to.have.property("blockNumber", 100);
   });
 
   it("eth_getTransactionReceipt", () => {
@@ -82,8 +82,11 @@ describe("interceptor", () => {
     expect(preparation.Method).to.be.equal("GET");
     expect(preparation.ResFormatter(null)).to.be.equal(null);
     let receipt = preparation.ResFormatter({
-      block: { id: "block-id", number: 100 },
-      tx: { id: "tx-id" },
+      meta:{
+        blockID: "block-id",
+        blockNumber: 100,
+        txID: "tx-id"
+      },
       reverted: false,
       outputs: [{ contractAddress: "contractAddress" }],
     });
@@ -93,15 +96,21 @@ describe("interceptor", () => {
     expect(receipt).to.have.property("status", "0x1");
     expect(receipt).to.have.property("contractAddress", "contractAddress");
     receipt = preparation.ResFormatter({
-      block: { id: "block-id", number: 100 },
-      tx: { id: "tx-id" },
+      meta:{
+        blockID: "block-id",
+        blockNumber: 100,
+        txID: "tx-id"
+      },
       reverted: true,
       outputs: [{ contractAddress: "contractAddress" }, { contractAddress: "contractAddress" }],
     });
     expect(receipt).to.have.not.property("contractAddress");
     expect(preparation.ResFormatter({
-      block: {id: "block-id", number: 100},
-      tx: {id: "tx-id"},
+      meta:{
+        blockID: "block-id",
+        blockNumber: 100,
+        txID: "tx-id"
+      },
       reverted: true,
       outputs: [{contractAddress: "contractAddress"}],
     })).to.have.property("status", "0x0");
@@ -160,7 +169,7 @@ describe("interceptor", () => {
     expect(preparation.ResFormatter(null)).to.be.equal(null);
     expect(preparation.ResFormatter({ reverted: true })).to.be.equal(null);
     expect(preparation.ResFormatter({ gasUsed: 0 })).to.be.equal(21000);
-    expect(preparation.ResFormatter({ gasUsed: 10 })).to.be.equal(23111);
+    expect(preparation.ResFormatter({ gasUsed: 10 })).to.be.equal(21012);
     preparation = ThorAPIMapping.eth_estimateGas.prepare({
       params: [{
         from: "0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed",
@@ -187,8 +196,11 @@ describe("interceptor", () => {
     expect(preparation.Method).to.be.equal("POST");
     expect(preparation.ResFormatter(null)).to.be.equal(null);
     const ret = preparation.ResFormatter([{
-      block: { number: 100, id: "block-id" },
-      tx: { id: "tx-id" },
+      meta:{
+        blockNumber: 100,
+        blockID: "block-id" ,
+        txID: "tx-id"
+      }
     }]);
     expect(ret).to.have.lengthOf(1);
     expect(ret[0]).to.have.property("blockNumber", 100);

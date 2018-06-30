@@ -8,6 +8,8 @@ const thorify = function(web3Instance: any, host = "http://localhost:8669", time
   web3Instance.setProvider(provider);
 
   extend(web3Instance);
+
+  return web3Instance;
 };
 
 export {thorify};

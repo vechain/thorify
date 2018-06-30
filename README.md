@@ -20,8 +20,7 @@ npm install --save thorify
 import { thorify } from "thorify";
 const Web3 = require("web3");		// recommand use require() instead of import here
 
-const web3 = new Web3();
-thorify(web3, "http://localhost:8669");
+const web3 = thorify(new Web3(), "http://localhost:8669");
 
 web3.eth.getBlock("latest").then(res => console.log(res));
 // Best block info will be displayed
@@ -34,8 +33,7 @@ If you would like to write code in ES5, check below for the initialization code.
 const thorify = require("thorify").thorify;
 const Web3 = require("web3");
 
-const web3 = new Web3();
-thorify(web3, "http://localhost:8669");
+const web3 = thorify(new Web3(), "http://localhost:8669");
 
 web3.eth.getBlock("latest").then(res => console.log(res));
 // Best block info will be displayed

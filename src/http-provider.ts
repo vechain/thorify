@@ -40,7 +40,7 @@ class ThorHttpProvider {
     request.onreadystatechange = () => {
       if (request.readyState === 4) {
         if (request.status !== 200) {
-          return callback(new Error("[thorify-provider-http] Invalid response code from provider: " + request.status), {
+          return callback(new Error("[thorify-provider-http] Invalid response code from provider: " + request.status + (request.responseText ? ", response: " + request.responseText : "")), {
             id: payload.id || 0,
             jsonrpc: payload.jsonrpc || "2.0",
             result: null,

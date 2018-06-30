@@ -107,7 +107,7 @@ ThorAPIMapping = {
         URL: "/transactions/" + payload.params[0],
         ResFormatter: (v) => {
           if (!v) { return v; }
-          v.blockNumber = v.block.number;
+          v.blockNumber = v.meta.blockNumber;
           return v;
         },
       };
@@ -121,9 +121,9 @@ ThorAPIMapping = {
         URL: "/transactions/" + payload.params[0] + "/receipt",
         ResFormatter: (v) => {
           if (!v) { return v; }
-          v.blockNumber = v.block.number;
-          v.blockHash = v.block.id;
-          v.transactionHash = v.tx.id;
+          v.blockNumber = v.meta.blockNumber;
+          v.blockHash = v.meta.blockID;
+          v.transactionHash = v.meta.txID;
           // For compatible with ethereum's receipt
           if (v.reverted) {
             v.status = "0x0";
@@ -210,11 +210,10 @@ ThorAPIMapping = {
             }
             // ignore the overflow since block gas limit is uint64 and javascript's max number is 2^53
             const intrinsicGas = utils.calcIntrinsicGas(Object.assign(body, { to: payload.params[0].to}));
-            const txGas = intrinsicGas + v.gasUsed;
             if (v.gasUsed === 0 && ( body.data === "0x" )) {
               return intrinsicGas;
             } else {
-              return Math.floor(txGas * 1.1); // increase gas with 10% for safe since it's estimated from current block state, final state for the transaction is not determined for now
+              return Math.floor(v.gasUsed * 1.2) + intrinsicGas; // increase vm gas with 20% for safe since it's estimated from current block state, final state for the transaction is not determined for now
             }
           }
         },
@@ -240,9 +239,9 @@ ThorAPIMapping = {
         ResFormatter: (v) => {
           if (!v) { return v; }
           for (const item of v) {
-            item.blockNumber = item.block.number;
-            item.blockHash = item.block.id;
-            item.transactionHash = item.tx.id;
+            item.blockNumber = item.meta.blockNumber;
+            item.blockHash = item.meta.blockID;
+            item.transactionHash = item.meta.txID;
           }
           return v;
         },

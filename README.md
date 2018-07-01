@@ -353,7 +353,7 @@ Return genesis block information , chain tag is the last byte of the genesis blo
 eth.getChainTag().then(result => {
 	console.log(result)
 })
-> "0x9a"
+> "0x27"
 ```
 
 ###  Send raw transaction
@@ -364,6 +364,7 @@ Send a raw transaction to the network.
 eth.sendSignedTransaction(signedTransaction).then(result => {
 	console.log(result)
 })
+> "TransactionID will be displayed if sent successfully"
 ```
 
 **Parameters**
@@ -444,7 +445,7 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
 
 ## Compatibility
 
-  TODO
+   Currently, `thorify` is compatible with `web3@1.0*`. 
 
 ## License
 

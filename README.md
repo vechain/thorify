@@ -389,6 +389,7 @@ In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.htm
 The APIs that follows the mechanism are:
 
 + `web3.eth.sendTransaction()`
++ `contract.method.deploy.send()`
 + `contract.method.myMethod.send()`
 
 ``` javascript

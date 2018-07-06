@@ -182,7 +182,7 @@ return `TransactionReceipt Object`:
 + `gasUsed` - `Uint64`: Actual gas used
 + `gasPayer` - `String`: address of account who paid used gas
 + `paid` - `String`: hex form of amount of paid energy
-+ `reward` - `String`: hex form of amount of reward
++ `reward` - `String`: hex form of amount of reward
 + `reverted` - `Boolean`: true means the transaction was reverted
 + `block` - `BlockContext Object`
 + `tx` - `TransactionContext Object`
@@ -205,7 +205,7 @@ return `TransactionReceipt Object`:
 
 ` TransactionReceipt Output Object`
 
-+ `contractAddress` - `String`: deployed contract address, if the corresponding clause is a contract deployment clause
++ `contractAddress` - `String`: deployed contract address, if the corresponding clause is a contract deployment clause
 + `events` - `Array of Event Log Object`: event log objects produced during clause execution
 + `transfer` - `Array of Transfer Object`: transfer produced during clause execution
 
@@ -218,7 +218,7 @@ return `TransactionReceipt Object`:
 `Transfer Object`
 
 + `sender` - `String`: address that sends tokens
-+ `recipient` - `String`: address that receives tokens
++ `recipient` - `String`: address that receives tokens
 + `amount` - `String`: amount of vet in wei
 
 ## Get block

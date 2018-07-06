@@ -14,6 +14,7 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 * [Web3 method supported](#web3-method-supported)
 * [SendTransaction](#sendtransaction)
 * [API doc](#api-doc)
+* [Play with multi-clause](#play-with-multi-clause)
 * [FAQ](#faq)
   * [Method not supported](#method-not-supported)
 * [Notes](#notes)
@@ -103,7 +104,12 @@ The APIs that follows the mechanism are:
 
 ## API doc
 
-[API.md](doc/API.md)
+[API.md](doc/api.md)
+
+## Play with multi-clause
+
+1. [thor-model-kit](https://github.com/vechain/thor-model-kit) supports multi-clause and sign transaction
+2. send signed transaction using [sendSignedTransaction](doc/api.md#send-raw-transaction)
 
 ## FAQ
 

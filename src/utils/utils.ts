@@ -31,8 +31,6 @@ export const calcIntrinsicGas = function(tx: IEthTransaction): number {
   return totalGas;
 };
 
-export const MaxUint32 = Math.pow(2, 32) - 1;
-
 export const toPrefixedHex = function(hexStr: string): string {
   if (hexStr.indexOf("0x") === 0) {
     return hexStr;

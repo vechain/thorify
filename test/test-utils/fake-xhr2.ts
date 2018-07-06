@@ -33,8 +33,8 @@ FakeXHR2.prototype.send = function(payload) {
   } else if (ret && ret.type === "invalid status code") {
     this.status = 400;
   } else if (ret && ret.type === "invalid status code with response text") {
-    this.status = 400;   
-    this.responseText = ret.responseText; 
+    this.status = 400;
+    this.responseText = ret.responseText;
   } else if (ret && ret.type === "wrong ready state") {
     this.readyState = 3;
   } else {

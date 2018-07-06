@@ -22,6 +22,14 @@ class ThorHttpProvider {
   public sendAsync(payload: any, callback: any) {
     debug("payload: %O", payload);
 
+    if (payload.method === "eth_sendTransaction") {
+      return callback(new Error("The private key corresponding to from filed can't be found in local eth.accounts.wallet!"), {
+        id: payload.id || 0,
+        jsonrpc: payload.jsonrpc || "2.0",
+        result: null,
+      });
+    }
+
     if (!ThorAPIMapping[payload.method]) {
       return callback(new Error("Method not supported!"), {
         id: payload.id || 0,

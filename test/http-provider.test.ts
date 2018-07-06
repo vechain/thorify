@@ -29,6 +29,21 @@ describe("http-provider", () => {
     });
   });
 
+  it("eth_sendTransaction method should throw error", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "eth_sendTransaction",
+    }, (err) => {
+      try {
+        expect(err).to.be.an("error");
+        expect(() => { throw err; }).to.throw("The private key corresponding to from filed can\'t be found in local eth.accounts.wallet!");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
   it("normal request should not throw error", (done) => {
     const provider = new ThorHttpProvider("host");
     provider.sendAsync({
@@ -180,7 +195,7 @@ describe("http-provider", () => {
       testMethod: "POST",
       testBody: {
         type: "invalid status code with response text",
-        responseText: "bad request"
+        responseText: "bad request",
       },
     }, (err) => {
       try {

@@ -4,10 +4,12 @@
 
 * [Get account balance ](#get-account-balance)
 * [Get account VTHO balance](#get-account-vtho-balance)
-* [Get transaction ](#get-transaction )
-* [Get transaction receipt](#get-transaction-receipt)
+* [Get chainTag](#get-chaintag)
+* [Get block number](#get-block-number)
 * [Get block](#get-block)
 * [Get chainTag](#get-chaintag)
+* [Get transaction ](#get-transaction )
+* [Get transaction receipt](#get-transaction-receipt)
 * [Send raw transaction](#send-raw-transaction)
 * [Send Transaction](#send-transaction)
 
@@ -337,12 +339,7 @@ eth.sendSignedTransaction(signedTransaction).then(result => {
 
 ## Send Transaction
 
-In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `eth_sendTransaction` but there is another way to sign a transaction. 
-
-In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#eth-accounts), it gives the opportunity to add your private-key, stored in your runtime context (In Node.js context, it's stored in memory while in Browser context, it's stored in memory/local storage), to accounts module. When you are trying to send a transaction, the module will check the private key associated with from field. Once the private key and from have been matched, the module will sign the transaction.
-The APIs that follows the mechanism are:
-
-Before starting with sendTransaction, please be sure 
+Before starting with sendTransaction, please be sure you have read the `sendTransaction` part in [README.md](../README.md#send-transaction)
 
 + `web3.eth.sendTransaction()`
 + `contract.method.deploy.send()`

@@ -11,7 +11,7 @@
 * [Get transaction ](#get-transaction )
 * [Get transaction receipt](#get-transaction-receipt)
 * [Send raw transaction](#send-raw-transaction)
-* [Send Transaction](#send-transaction)
+* [Send transaction](#send-transaction)
 
 ## Get account balance
 
@@ -180,10 +180,10 @@ eth.getTransaction(transactionID).then(result => {
     dependsOn: null,
     nonce: "0x1538f9a34aa",
     origin: "0xe59D475Abe695c7f67a8a2321f33A856B0B4c71d",
-    block:
-     { id: "0x000008b91fe9e0654c4fdd7eee4ed8b6e3e09b953993f2e2d91092e086b70423",
-       number: 2233,
-       timestamp: 1528451080 },
+    meta:
+     { blockID: "0x000008b91fe9e0654c4fdd7eee4ed8b6e3e09b953993f2e2d91092e086b70423",
+       blockNumber: 2233,
+       blockTimestamp: 1528451080 },
     blockNumber: 2233 
 }
 ```
@@ -205,8 +205,8 @@ eth.getTransaction(transactionID).then(result => {
 + `gas`  - `Uint8`: Maximum of gas can be consumed to execute this transaction
 + `dependsOn` - `String|Null`: ID of the transaction which the current transaction depends(bytes32)
 + `nonce` - `String`: Transaction nonce
-+ `block` - `BlockContext Object`
-+ `blockNumber`: Same as `block.numer`
++ `meta` - `Meta Object`
++ `blockNumber`: Same as `meta.blockNumer`
 
 `Clause Object`
 
@@ -214,11 +214,11 @@ eth.getTransaction(transactionID).then(result => {
 + `value` - `String`: Hex form of token to be transferred
 + `data` - `String`: Input data (bytes)
 
-`BlockContext Object`
+`Meta Object`
 
-+ `id` - `String`: Identifier of the block(bytes32)
-+ `number` - `Unit32`: Number of block 
-+ `timestamp` - `Uint64`: Unix timestamp of block
++ `blockID` - `String`: Identifier of the block(bytes32)
++ `blockNumber` - `Unit32`: Number of block 
++ `blockTimestamp` - `Uint64`: Unix timestamp of block
 
 ## Get transaction receipt
 
@@ -234,13 +234,12 @@ eth.getTransactionReceipt(transactionHash).then(result => {
     paid: "0x39facb2d5afc30000",
     reward: "0x1164d68d9b4ba8000",
     reverted: false,
-    block:
-        { id: "0x000008d168c7d5ca180a0f5cf0aba148982b9d5bed263ee8bdc94e6863962a86",
-        number: 2257,
-        timestamp: 1528451320 },
-    tx:
-       { id: "0x0d79ef6830ee3a8ad55d31b4c30e53ebf2252da90db6074f9304889c682f0490",
-         origin: "0x4f6FC409e152D33843Cf4982d414C1Dd0879277e" },
+    meta:
+        { blockID: "0x000008d168c7d5ca180a0f5cf0aba148982b9d5bed263ee8bdc94e6863962a86",
+        blockNumber: 2257,
+        blockTimestamp: 1528451320,
+        txID: "0x0d79ef6830ee3a8ad55d31b4c30e53ebf2252da90db6074f9304889c682f0490",
+        txOrigin: "0x4f6FC409e152D33843Cf4982d414C1Dd0879277e" },
     outputs:[
         { contractAddress: null,
           events:
@@ -275,24 +274,20 @@ eth.getTransactionReceipt(transactionHash).then(result => {
 + `paid` - `String`: Hex form of amount of paid energy
 + `reward` - `String`: Hex form of amount of reward
 + `reverted` - `Boolean`: true means the transaction was reverted
-+ `block` - `BlockContext Object`
-+ `tx` - `TransactionContext Object`
++ `meta` - `Meta Object`
 + `outputs` - `Array of TransactionReceipt Output Object`: Clause"s corresponding output
 + `blockNumber`: Same as `block.number`
 + `blockHash`: Same as `block.id`
 + `transactionHash`: Same as `tx.id`
 + `status`: `0x0` when `revert` is true and `0x1` when `revert` is false
 
-`BlockContext Object`
+`Meta Object`
 
-+ `id` - `String`: Identifier of the block(bytes32)
-+ `number` - `Unit32`: Number of block 
-+ `timestamp` - `Uint64`: Unix timestamp of block
-
-`TransactionContext Object`
-
-+ `id` - `String`: Identifier of the transaction
-+ `origin` - `String`: The one who signed the transaction
++ `blockID` - `String`: Identifier of the block(bytes32)
++ `blockNumber` - `Unit32`: Number of block 
++ `blockTimestamp` - `Uint64`: Unix timestamp of block
++ `txID` - `String`: Identifier of the transaction
++ `txOrigin` - `String`: The one who signed the transaction
 
 ` TransactionReceipt Output Object`
 
@@ -337,7 +332,7 @@ eth.sendSignedTransaction(signedTransaction).then(result => {
 + `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
 
 
-## Send Transaction
+## Send transaction
 
 Before starting with sendTransaction, please be sure you have read the `sendTransaction` part in [README.md](../README.md#send-transaction)
 

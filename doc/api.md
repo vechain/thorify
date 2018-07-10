@@ -47,7 +47,7 @@ eth.getBalance(address[,blockNumberOrHash]).then(result => {
 Query the VTHO balance of an address
 
 ``` javascript
-eth.getEnergy(address[,blockNumberOrHash]).then(result => {
+web3Instance.eth.getEnergy(address[,blockNumberOrHash]).then(result => {
 	console.log(result)
 })
 > "1000000000000000000"
@@ -75,7 +75,7 @@ eth.getEnergy(address[,blockNumberOrHash]).then(result => {
 Return genesis block information , chain tag is the last byte of the genesis block ID.
 
 ``` javascript
-eth.getChainTag().then(result => {
+web3Instance.eth.getChainTag().then(result => {
 	console.log(result)
 })
 > "0x27"
@@ -90,7 +90,7 @@ eth.getChainTag().then(result => {
 Query the current best block number
 
 ``` javascript
-eth.getBlockNumber().then(result => {
+web3Instance.eth.getBlockNumber().then(result => {
 	console.log(result)
 })
 > 100
@@ -105,7 +105,7 @@ eth.getBlockNumber().then(result => {
 Get a block matching the block number or block hash.
 
 ``` javascript
-eth.getBlock(blockNumberOrHash).then(result => {
+web3Instance.eth.getBlock(blockNumberOrHash).then(result => {
 	console.log(result)
 })
 > {
@@ -162,7 +162,7 @@ eth.getBlock(blockNumberOrHash).then(result => {
 Get a transaction matching transaction Hash.
 
 ``` javascript
-eth.getTransaction(transactionID).then(result => {
+web3Instance.eth.getTransaction(transactionID).then(result => {
 	console.log(result)
 })
 > { 
@@ -225,7 +225,7 @@ eth.getTransaction(transactionID).then(result => {
 Get a transaction receipt matching transaction Hash.
 
 ``` javascript
-eth.getTransactionReceipt(transactionHash).then(result => {
+web3Instance.eth.getTransactionReceipt(transactionHash).then(result => {
 	console.log(result)
 })
 > { 
@@ -334,13 +334,13 @@ eth.sendSignedTransaction(signedTransaction).then(result => {
 
 ## Send transaction
 
-!> **Before starting with sendTransaction, please be sure you have read the `sendTransaction` part in [README.md](../README.md#send-transaction)**
+!> **Before starting with sendTransaction, please be sure you have read the `sendTransaction` part in [README.md](/README.md#send-transaction)**
 
 ``` javascript
 // Initiate the web3 instance
-web3.eth.accounts.wallet.add("0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65");
+web3Instance.eth.accounts.wallet.add("0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65");
 
-web3.eth.sendTransaction({
+web3Instance.eth.sendTransaction({
   from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
   to: "0xd3ae78222beadb038203be21ed5ce7c9b1bff602",
   value: 100,
@@ -385,10 +385,10 @@ We encourage developers find a proper way to store private key and sign a transa
 
 ## Contract call
 
-Executes a message call, which is directly executed in the VM based on the current best block's state, but he never committed to the blockchain.
+Executes a message call, which is directly executed in the VM based on the specified block's state, but he never committed to the blockchain.
 
 ``` javascript
-eth.call(callObject [, blockNumberOrHash]).then(result => {
+web3Instance.eth.call(callObject [, blockNumberOrHash]).then(result => {
 	console.log(result)
 })
 > "result will be displayed"
@@ -417,4 +417,24 @@ eth.call(callObject [, blockNumberOrHash]).then(result => {
 
 **Returns**
 
-`Promise` returns `String`: The returned data of the call(hex string), e.g. a smart contract functions return value.
+`Promise` returns `String`: The returned data of the call(hex string), e.g. a smart contract function returned value.
+
+## Estimate Gas
+
+Executes a message call or transaction and returns the amount of the gas used.
+
+``` javascript
+eth.estimateGas(callObject).then(result => {
+	console.log(result)
+})
+> 1000
+```
+
+**Parameters**
+
+- `callObject` - `Transaction Object`: same as [Contract call](#contract-call)
+
+**Returns**
+
+`Promise` returns `Number|null`: the used gas for the simulated call/transaction, `null` when execution reverted.
+

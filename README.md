@@ -13,7 +13,7 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 * [Usage](#usage)
 * [Web3 method supported](#web3-method-supported)
 * [Send transaction](#send-transaction)
-* [API doc](#api-doc)
+* [API.md](doc/api.md)
 * [Play with multi-clause](#play-with-multi-clause)
 * [FAQ](#faq)
   * [Method not supported](#method-not-supported)

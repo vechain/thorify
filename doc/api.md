@@ -1,17 +1,17 @@
-# API doc
+# API
 
-## Table of Contents
+## Table of contents
 
 * [Get account balance ](#get-account-balance)
 * [Get account VTHO balance](#get-account-vtho-balance)
-* [Get chainTag](#get-chaintag)
+* [Get chainTag](#get-chain-tag)
 * [Get block number](#get-block-number)
 * [Get block](#get-block)
-* [Get chainTag](#get-chaintag)
 * [Get transaction ](#get-transaction )
 * [Get transaction receipt](#get-transaction-receipt)
 * [Send raw transaction](#send-raw-transaction)
 * [Send transaction](#send-transaction)
+* [Contract call](#contract-call)
 
 ## Get account balance
 
@@ -29,7 +29,7 @@ eth.getBalance(address[,blockNumberOrHash]).then(result => {
 - `address` - `String`: The address to get the balance of.
 - `blockNumberOrHash` - `Number | String`(optional):  If you pass this parameter it will not use the default block set with `latest`
 
-BlockNumberOrHash parameters can be one of the following:
+`BlockNumberOrHash` parameters can be one of the following:
 
 + `Number` : Block number
 + `0` : The genesis block 
@@ -58,7 +58,7 @@ eth.getEnergy(address[,blockNumberOrHash]).then(result => {
 - `address` - `String`: The address to get the VTHO balance of.
 - `blockNumberOrHash` - `Number | String`(optional):  If you pass this parameter it will not use the default block set with `latest`
 
-BlockNumberOrHash parameters can be one of the following:
+`BlockNumberOrHash` parameters can be one of the following:
 
 + `Number` : Block number
 + `0` : The genesis block 
@@ -68,7 +68,7 @@ BlockNumberOrHash parameters can be one of the following:
 	
 **Returns**
 
-`Promise` returns `String`: The balance of VTHO in wei(number in string)
+`Promise` returns `String`: The balance of VTHO in `wei`(number in string)
 
 ## Get chain tag
 
@@ -131,7 +131,7 @@ eth.getBlock(blockNumberOrHash).then(result => {
 
 - `blockNumberOrHash` - `Number | String`(optional):  If you pass this parameter it will not use the default block set with `latest`
 
-BlockNumberOrHash parameters can be one of the following:
+`BlockNumberOrHash` parameters can be one of the following:
 
 + `Number` : Block number
 + `0` : The genesis block 
@@ -305,7 +305,7 @@ eth.getTransactionReceipt(transactionHash).then(result => {
 
 + `sender` - `String`: Adress that sends tokens
 + `recipient` - `String`: Address that receives tokens
-+ `amount` - `String`: Amount of vet in wei
++ `amount` - `String`: Amount of vet in `wei`
 
 ## Send raw transaction
 
@@ -334,11 +334,7 @@ eth.sendSignedTransaction(signedTransaction).then(result => {
 
 ## Send transaction
 
-Before starting with sendTransaction, please be sure you have read the `sendTransaction` part in [README.md](../README.md#send-transaction)
-
-+ `web3.eth.sendTransaction()`
-+ `contract.method.deploy.send()`
-+ `contract.method.myMethod.send()`
+!> **Before starting with sendTransaction, please be sure you have read the `sendTransaction` part in [README.md](../README.md#send-transaction)**
 
 ``` javascript
 // Initiate the web3 instance
@@ -384,5 +380,41 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
 + `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
 
 
-> This is not the only way for developers signing a transaction! <br>
-> We encourage developers find a proper way to store private key and sign a transaction.
+!> **This is not the only way for developers signing a transaction! <br>
+We encourage developers find a proper way to store private key and sign a transaction.**
+
+## Contract call
+
+Executes a message call, which is directly executed in the VM based on the current best block's state, but he never committed to the blockchain.
+
+``` javascript
+eth.call(callObject [, blockNumberOrHash]).then(result => {
+	console.log(result)
+})
+> "result will be displayed"
+```
+
+**Parameters**
+
+- `callObject` - `Transaction Object`
+- `blockNumberOrHash` - `Number | String`(optional):  If you pass this parameter it will not use the default block set with `latest`
+
+`Transaction Object`:
++ `from` - `String|Number`:(optional) Either The address of transaction sender"s account or the address/index of a local wallet in `web3.eth.accounts.wallet `.
++ `to` - `String`: (optional) The destination address of the message, left undefined for a contract-creation transaction.
++ `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
++ `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is going to be refunded right after the transaction execution).
++ `data` - `String`: (optional) Either the [ABI byte string](http://solidity.readthedocs.io/en/latest/abi-spec.html) containing the data of the function call on a contract, or the initialization code of a contract-creation transaction.
++ `gasPrice` - `Number|String|BN|BigNumber`: (optional) The price of gas for this transaction in `wei`.
+
+`BlockNumberOrHash` parameters can be one of the following:
+
++ `Number` : Block number
++ `0` : The genesis block 
++ `earliest` : The genesis block
++ `latest`:The latest block
++ `String`: Block hash
+
+**Returns**
+
+`Promise` returns `String`: The returned data of the call(hex string), e.g. a smart contract functions return value.

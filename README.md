@@ -7,12 +7,12 @@
 A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 
 
-## Table of Contents
+## Table of contents
 
 * [Install](#install)
 * [Usage](#usage)
 * [Web3 method supported](#web3-method-supported)
-* [SendTransaction](#sendtransaction)
+* [Send transaction](#send-transaction)
 * [API doc](#api-doc)
 * [Play with multi-clause](#play-with-multi-clause)
 * [FAQ](#faq)
@@ -69,7 +69,6 @@ web3 instance
 │   ├── getTransactionReceipt
 │   ├── sendTransaction
 │   ├── sendSignedTransaction
-│   ├── sign
 │   ├── call
 │   ├── estimateGas
 │   ├── getPastLogs
@@ -91,7 +90,7 @@ web3 instance
 
 ```
 
-## SendTransaction
+## Send Transaction
 
 In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `eth_sendTransaction` but there is another way to sign a transaction. 
 

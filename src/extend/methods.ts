@@ -46,6 +46,13 @@ const extendMethods = function(web3: any) {
         call: "eth_getChainTag",
         params: 0,
       }),
+      new web3.extend.Method({
+        name: "getPastLogs",
+        call: "eth_getLogs",
+        params: 1,
+        inputFormatter: [web3.extend.formatters.inputLogFormatter],
+        outputFormatter: web3.extend.formatters.outputLogFormatter,
+      }),
     ],
   });
 };

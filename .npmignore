@@ -4,3 +4,5 @@ test/
 *.tgz
 tsconfig.json
 tslint.json
+index.html
+.nojekyll

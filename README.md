@@ -7,19 +7,18 @@
 A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 
 
-## Table of Contents
+## Table of contents
 
 * [Install](#install)
 * [Usage](#usage)
 * [Web3 method supported](#web3-method-supported)
-* [SendTransaction](#sendtransaction)
-* [API doc](#api-doc)
+* [Send transaction](#send-transaction)
+* [Documentation](https://vechain.github.io/thorify)
 * [Play with multi-clause](#play-with-multi-clause)
 * [FAQ](#faq)
   * [Method not supported](#method-not-supported)
 * [Notes](#notes)
 * [Compatibility](#compatibility)
-* [Notes](#notes)
 * [License](#License)
 
 ## Install
@@ -69,7 +68,6 @@ web3 instance
 │   ├── getTransactionReceipt
 │   ├── sendTransaction
 │   ├── sendSignedTransaction
-│   ├── sign
 │   ├── call
 │   ├── estimateGas
 │   ├── getPastLogs
@@ -91,7 +89,7 @@ web3 instance
 
 ```
 
-## SendTransaction
+## Send Transaction
 
 In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `eth_sendTransaction` but there is another way to sign a transaction. 
 
@@ -102,14 +100,14 @@ The APIs that follows the mechanism are:
 + `contract.deploy.send()`
 + `contract.methods.myMethod.send()`
 
-## API doc
+## Documentaiton
 
-[API.md](doc/api.md)
+[API Reference](https://vechain.github.io/thorify)
 
 ## Play with multi-clause
 
 1. [thor-model-kit](https://github.com/vechain/thor-model-kit) supports multi-clause and sign transaction
-2. send signed transaction using [sendSignedTransaction](doc/api.md#send-raw-transaction)
+2. send signed transaction using [sendSignedTransaction](https://vechain.github.io/thorify/#/?id=send-signed-transaction)
 
 ## FAQ
 

@@ -1,19 +1,9 @@
-# API
 
-## Table of contents
+[README](https://raw.githubusercontent.com/vechain/thorify/master/README.md ':include')
 
-* [Get account balance ](#get-account-balance)
-* [Get account VTHO balance](#get-account-vtho-balance)
-* [Get chainTag](#get-chain-tag)
-* [Get block number](#get-block-number)
-* [Get block](#get-block)
-* [Get transaction ](#get-transaction )
-* [Get transaction receipt](#get-transaction-receipt)
-* [Send raw transaction](#send-raw-transaction)
-* [Send transaction](#send-transaction)
-* [Contract call](#contract-call)
+## API reference
 
-## Get account balance
+### Get account balance
 
 Query the balance of an address.
 
@@ -42,7 +32,7 @@ eth.getBalance(address[,blockNumberOrHash]).then(result => {
 
 `Promise` returns `String`: The balance of account in `wei`(number in string)
 
-## Get account VTHO balance
+### Get account VTHO balance
 
 Query the VTHO balance of an address
 
@@ -70,7 +60,7 @@ web3Instance.eth.getEnergy(address[,blockNumberOrHash]).then(result => {
 
 `Promise` returns `String`: The balance of VTHO in `wei`(number in string)
 
-## Get chain tag
+### Get chain tag
 
 Return genesis block information , chain tag is the last byte of the genesis block ID.
 
@@ -85,7 +75,7 @@ web3Instance.eth.getChainTag().then(result => {
 
 `Promise` returns `String`: The chain tag
 
-## Get block number
+### Get block number
 
 Query the current best block number
 
@@ -100,7 +90,7 @@ web3Instance.eth.getBlockNumber().then(result => {
 
 `Promise` returns `Number`: The current best block number
 
-## Get block
+### Get block
 
 Get a block matching the block number or block hash.
 
@@ -157,7 +147,7 @@ web3Instance.eth.getBlock(blockNumberOrHash).then(result => {
 + `isTrunk` - `Boolean`: Whether the block is in trunk
 + `transactions` - `Array of String`: Array of transaction IDs
 
-## Get transaction 
+### Get transaction 
 
 Get a transaction matching transaction Hash.
 
@@ -220,7 +210,7 @@ web3Instance.eth.getTransaction(transactionID).then(result => {
 + `blockNumber` - `Unit32`: Number of block 
 + `blockTimestamp` - `Uint64`: Unix timestamp of block
 
-## Get transaction receipt
+### Get transaction receipt
 
 Get a transaction receipt matching transaction Hash.
 
@@ -307,9 +297,9 @@ web3Instance.eth.getTransactionReceipt(transactionHash).then(result => {
 + `recipient` - `String`: Address that receives tokens
 + `amount` - `String`: Amount of vet in `wei`
 
-## Send raw transaction
+### Send signed transaction
 
-Send a raw transaction to the network.
+Send a signed transaction to the network.
 
 ``` javascript
 eth.sendSignedTransaction(signedTransaction).then(result => {
@@ -332,9 +322,17 @@ eth.sendSignedTransaction(signedTransaction).then(result => {
 + `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
 
 
-## Send transaction
+### Send transaction
 
-!> **Before starting with sendTransaction, please be sure you have read the `sendTransaction` part in [README.md](/README.md#send-transaction)**
+?> In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `eth.sendTransaction` but there is another way to sign a transaction. 
+
+?> In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#eth-accounts), it gives the opportunity to add your private-key, stored in your runtime context (In Node.js context, it's stored in memory while in Browser context, it's stored in memory/local storage), to accounts module. When you are trying to send a transaction, the module will check the private key associated with from field. Once the private key and from have been matched, the module will sign the transaction.
+
+The APIs that follows the mechanism are:
+
++ `web3.eth.sendTransaction()`
++ `contract.deploy.send()`
++ `contract.methods.myMethod.send()`
 
 ``` javascript
 // Initiate the web3 instance
@@ -383,7 +381,7 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
 !> **This is not the only way for developers signing a transaction! <br>
 We encourage developers find a proper way to store private key and sign a transaction.**
 
-## Contract call
+### Contract call
 
 Executes a message call, which is directly executed in the VM based on the specified block's state, but he never committed to the blockchain.
 
@@ -419,7 +417,7 @@ web3Instance.eth.call(callObject [, blockNumberOrHash]).then(result => {
 
 `Promise` returns `String`: The returned data of the call(hex string), e.g. a smart contract function returned value.
 
-## Estimate Gas
+### Estimate Gas
 
 Executes a message call or transaction and returns the amount of the gas used.
 

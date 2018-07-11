@@ -13,13 +13,12 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 * [Usage](#usage)
 * [Web3 method supported](#web3-method-supported)
 * [Send transaction](#send-transaction)
-* [API.md](doc/api.md)
+* [Documentation](https://vechain.github.io/thorify)
 * [Play with multi-clause](#play-with-multi-clause)
 * [FAQ](#faq)
   * [Method not supported](#method-not-supported)
 * [Notes](#notes)
 * [Compatibility](#compatibility)
-* [Notes](#notes)
 * [License](#License)
 
 ## Install
@@ -101,14 +100,14 @@ The APIs that follows the mechanism are:
 + `contract.deploy.send()`
 + `contract.methods.myMethod.send()`
 
-## API doc
+## Documentaiton
 
-[API.md](doc/api.md)
+[API Reference](https://vechain.github.io/thorify)
 
 ## Play with multi-clause
 
 1. [thor-model-kit](https://github.com/vechain/thor-model-kit) supports multi-clause and sign transaction
-2. send signed transaction using [sendSignedTransaction](doc/api.md#send-raw-transaction)
+2. send signed transaction using [sendSignedTransaction](https://vechain.github.io/thorify/#/?id=send-signed-transaction)
 
 ## FAQ
 

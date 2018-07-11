@@ -32,9 +32,9 @@ eth.getBalance(address[,blockNumberOrHash]).then(result => {
 
 `Promise` returns `String`: The balance of account in `wei`(number in string)
 
-### Get account VTHO balance
+### Get account energy(VTHO) balance
 
-Query the VTHO balance of an address
+Query the energy(VTHO) balance of an address
 
 ``` javascript
 web3Instance.eth.getEnergy(address[,blockNumberOrHash]).then(result => {
@@ -198,13 +198,13 @@ web3Instance.eth.getTransaction(transactionID).then(result => {
 + `meta` - `Meta Object`
 + `blockNumber`: Same as `meta.blockNumer`
 
-`Clause Object`
+`Clause Object`:
 
 + `to` - `String|Null`: Recipient of clause ,`Null` for contract deployment (byte32) 
 + `value` - `String`: Hex form of token to be transferred
 + `data` - `String`: Input data (bytes)
 
-`Meta Object`
+`Meta Object`:
 
 + `blockID` - `String`: Identifier of the block(bytes32)
 + `blockNumber` - `Unit32`: Number of block 
@@ -265,13 +265,13 @@ web3Instance.eth.getTransactionReceipt(transactionHash).then(result => {
 + `reward` - `String`: Hex form of amount of reward
 + `reverted` - `Boolean`: true means the transaction was reverted
 + `meta` - `Meta Object`
-+ `outputs` - `Array of TransactionReceipt Output Object`: Clause"s corresponding output
++ `outputs` - `Array of TransactionReceipt Output Object`: Clause's corresponding output
 + `blockNumber`: Same as `block.number`
 + `blockHash`: Same as `block.id`
 + `transactionHash`: Same as `tx.id`
 + `status`: `0x0` when `revert` is true and `0x1` when `revert` is false
 
-`Meta Object`
+`Meta Object`:
 
 + `blockID` - `String`: Identifier of the block(bytes32)
 + `blockNumber` - `Unit32`: Number of block 
@@ -279,19 +279,19 @@ web3Instance.eth.getTransactionReceipt(transactionHash).then(result => {
 + `txID` - `String`: Identifier of the transaction
 + `txOrigin` - `String`: The one who signed the transaction
 
-` TransactionReceipt Output Object`
+` TransactionReceipt Output Object`:
 
 + `contractAddress` - `String`: Deployed contract address, if the corresponding clause is a contract deployment clause
 + `events` - `Array of Event Log Object`: Event log objects produced during clause execution
 + `transfer` - `Array of Transfer Object`: Transfer produced during clause execution
 
-`Event Log Object`
+`Event Log Object`:
 
 + `address` - `String`: The address of contract which produces the event (bytes20)
 + `topics` - `Array of String`: an array with max 4 32 Byte topics, topic 1-3 contains indexed parameters of the log.
 + `data` - `String`: The data containing non-indexed log parameter.
 
-`Transfer Object`
+`Transfer Object`:
 
 + `sender` - `String`: Adress that sends tokens
 + `recipient` - `String`: Address that receives tokens
@@ -436,3 +436,75 @@ eth.estimateGas(callObject).then(result => {
 
 `Promise` returns `Number|null`: the used gas for the simulated call/transaction, `null` when execution reverted.
 
+### Get past logs
+
+Gets past logs, matching the given options.
+
+``` javascript
+eth.getPastLogs(options).then(result => {
+	console.log(result)
+})
+>[{
+    topics:
+      [ '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+        '0x0000000000000000000000004f6fc409e152d33843cf4982d414c1dd0879277e',
+        '0x0000000000000000000000009a1e4bf6c41f50c399a128ab588fe4e4883bd872' ],
+    data: '0x000000000000000000000000000000000000000000000a968163f0a57b400000',
+    meta:
+      { blockID: '0x000093b394e9acf732b34a42fe136cb2b676b2bce65ac5772503885b9137ac06',
+        blockNumber: 37811,
+        blockTimestamp: 1530392510,
+        txID: '0xb320dbba768654ac7ff4625149964c8f468603a554f2d36d26c6d4b808b06a64',
+        txOrigin: '0x4f6fc409e152d33843cf4982d414c1dd0879277e' },
+    blockNumber: 37811,
+    blockHash: '0x000093b394e9acf732b34a42fe136cb2b676b2bce65ac5772503885b9137ac06',
+    transactionHash: '0xb320dbba768654ac7ff4625149964c8f468603a554f2d36d26c6d4b808b06a64'
+  },{...}]
+```
+
+**Parameters**
+
+- `options` - `Filter Option Object`
+
+`Filter Option Object`:
+
++ `fromBlock` - `Number`: The number of the earliest block.If not set "0" will be set by default.
++ `toBlock` - `Number`: The number of the latest block .If not set "best block number" will be set by default.
++ `address` - `String`: An address to only get logs from particular account.
++ `topics` - `Array`: An array of values which must each appear in the log entries. The order is important, if you want to leave topics out use `null`, e.g. `[null, '0x12...']`. You can also pass an array for each topic with options for that topic e.g. `[null, ['option1', 'option2']]`
++ `options` - `Option Object`: Result pagination option, introduced by thor's API
++ `range` - `Range Object`: Range options for filter, introduced by thor's API, `fromBlock` and `toBlock` will be ignored if `Range Object` is valid
++ `order`- `String`: Order option, `DESC` or `ASC`, `ASC` by default
+
+`Option Object`:
+
++ `offset` - `Number`: Start cursor in result 
++ `limit` - `Number`: Constrain the number of result returned
+
+`Range Object`:
+
++ `unit` - `String`: `block`(block number) or `time`(timestamp)
++ `from` - `Number`
++ `to` - `Number` 
+
+**Returns**
+
+`Promise` returns `Array of Log Objects`
+
+`Array of Log Objects`:
+
++ `address` - `String`: From which this event originated from
++ `data` - `String`: The data containing non-indexed log parameter
++ `topics` - `Array`: An array with max 4 32 Byte topics, topic 1-3 contains indexed parameters of the log
++ `meta` - `Meta Object`
++ `blockNumber`: Same as `block.number`
++ `blockHash`: Same as `block.id`
++ `transactionHash`: Same as `tx.id`
+
+`Meta Object`:
+
++ `blockID` - `String`: Identifier of the block(bytes32) this event was created in
++ `blockNumber` - `Unit32`: Number of block  this event was created in
++ `blockTimestamp` - `Uint64`: Unix timestamp of block
++ `txID` - `String`: Identifier of the transaction this event was created in
++ `txOrigin` - `String`: The one who signed the transaction

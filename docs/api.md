@@ -491,7 +491,7 @@ web3Instance.eth.getPastLogs(options).then(result => {
 
 `Promise` returns `Array of Log Objects`
 
-`Array of Log Objects`:
+`Log Object`:
 
 + `address` - `String`: From which this event originated from
 + `data` - `String`: The data containing non-indexed log parameter
@@ -734,6 +734,97 @@ none
 
 `String`: The encoded ABI byte code to send via a transaction or call.
 
+#### GetPastEvents
+
+Gets past events for this contract
+
+``` javascript
+
+contractInstance.getPastEvents(event[, options]).then(logs =>{
+  console.log(logs)
+})
+> [{
+   meta:
+   { blockID: '0x00003ac13ec041f0ea2f879ccfcbb615133cfdfcbe5b43a74a6bf324c3bed3f2',
+     blockNumber: 15041,
+     blockTimestamp: 1530164810,
+     txID: '0x316072e16a794a8f385e9f261a102c49947aa82a0355006289707b667e841cdc',
+     txOrigin: '0xe59d475abe695c7f67a8a2321f33a856b0b4c71d' },
+  blockNumber: 15041,
+  blockHash: '0x00003ac13ec041f0ea2f879ccfcbb615133cfdfcbe5b43a74a6bf324c3bed3f2',
+  transactionHash: '0x316072e16a794a8f385e9f261a102c49947aa82a0355006289707b667e841cdc',
+  returnValues:
+   Result {
+     '0': '0xe59D475Abe695c7f67a8a2321f33A856B0B4c71d',
+     '1': '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+     '2': '1000000000000000000000000',
+     _from: '0xe59D475Abe695c7f67a8a2321f33A856B0B4c71d',
+     _to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+     _value: '1000000000000000000000000' },
+  event: 'Transfer',
+  signature: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+  raw:
+   { data: '0x00000000000000000000000000000000000000000000d3c21bcecceda1000000',
+     topics:
+      [ '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+        '0x000000000000000000000000e59d475abe695c7f67a8a2321f33a856b0b4c71d',
+        '0x0000000000000000000000007567d83b7b8d80addcb281a71d54fc7b3364ffed' ] 
+    } 
+  },{...}]
+
+```
+
+**Parameter**
+
+- `event` - `String`: The name of the event in the contract, or "allEvents" to get all events
+
+- `options` - `Filter Option Object`
+
+`Filter Option Object`:
+
++ `filter` - `Object` (optional): Lets you filter events by indexed parameters, e.g. `{filter: {myNumber: [12,13]}}` means all events where “myNumber” is 12 or 13.
++ `fromBlock` - `Number`: The number of the earliest block.If not set "0" will be set by default.
++ `toBlock` - `Number`: The number of the latest block .If not set "best block number" will be set by default.
++ `topics` - `Array`: This allows manually setting the topics for the event filter. If given the filter property and event signature, (topic[0]) will not be set automatically
++ `options` - `Option Object`: Result pagination option, introduced by thor's API
++ `range` - `Range Object`: Range options for filter, introduced by thor's API, `fromBlock` and `toBlock` will be ignored if `Range Object` is valid
++ `order`- `String`: Order option, `DESC` or `ASC`, `ASC` by default
+
+`Option Object`:
+
++ `offset` - `Number`: Start cursor in result 
++ `limit` - `Number`: Constrain the number of result returned
+
+`Range Object`:
+
++ `unit` - `String`: `block`(block number) or `time`(timestamp)
++ `from` - `Number`
++ `to` - `Number`
+
+**Returns**
+
+`Promise` returns `Array of Log Objects` matching the given event name and filter
+
+`Log Object`:
+
++ `event` - `String`: The event name.
++ `signature` - `String|Null`: The event signature, `null` if it’s an anonymous event.
++ `returnValues` - `Object`: The return values coming from the event, e.g. `{myVar: 1, myVar2: '0x234...'}`
++ `address` - `String`: From which this event originated from
++ `raw.data` - `String`: The data containing non-indexed log parameter
++ `raw.topics` - `Array`: An array with max 4 32 Byte topics, topic 1-3 contains indexed parameters of the log
++ `meta` - `Meta Object`
++ `blockNumber`: Same as `block.number`
++ `blockHash`: Same as `block.id`
++ `transactionHash`: Same as `tx.id`
+
+`Meta Object`:
+
++ `blockID` - `String`: Identifier of the block(bytes32) this event was created in
++ `blockNumber` - `Unit32`: Number of block  this event was created in
++ `blockTimestamp` - `Uint64`: Unix timestamp of block
++ `txID` - `String`: Identifier of the transaction this event was created in
++ `txOrigin` - `String`: The one who signed the transaction
 
 ## **Links**
 

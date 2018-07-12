@@ -8,7 +8,7 @@
 Query the balance of an address.
 
 ``` javascript
-eth.getBalance(address[,blockNumberOrHash]).then(result => {
+web3Instance.eth.getBalance(address[,blockNumberOrHash]).then(result => {
 	console.log(result)
 })
 > "1000000000000000000"
@@ -302,7 +302,7 @@ web3Instance.eth.getTransactionReceipt(transactionHash).then(result => {
 Send a signed transaction to the network.
 
 ``` javascript
-eth.sendSignedTransaction(signedTransaction).then(result => {
+web3Instance.eth.sendSignedTransaction(signedTransaction).then(result => {
 	console.log(result)
 })
 > "TransactionID will be displayed if sent successfully"
@@ -316,7 +316,7 @@ eth.sendSignedTransaction(signedTransaction).then(result => {
 
 `PromiseEvent`(same as web3): A promise combined event emitter. Will be resolved when the transaction receipt is available. Additionally the following events are available:
 
-+ `transactionHash` returns `String`: Is fired right after the transaction is send and a transaction hash is available.
++ `transactionHash` returns `String`: Is fired right after the transaction is sent and a transaction hash is available.
 + `receipt` returns `TransactionReceipt Object`: Is fired when the transaction receipt is available.
 + `confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
 + `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
@@ -324,15 +324,15 @@ eth.sendSignedTransaction(signedTransaction).then(result => {
 
 ### Send transaction
 
-?> In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `eth.sendTransaction` but there is another way to sign a transaction. 
+?> In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `web3Instance.eth.sendTransaction` but there is another way to sign a transaction. 
 
 ?> In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#eth-accounts), it gives the opportunity to add your private-key, stored in your runtime context (In Node.js context, it's stored in memory while in Browser context, it's stored in memory/local storage), to accounts module. When you are trying to send a transaction, the module will check the private key associated with from field. Once the private key and from have been matched, the module will sign the transaction.
 
 The APIs that follows the mechanism are:
 
 + `web3.eth.sendTransaction()`
-+ `contract.deploy.send()`
-+ `contract.methods.myMethod.send()`
++ `contractInstance.deploy.send()`
++ `contractInstance.methods.myMethod.send()`
 
 ``` javascript
 // Initiate the web3 instance
@@ -346,7 +346,7 @@ web3Instance.eth.sendTransaction({
 // Transaction receipt will be displayed
 
 // Initiate the contract instance
-ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100).send({
+ERC20ContractInstance.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100).send({
  from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
 }).then(ret=>console.log(ret));
 // Transaction receipt will be displayed
@@ -356,23 +356,23 @@ ERC20Contract.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100)
 
 `Transaction Object` - The transaction object to send:
   
-+ `from` - `String|Number`: Either The address of transaction sender"s account or the address/index of a local wallet in `web3.eth.accounts.wallet `.
++ `from` - `String|Number`: Either The address of transaction sender"s account or the address/index of a local wallet in `web3Instance.eth.accounts.wallet `.
 + `to` - `String`: (optional) The destination address of the message, left undefined for a contract-creation transaction.
 + `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
 + `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is going to be refunded right after the transaction execution).
 + `data` - `String`: (optional) Either the [ABI byte string](http://solidity.readthedocs.io/en/latest/abi-spec.html) containing the data of the function call on a contract, or the initialization code of a contract-creation transaction.
 + `nonce` - `Number`: (optional) A random 64-bit scalar value that is different from ethereum"s nonce which is a transaction count. 
 + `chainTag` - `Number`: (optional) **The last byte** of the genesis block ID representing the identity of a chain.
-+ `blockRef` - `String`: (optional, by default, the first 8 bytes of **best block** ID). The BlockRef (an eight-byte array) includes two parts: the first four bytes contains the block height (number) and the rest four bytes is part of the referred block’s ID. If the referred block is future block, blockNumber + "00000000" should be added.
-+ `expiration` - `Number`: (optional, Default 0, Suggested 720) Number of  blocks that can be used to specify when the transaction expires. Specifically, expiration+blockRef defines the height of the latest block that the transaction can be packed into.
-+ `gasPriceCoef` - `Number`: (optional, by default 0, Suggested 128, with the range of [0,256) Coefficient that is used to calculate the total gas price.
++ `blockRef` - `String`: (optional), by default, the first 8 bytes of **best block** ID). The BlockRef (an eight-byte array) includes two parts: the first four bytes contains the block height (number) and the rest four bytes is part of the referred block’s ID. If the referred block is future block, blockNumber + "00000000" should be added.
++ `expiration` - `Number`: (optional), Default 0, Suggested 720) Number of  blocks that can be used to specify when the transaction expires. Specifically, expiration+blockRef defines the height of the latest block that the transaction can be packed into.
++ `gasPriceCoef` - `Number`: (optional), by default 0, Suggested 128, with the range of [0,256) Coefficient that is used to calculate the total gas price.
 + `dependsOn` - `String`: (optional) ID of the transaction on which the current transaction depends. When it's set this transaction will be packed after the depended transaction is executed successfully (in this case, the `revert` in depended transaction receipt must be `false`).
 
 **Returns**
 
 `PromiseEvent`(same as web3): A promise combined event emitter. Will be resolved when the transaction receipt is available. Additionally the following events are available:
 
-+ `transactionHash` returns `String`: Is fired right after the transaction is send and a transaction hash is available.
++ `transactionHash` returns `String`: Is fired right after the transaction is sent and a transaction hash is available.
 + `receipt` returns `TransactionReceipt Object`: Is fired when the transaction receipt is available.
 + `confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
 + `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
@@ -389,7 +389,7 @@ Executes a message call, which is directly executed in the VM based on the speci
 web3Instance.eth.call(callObject [, blockNumberOrHash]).then(result => {
 	console.log(result)
 })
-> "result will be displayed"
+> "0x00000000000000000000000000000000000000000000000000000000000000"
 ```
 
 **Parameters**
@@ -422,7 +422,7 @@ web3Instance.eth.call(callObject [, blockNumberOrHash]).then(result => {
 Executes a message call or transaction and returns the amount of the gas used.
 
 ``` javascript
-eth.estimateGas(callObject).then(result => {
+web3Instance.eth.estimateGas(callObject).then(result => {
 	console.log(result)
 })
 > 1000
@@ -441,7 +441,7 @@ eth.estimateGas(callObject).then(result => {
 Gets past logs, matching the given options.
 
 ``` javascript
-eth.getPastLogs(options).then(result => {
+web3Instance.eth.getPastLogs(options).then(result => {
 	console.log(result)
 })
 >[{
@@ -508,3 +508,243 @@ eth.getPastLogs(options).then(result => {
 + `blockTimestamp` - `Uint64`: Unix timestamp of block
 + `txID` - `String`: Identifier of the transaction this event was created in
 + `txOrigin` - `String`: The one who signed the transaction
+
+### Contract
+
+The `web3Instance.eth.Contract` object makes it easy to interact with smart contracts on the blockchain. When you create a new contract object you give it the json interface of the respective smart contract and web3 will auto convert all calls into low level ABI calls over RESTful HTTP API for you.
+
+This allows you to interact with smart contracts as if they were JavaScript objects.
+
+#### New contract
+
+Creates a new contract instance with all its methods and events defined in its [json interface](https://web3js.readthedocs.io/en/1.0/glossary.html#glossary-json-interface) object.
+
+``` javascript
+const contractInstance = new web3Instance.eth.Contract(jsonInterface[, address][, options]);
+```
+
+**Parameters**
+
++ `jsonInterface` - `Object`: The json interface(ABI Description) for the contract to instantiate
++ `address` - `String`(optional): The address of the smart contract to call, can be added later using `contractInstance.options.address = '0x1234..`
++ `options` - `Option Object`(optional): The default options of the contract. Some are used as fallbacks for [call](#call), [send](#send) and [encodeABI](#encodeabi):
+  + `from` - `String`: The address transactions should be made from
+  + `data` - `String`: The byte code of the contract. Used when the contract gets deployed
+  + `gas` - `Number`: The maximum gas provided for a transaction
+
+**Returns**
+
+`Contract Instance`: The contract instance with all its methods and events
+
++ `options` - `Object`:
+  + `address` - `String`: The address for this contract, or `null` if it’s not yet set.All transactions generated by web3.js from this contract will contain this address as the `to`
+  + `jsonInterface` - `Array`: The json interface for this contract. Re-setting this will regenerate the methods and events of the contract instance
+
+``` javascript
+
+  console.log(contractInstance.options.address)
+  console.log(contractInstance.options.jsonInterface)
+  > "0x1234567890123456789012345678901234567890"
+  > [...]
+
+  contractInstance.options.address = "0x1234567890123456789012345678901234567890"
+  contractInstance.options.jsonInterface = [...]
+
+```
+
+#### Clone contract
+
+Clones the current contract instance.
+
+``` javascript
+
+const contractInstance = new web3Instance.eth.Contract(jsonInterface[, address][, options]);
+const contract2 = contractInstance.clone()
+console.log(contract2.options.address === contractInstance.options.address)
+> true
+contract2.options.address = "another contract address"
+console.log(contract2.options.address === contractInstance.options.address)
+> false
+```
+
+**Parameters**
+
+none
+
+**Returns**
+
+`Contract Instance`: The new contract instance
+
+#### Deploy contract
+
+Call this function will create a `Transaction Object` for deploying the contract to the blockchain. 
+
+``` javascript
+
+contractInstance.deploy(options)
+
+```
+
+**Parameters**
+
++ `options` - `Object`: The options used for deployment
+  + `data` - `String`: The byte code of the contract
+  + `arguments` - `Array` (optional): The arguments which get passed to the constructor on deployment
+
+**Returns**
+
+`Transaction Object`: The well prepared transaction object, the object will contain the requirements that needed for the transaction to execute [call](#call), [send](#send), [estimateGas](#estimategas), [encodeABI](#encodeabi)
++ `arguments` - `Array`: The arguments passed to the method before. They can be changed
++ `send` - `Function`: Send a transaction to the blockchain(can alter the state), in this case it will deploy the contract. The promise will resolve with the new contract instance, instead of the receipt
++ `estimateGas` - `Function`: Will estimate the gas used for the transaction executed on the blockchain, in this case it's deploy a contract
++ `encodeABI` - `Function`: Encodes the ABI for the transaction, in this case it's contract data + constructor parameters
+
+#### Contract methods
+
+Creates a `Transaction Object` for that method, which then can execute [call](), [send](), [estimateGas](), [encodeABI]().
+
+``` javascript
+
+contractInstance.methods.myMethod([param1[, param2[, ...]]])
+
+```
+
+The methods are also available through:
+
++ The name: `contractInstance.methods.myMethod(123)`
++ The name with parameters: `contractInstance.methods['myMethod(uint256)'](123)`
++ The signature: `contractInstance.methods['0x58cf5f10'](123)`
+
+This allows calling functions with same name but different parameters from the JavaScript contract object.
+
+**Parameters**
+
+Parameters of any method depend on the smart contracts methods, defined in the [JSON interface](https://web3js.readthedocs.io/en/1.0/glossary.html#glossary-json-interface)
+
+**Returns**
+
+`Transaction Object`: The well prepared transaction object, the object will contain the requirements that needed for the transaction to execute [call](#call), [send](#send), [estimateGas](#estimategas), [encodeABI](#encodeabi)
++ `arguments` - `Array`: The arguments passed to the method before. They can be changed
++ `call` - `Function`: Call the “constant” method and execute its smart contract method in the EVM without sending a transaction (can't alter the smart contract state)
++ `send` - `Function`: Send a transaction to the blockchain(can alter the state)
++ `estimateGas` - `Function`: Estimate the gas used for the transaction executed on the blockchain
++ `encodeABI` - `Function`: Encodes the ABI for this method. This can be send using a transaction, call the method or passing into another smart contracts method as argument
+
+For details to the methods see the documentation below.
+
+#### Call
+
+Call the “constant” method and execute its smart contract method in the EVM without sending a transaction, can't alter the smart contract state.
+
+``` javascript
+
+contractInstance.methods.myMethod([param1[, param2[, ...]]]).call(callObject[, blockNumberOrHash])
+
+```
+
+**Parameters**
+
+- `callObject` - `Transaction Object`
+- `blockNumberOrHash` - `Number | String`(optional):  If you pass this parameter it will not use the default block set with `latest`
+
+`Transaction Object`:
++ `from` - `String|Number`:(optional) Either The address of transaction sender"s account or the address/index of a local wallet in `web3.eth.accounts.wallet `.
++ `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
++ `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is going to be refunded right after the transaction execution).
++ `gasPrice` - `Number|String|BN|BigNumber`: (optional) The price of gas for this transaction in `wei`.
+
+`BlockNumberOrHash` parameters can be one of the following:
+
++ `Number` : Block number
++ `0` : The genesis block 
++ `earliest` : The genesis block
++ `latest`:The latest block
++ `String`: Block hash
+
+**Returns**
+
+`Promise` returns `Mixed`: The return value(s) of the smart contract method. If it returns a single value, it’s returned as is. If it has multiple return values they are returned as an object with properties and indices:
+
+#### Send
+
+!>Send need account, please read [Send Transaction](#send-transaction-1) part first!
+
+Send a transaction to the smart contract and execute its method. Note this can alter the smart contract state
+
+
+``` javascript
+
+contractInstance.methods.myMethod([param1[, param2[, ...]]]).send(transactionObject[, blockNumberOrHash])
+
+```
+
+**Parameters**
+
+`Transaction Object` - The transaction object to send:
+  
++ `from` - `String|Number`: Either The address of transaction sender"s account or the address/index of a local wallet in `web3Instance.eth.accounts.wallet `.
++ `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
++ `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is going to be refunded right after the transaction execution).
++ `nonce` - `Number`: (optional) A random 64-bit scalar value that is different from ethereum"s nonce which is a transaction count. 
++ `chainTag` - `Number`: (optional) **The last byte** of the genesis block ID representing the identity of a chain.
++ `blockRef` - `String`: (optional), by default, the first 8 bytes of **best block** ID). The BlockRef (an eight-byte array) includes two parts: the first four bytes contains the block height (number) and the rest four bytes is part of the referred block’s ID. If the referred block is future block, blockNumber + "00000000" should be added.
++ `expiration` - `Number`: (optional), Default 0, Suggested 720) Number of  blocks that can be used to specify when the transaction expires. Specifically, expiration+blockRef defines the height of the latest block that the transaction can be packed into.
++ `gasPriceCoef` - `Number`: (optional), by default 0, Suggested 128, with the range of [0,256) Coefficient that is used to calculate the total gas price.
++ `dependsOn` - `String`: (optional) ID of the transaction on which the current transaction depends. When it's set this transaction will be packed after the depended transaction is executed successfully (in this case, the `revert` in depended transaction receipt must be `false`).
+
+**Returns**
+
+`PromiseEvent`(same as web3): A promise combined event emitter. Will be resolved when the transaction receipt is available. Additionally the following events are available:
+
++ `transactionHash` returns `String`: Is fired right after the transaction is sent and a transaction hash is available.
++ `receipt` returns `TransactionReceipt Object`: Is fired when the transaction receipt is available.
++ `confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
++ `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
+
+#### EstimateGas
+
+Estimate the gas a method execution will take when executed in the EVM without. The estimation can differ from the actual gas used when later sending a transaction, as the state of the smart contract can be different at that time
+
+``` javascript
+
+contractInstance.methods.myMethod([param1[, param2[, ...]]]).estimateGas(callObject)
+
+```
+
+**Parameters**
+
+- `callObject` - `Transaction Object`: same as [Call](#call)
+
+#### EncodeABI
+
+Encodes the ABI for this method. This can be send using a transaction, call the method or passing into another smart contracts method as argument
+
+``` javascript
+
+const data = contractInstance.methods.myMethod([param1[, param2[, ...]]]).encodeABI()
+console.log(data)
+> "0xa9059cbb000000000000000000000000e59d475abe695c7f67a8a2321f33a856b0b4c71d0000000000000000000000000000000000000000000000000000000000000064"
+```
+
+**Parameters**
+
+none
+
+**Returns**
+
+`String`: The encoded ABI byte code to send via a transaction or call.
+
+
+## **Links**
+
+### [**VeChain Thor**](https://github.com/vechain/thor)
+
+A general purpose blockchain highly compatible with Ethereum's ecosystem
+
+### [**Thor Model Kit**](https://github.com/vechain/thor-model-kit)
+
+Typescript library defines VeChain Thor data models, to aid DApp development
+
+### [**Web3 Gear**](https://github.com/vechain/web3-gear)
+
+Proxy Thor's RESTful API to Eth JSON-RPC, to support Remix, Truffle and more

@@ -601,7 +601,7 @@ contractInstance.deploy(options)
 
 #### Contract methods
 
-Creates a `Transaction Object` for that method, which then can execute [call](), [send](), [estimateGas](), [encodeABI]().
+Creates a `Transaction Object` for that method, which then can execute [call](#call), [send](#send), [estimateGas](#estimategas), [encodeABI](#encodeabi).
 
 ``` javascript
 

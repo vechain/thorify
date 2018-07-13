@@ -102,7 +102,7 @@ The APIs that follows the mechanism are:
 
 ## Documentaiton
 
-[API Reference](https://vechain.github.io/thorify)
+[API Reference](https://vechain.github.io/thorify/#/?id=api-reference)
 
 ## Play with multi-clause
 

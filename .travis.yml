@@ -18,6 +18,7 @@ deploy:
   provider: npm
   email: tony.li@vechain.com
   api_key: $NPM_TOKEN
+  skip_cleanup: true
   on:
     tags: true
     node: '8'

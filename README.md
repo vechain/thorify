@@ -41,7 +41,7 @@ web3.eth.getBlock("latest").then(res => console.log(res));
 // Best block info will be displayed
 ```
 
-If you would like to write code in ES5, check below for the initialization code. 
+If you would like to write code in ES5, check below for the initialization code.
 
 ``` javascript
 // ES5 style
@@ -91,7 +91,7 @@ web3 instance
 
 ## Send Transaction
 
-In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `eth_sendTransaction` but there is another way to sign a transaction. 
+In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `eth_sendTransaction` but there is another way to sign a transaction.
 
 In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#eth-accounts), it gives the opportunity to add your private-key, stored in your runtime context (In Node.js context, it's stored in memory while in Browser context, it's stored in memory/local storage), to accounts module. When you are trying to send a transaction, the module will check the private key associated with from field. Once the private key and from have been matched, the module will sign the transaction.
 The APIs that follows the mechanism are:
@@ -100,7 +100,7 @@ The APIs that follows the mechanism are:
 + `contract.deploy.send()`
 + `contract.methods.myMethod.send()`
 
-## Documentaiton
+## Documentation
 
 [API Reference](https://vechain.github.io/thorify/#/?id=api-reference)
 
@@ -123,7 +123,7 @@ There is a possibility that when you trying to call `sendTransaction` or `send` 
 
 ## Compatibility
 
-   Currently, `thorify` is compatible with `web3@1.0*`. 
+   Currently, `thorify` is compatible with `web3@1.0*`.
 
 ## License
 

@@ -13,5 +13,11 @@ addons:
       - g++-4.8
 after_script:
   - npm run coverall
-after_success:
   - bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: npm
+  email: tony.li@vechain.com
+  api_key: $NPM_TOKEN
+  on:
+    tags: true
+    node: '8'

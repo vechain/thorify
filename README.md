@@ -25,6 +25,7 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 
 ``` bash
 npm install --save thorify
+npm install --save web3 # Web3 is needed as dependency.
 ```
 
 
@@ -33,7 +34,7 @@ npm install --save thorify
 ``` javascript
 // ES6 style
 import { thorify } from "thorify";
-const Web3 = require("web3");		// recommand use require() instead of import here
+const Web3 = require("web3");		// Recommend using require() instead of import here
 
 const web3 = thorify(new Web3(), "http://localhost:8669");
 
@@ -91,7 +92,7 @@ web3 instance
 
 ## Send Transaction
 
-In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately , thorify can not directly perform `eth_sendTransaction` but there is another way to sign a transaction.
+In Thor official implementation , the client **DOES NOT** neither manage user's private-key/keyStore nor use private key to sign a Transaction. Unfortunately, thorify can not directly perform `eth_sendTransaction` but there is another way to sign a transaction.
 
 In [web3.js accounts](https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#eth-accounts), it gives the opportunity to add your private-key, stored in your runtime context (In Node.js context, it's stored in memory while in Browser context, it's stored in memory/local storage), to accounts module. When you are trying to send a transaction, the module will check the private key associated with from field. Once the private key and from have been matched, the module will sign the transaction.
 The APIs that follows the mechanism are:
@@ -115,7 +116,7 @@ The APIs that follows the mechanism are:
 
 The RESTful API of Thor is different with Ethereum's JSON-RPC, therefore, there are some methods in web3 are not supported by thorify, feel free to open an issue discuss the features.
 
-There is a possibility that when you trying to call `sendTransaction` or `send` functions, thorify will return `Method not supported` under version 0.3.1, due to account module will check the private key associated with `from` field.After upgrade to version 0.3.1 or newer,thorify will show `The private key corresponding to from filed can't be found in local eth.accounts.wallet ` to make an error more specific.
+There is a possibility that when you trying to call `sendTransaction` or `send` functions, thorify will return `Method not supported` under version 0.3.1, due to account module will check the private key associated with `from` field. After upgrade to version 0.3.1 or newer, thorify will show `The private key corresponding to from filed can't be found in local eth.accounts.wallet ` to make an error more specific.
 
 ## Notes
 

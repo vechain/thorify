@@ -17,7 +17,7 @@ class ThorHttpProvider {
       });
     }
     let ret = ThorAPIMapping[payload.method].ret;
-    // non-objects does't need isThorified property since thorify just overwritten 3 formatters
+    // non-objects doesn't need isThorified property since thorify just overwritten 3 formatters
     // which all accept object as input
     if (web3Utils._.isObject(ret)) {
       // tricks for fast deep copy since I defined ThorAPIMapping

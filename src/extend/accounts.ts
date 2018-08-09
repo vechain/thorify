@@ -4,15 +4,14 @@ const web3Utils = require("web3-utils");
 const debug = require("debug")("thor:injector");
 const EthLib = require("eth-lib/lib");
 import { Bytes32, Secp256k1 } from "thor-model-kit";
-import { Callback, IClause, IEthTransaction } from "../types";
+import { Callback, IEthTransaction } from "../types";
 import * as utils from "../utils";
 
 const extendAccounts = function(web3: any): any {
 
-  const proto = Object.getPrototypeOf(web3.eth.accounts);
-
   // signTransaction supports both callback and promise style
-  proto.signTransaction = function signTransaction(tx: IEthTransaction, privateKey: string, callback: Callback) {
+  // tslint:disable-next-line:max-line-length
+  web3.eth.accounts.signTransaction = function signTransaction(tx: IEthTransaction, privateKey: string, callback: Callback) {
     debug("tx to sign: %O", tx);
 
     const sign = async function(tx: IEthTransaction) {
@@ -75,7 +74,7 @@ const extendAccounts = function(web3: any): any {
     }
   };
 
-  proto.recoverTransaction = function recoverTransaction(encodedRawTx: string) {
+  web3.eth.accounts.recoverTransaction = function recoverTransaction(encodedRawTx: string) {
     const values = EthLib.RLP.decode(encodedRawTx);
 
     const signingDataHex = EthLib.RLP.encode(values.slice(0, 9));
@@ -89,14 +88,14 @@ const extendAccounts = function(web3: any): any {
     return address;
   };
 
-  proto.hashMessage = function hashMessage(data: string | Buffer) {
+  web3.eth.accounts.hashMessage = function hashMessage(data: string | Buffer) {
     const message = web3Utils.isHexStrict(data) ? web3Utils.hexToBytes(data) : data;
     const messageBuffer = Buffer.from(message);
 
     return utils.hash(messageBuffer);
   };
 
-  proto.sign = function sign(data: string|Buffer, privateKey: string) {
+  web3.eth.accounts.sign = function sign(data: string|Buffer, privateKey: string) {
     const hash = this.hashMessage(data);
     const hashBuffer = Buffer.from(utils.sanitizeHex(hash), "hex");
     const privateKeyBuffer = Buffer.from(utils.sanitizeHex(privateKey), "hex");
@@ -109,7 +108,7 @@ const extendAccounts = function(web3: any): any {
     };
   };
 
-  proto.recover = function recover(message: any, signature: string, preFixed: boolean) {
+  web3.eth.accounts.recover = function recover(message: any, signature: string, preFixed: boolean) {
     const args = [].slice.apply(arguments);
 
     if (web3Utils._.isObject(message)) {

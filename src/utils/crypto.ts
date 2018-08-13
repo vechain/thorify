@@ -11,7 +11,7 @@ export const hash = function(input: string | Buffer): string {
 
 export const sign = function(hash: Buffer, privateKey: Buffer): string {
   const signature = secp256k1.keyFromPrivate(privateKey).sign(hash, { canonical: true });
-  return "0x" + Buffer.concat([signature.r.toBuffer(), signature.s.toBuffer(), Buffer.from([signature.recoveryParam])]).toString("hex"); /* tslint:disable:max-line-length */
+  return "0x" + Buffer.concat([signature.r.toArrayLike(Buffer), signature.s.toArrayLike(Buffer), Buffer.from([signature.recoveryParam])]).toString("hex"); /* tslint:disable:max-line-length */
 };
 
 export const recover = function(hash: Buffer, sig: Buffer): string {

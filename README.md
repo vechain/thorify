@@ -16,6 +16,9 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 * [Documentation](https://vechain.github.io/thorify)
 * [Play with multi-clause](#play-with-multi-clause)
 * [FAQ](#faq)
+  * [Web3-Gear vs Thorify](#web3-gear-vs-thorify)
+  * [How do I send VTHO token](#how-do-i-send-vtho-token)
+  * [Multi party payment protocol or sponsored contract](#multi-party-payment-protocol-or-sponsored-contract)
   * [Method not supported](#method-not-supported)
 * [Notes](#notes)
 * [Compatibility](#compatibility)
@@ -111,6 +114,25 @@ The APIs that follows the mechanism are:
 2. send signed transaction using [sendSignedTransaction](https://vechain.github.io/thorify/#/?id=send-signed-transaction)
 
 ## FAQ
+
+### Web3-Gear vs Thorify
+
+Thor only supports RESTful API other than ethereum's JSON-RPC, so we developed two component for the developers familiar with ethereum's develop kits. `Web3-Gear` is a standalone program that accepts JSON-RPC calls and transforms the requests to thor's RESTful API and `Thorify` is an extended web3 that sends the request directly to thor's RESTful API.So,
+
++ If you are writing smart contract using [truffle](http://truffleframework.com/)/[remix-ide](https://remix.ethereum.org/) or other tools that uses original web3, you should use `Web3-Gear`.
+
++ If you are writing some application or scripts executing in `Node.js` or `Browser` environment, you should use `Thorify`.
+
+### How do I send VTHO token
+
+VTHO is a token that compatible with VIP180(ERC-20), you can build a contract instance using `web3` and do what ever you want.
+
++ [VTHO source code](https://github.com/vechain/thor/blob/master/builtin/gen/energy.sol)
++ Contract Address: `0x0000000000000000000000000000456E65726779`
+
+### Multi party payment protocol or sponsored contract
+
+It's done by calling the functions of prototype contract, check [wiki page](https://github.com/vechain/thor/wiki/Prototype(EN)) for detailed info about prototype contract.
 
 ### Method not supported
 

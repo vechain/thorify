@@ -3,6 +3,10 @@
 
 ## API reference
 
+------
+
+## web3.eth
+
 ### Get account balance
 
 Query the balance of an address.
@@ -509,13 +513,13 @@ web3Instance.eth.getPastLogs(options).then(result => {
 + `txID` - `String`: Identifier of the transaction this event was created in
 + `txOrigin` - `String`: The one who signed the transaction
 
-### Contract
+## web3.eth.Contract
 
 The `web3Instance.eth.Contract` object makes it easy to interact with smart contracts on the blockchain. When you create a new contract object you give it the json interface of the respective smart contract and web3 will auto convert all calls into low level ABI calls over RESTful HTTP API for you.
 
 This allows you to interact with smart contracts as if they were JavaScript objects.
 
-#### New contract
+### New contract
 
 Creates a new contract instance with all its methods and events defined in its [json interface](https://web3js.readthedocs.io/en/1.0/glossary.html#glossary-json-interface) object.
 
@@ -552,7 +556,7 @@ const contractInstance = new web3Instance.eth.Contract(jsonInterface[, address][
 
 ```
 
-#### Clone contract
+### Clone contract
 
 Clones the current contract instance.
 
@@ -575,7 +579,7 @@ none
 
 `Contract Instance`: The new contract instance
 
-#### Deploy contract
+### Deploy contract
 
 Call this function will create a `Transaction Object` for deploying the contract to the blockchain. 
 
@@ -599,7 +603,7 @@ contractInstance.deploy(options)
 + `estimateGas` - `Function`: Will estimate the gas used for the transaction executed on the blockchain, in this case it's deploy a contract
 + `encodeABI` - `Function`: Encodes the ABI for the transaction, in this case it's contract data + constructor parameters
 
-#### Contract methods
+### Contract methods
 
 Creates a `Transaction Object` for that method, which then can execute [call](#call), [send](#send), [estimateGas](#estimategas), [encodeABI](#encodeabi).
 
@@ -632,7 +636,7 @@ Parameters of any method depend on the smart contracts methods, defined in the [
 
 For details to the methods see the documentation below.
 
-#### Call
+### Call
 
 Call the “constant” method and execute its smart contract method in the EVM without sending a transaction, can't alter the smart contract state.
 
@@ -665,7 +669,7 @@ contractInstance.methods.myMethod([param1[, param2[, ...]]]).call(callObject[, b
 
 `Promise` returns `Mixed`: The return value(s) of the smart contract method. If it returns a single value, it’s returned as is. If it has multiple return values they are returned as an object with properties and indices:
 
-#### Send
+### Send
 
 !>Send need account, please read [Send Transaction](#send-transaction-1) part first!
 
@@ -701,7 +705,7 @@ contractInstance.methods.myMethod([param1[, param2[, ...]]]).send(transactionObj
 + `confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
 + `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
 
-#### EstimateGas
+### EstimateGas
 
 Estimate the gas a method execution will take when executed in the EVM without. The estimation can differ from the actual gas used when later sending a transaction, as the state of the smart contract can be different at that time
 
@@ -715,7 +719,7 @@ contractInstance.methods.myMethod([param1[, param2[, ...]]]).estimateGas(callObj
 
 - `callObject` - `Transaction Object`: same as [Call](#call)
 
-#### EncodeABI
+### EncodeABI
 
 Encodes the ABI for this method. This can be send using a transaction, call the method or passing into another smart contracts method as argument
 
@@ -734,7 +738,7 @@ none
 
 `String`: The encoded ABI byte code to send via a transaction or call.
 
-#### GetPastEvents
+### GetPastEvents
 
 Gets past events for this contract
 

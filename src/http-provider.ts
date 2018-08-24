@@ -13,7 +13,7 @@ class ThorHttpProvider {
   private timeout: number;
 
   constructor(host: string, timeout = 0) {
-    if (!host) { throw new Error('[thorify-provider-http] the ThorHttpProvider instance requires that the host be specified (e.g. `new HttpProvider("http://localhost:8545")` or via service like infura `new HttpProvider("http://ropsten.infura.io")`)'); }
+    if (!host) { throw new Error('[thorify-provider-http] thorify requires that the host be specified (e.g. "http://localhost:8669")'); }
 
     this.host = host;
     this.timeout = timeout;
@@ -48,24 +48,18 @@ class ThorHttpProvider {
     request.onreadystatechange = () => {
       if (request.readyState === 4) {
         if (request.status !== 200) {
-          return callback(new Error("[thorify-provider-http] Invalid response code from provider: " + request.status + (request.responseText ? ", response: " + request.responseText : "")), {
-            id: payload.id || 0,
-            jsonrpc: payload.jsonrpc || "2.0",
-            result: null,
-          });
+          if (request.status === 0) {
+            return callback(new Error(`[thorify-provider-http] Invalid response, check the host`));
+          }
+          return callback(new Error("[thorify-provider-http] Invalid response code from provider: " + request.status + (request.responseText ? ", response: " + request.responseText : "")));
         }
         let result = request.responseText;
-        let error = null;
+        const error = null;
 
         try {
           result = JSON.parse(result);
         } catch (e) {
-          error = invalidResponseError(e);
-          return callback(error, {
-            id: payload.id || 0,
-            jsonrpc: payload.jsonrpc || "2.0",
-            result: null,
-          });
+          return callback(new Error(`[thorify-provider-http] Error parsing the response :${e.message}`), null);
         }
 
         debug("result: %O", result);
@@ -101,14 +95,6 @@ class ThorHttpProvider {
       callback(new Error(`[thorify-provider-http] CONNECTION ERROR: Couldn't connect to node '${this.host}': ${JSON.stringify(error, null, 2)}`), null);
     }
   }
-}
-
-/**
- * InvalidResponseError helper for invalid errors.
- */
-function invalidResponseError(error: any) {
-  const message = `[thorify-provider-http] Invalid response from host provider :${error.message}`;
-  return new Error(message);
 }
 
 export {

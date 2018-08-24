@@ -85,7 +85,26 @@ describe("http-provider", () => {
     }, (err) => {
       try {
         expect(err).to.be.an("error");
-        expect(() => { throw err; }).to.throw("[thorify-provider-http] Invalid response from host provider");
+        expect(() => { throw err; }).to.throw("[thorify-provider-http] Error parsing the response :Unexpected token t in JSON at position 1");
+      } catch (e) {
+        return done(e);
+      }
+      done();
+    });
+  });
+
+  it("invalid response", (done) => {
+    const provider = new ThorHttpProvider("host");
+    provider.sendAsync({
+      method: "thor_test",
+      testMethod: "POST",
+      testBody: {
+        type: "invalid response",
+      },
+    }, (err) => {
+      try {
+        expect(err).to.be.an("error");
+        expect(() => { throw err; }).to.throw("[thorify-provider-http] Invalid response, check the host");
       } catch (e) {
         return done(e);
       }

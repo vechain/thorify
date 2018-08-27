@@ -3,7 +3,7 @@
 
 const web3Utils = require("web3-utils");
 import { Address, BigInt, Bytes32, Transaction } from "thor-model-kit";
-import { IClause, IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRange, IThorTransaction, ITopicItem, ITopicSet, StringOrNull, StringOrNumber, topicName } from "../types";
+import { IClause, IEthTransaction, ILogQueryBody, ILogQueryOptions, ILogQueryRange, IThorTransaction, ITopicItem, ITopicSet, StringOrNumber, topicName } from "../types";
 import * as utils from "./";
 
 export const isArray = function(o: any): boolean {

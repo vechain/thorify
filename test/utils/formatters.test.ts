@@ -206,19 +206,20 @@ describe("utils:formatLogQuery", () => {
     const ret = utils.formatLogQuery({ fromBlock: "0x64" });
     expect(ret.range.unit).to.be.equal("block");
     expect(ret.range.from).to.be.equal(100);
-    expect(ret.range).to.not.have.property("to");
+    expect(ret.range.to).to.be.equal(Number.MAX_SAFE_INTEGER);
   });
 
   it("invalid from and to block", () => {
     const ret = utils.formatLogQuery({ fromBlock: "latest", toBlock: "latest" });
-    expect(ret).to.not.have.property("range");
+    expect(ret.range.from).to.be.equal(0);
+    expect(ret.range.to).to.be.equal(Number.MAX_SAFE_INTEGER);
   });
 
   it("valid to block", () => {
     const ret = utils.formatLogQuery({ toBlock: "0x64" });
     expect(ret.range.unit).to.be.equal("block");
+    expect(ret.range.from).to.be.equal(0);
     expect(ret.range.to).to.be.equal(100);
-    expect(ret.range).to.not.have.property("from");
   });
 
   it("valid from & to block", () => {

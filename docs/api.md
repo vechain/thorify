@@ -472,8 +472,8 @@ web3Instance.eth.getPastLogs(options).then(result => {
 
 `Filter Option Object`:
 
-+ `fromBlock` - `Number`: The number of the earliest block.If not set "0" will be set by default.
-+ `toBlock` - `Number`: The number of the latest block .If not set "best block number" will be set by default.
++ `fromBlock` - `Number|String`: The number of the earliest block.If not set "0" will be set by default.
++ `toBlock` - `Number|String`: The number of the latest block .If not set "latest" will be set by default.
 + `address` - `String`: An address to only get logs from particular account.
 + `topics` - `Array`: An array of values which must each appear in the log entries. The order is important, if you want to leave topics out use `null`, e.g. `[null, '0x12...']`. You can also pass an array for each topic with options for that topic e.g. `[null, ['option1', 'option2']]`
 + `options` - `Option Object`: Result pagination option, introduced by thor's API
@@ -787,8 +787,8 @@ contractInstance.getPastEvents(event[, options]).then(logs =>{
 `Filter Option Object`:
 
 + `filter` - `Object` (optional): Lets you filter events by indexed parameters, e.g. `{filter: {myNumber: [12,13]}}` means all events where “myNumber” is 12 or 13.
-+ `fromBlock` - `Number`: The number of the earliest block.If not set "0" will be set by default.
-+ `toBlock` - `Number`: The number of the latest block .If not set "best block number" will be set by default.
++ `fromBlock` - `Number|String`: The number of the earliest block.If not set "0" will be set by default.
++ `toBlock` - `Number|String`: The number of the latest block .If not set "latest" will be set by default.
 + `topics` - `Array`: This allows manually setting the topics for the event filter. If given the filter property and event signature, (topic[0]) will not be set automatically
 + `options` - `Option Object`: Result pagination option, introduced by thor's API
 + `range` - `Range Object`: Range options for filter, introduced by thor's API, `fromBlock` and `toBlock` will be ignored if `Range Object` is valid

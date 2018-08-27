@@ -94,27 +94,21 @@ export const formatLogQuery = function(params: any): ILogQueryBody {
     }
   }
 
-  if (!body.range) {
+  if (!body.range && (params.hasOwnProperty("fromBlock") || params.hasOwnProperty("toBlock"))) {
+
+    body.range = {
+      unit: "block",
+    };
 
     if (params.hasOwnProperty("fromBlock")) {
-      const from = formatBlockNumber(params.fromBlock);
-      if (from !== "best") {
-        body.range = {};
-        body.range.from = Number.parseInt(from as string);
-      }
+      body.range.from = params.fromBlock;
     }
 
     if (params.hasOwnProperty("toBlock")) {
-      const to = formatBlockNumber(params.toBlock);
-      if (to !== "best") {
-        body.range = body.range ? body.range : {};
-        body.range.to = Number.parseInt(to as string);
-      }
+      body.range.to = params.toBlock;
     }
 
-    if (body.range) {
-      body.range.unit = "block";
-    }
+    body.range = formatRange(body.range) as ILogQueryRange;
 
   }
 

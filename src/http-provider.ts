@@ -90,6 +90,9 @@ class ThorHttpProvider {
     };
 
     try {
+      if (preparation.Method === "POST") {
+        debug("request bdoy: %O", preparation.Body);
+      }
       request.send(preparation.Method === "POST" ? JSON.stringify(preparation.Body) : null);
     } catch (error) {
       callback(new Error(`[thorify-provider-http] CONNECTION ERROR: Couldn't connect to node '${this.host}': ${JSON.stringify(error, null, 2)}`), null);

@@ -1,4 +1,5 @@
 "use strict";
+import * as utils from "../utils";
 
 export interface RPCPayload {
     id: number;
@@ -20,12 +21,12 @@ const thorifyResult = function(result: any) {
     // tricks for compatible with original web3 instance
     // non-objects or non-arrays doesn't need isThorified property since thorify just overwritten 3 formatters
     // which all accept object as input
-    if (Array.isArray(result)) {
+    if (utils.isArray(result)) {
         result = result.map((item: any) => {
             Object.defineProperty(item, "isThorified", { get: () => true });
             return item;
         });
-    } else if (Object.prototype.toString.call(result) === "[object Object]") {
+    } else if (utils.isObject(result)) {
         Object.defineProperty(result, "isThorified", { get: () => true });
     }
     return result;

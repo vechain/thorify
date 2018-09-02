@@ -182,7 +182,7 @@ describe("extend:accounts", () => {
 
   it("recover transaction should return the signer address", async () => {
     const rawTx = "0xf85d818985352985d99d8202d0c0818082cf088086011702e5dfefc0b841d290fa00bc124d1cc22d9a3e6850aab0c9ba15952487dd4c716b4043fbb77a330b0c6f81a6e98f798fa82a86ee717e0f5dbbe72eaca29a6422c1d904e542905e01";
-    expect(web3.eth.accounts.recoverTransaction(rawTx)).to.be.equal("0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed");
+    expect(web3.eth.accounts.recoverTransaction(rawTx)).to.be.equal("0x7567d83b7b8d80addcb281a71d54fc7b3364ffed");
   });
 
   it("hash message", async () => {
@@ -206,19 +206,19 @@ describe("extend:accounts", () => {
   it("recover with not-prefixed message", async () => {
     const message = "test message";
     const signature = "0xce639afc9733cbffe7a2dd87e096856e5a81fc5094c9292919eb04eb9a751b7747986f7351d562a64b9b9c9d7989eec344570e754b0461a34bb598c1ee262aef00";
-    expect(web3.eth.accounts.recover(message, signature)).to.be.equal("0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed");
+    expect(web3.eth.accounts.recover(message, signature)).to.be.equal("0x7567d83b7b8d80addcb281a71d54fc7b3364ffed");
   });
 
   it("recover with message hash", async () => {
     const messageHash = "0xf1d201623965f4a21390705e83ba1fb2c33600a529bd2fab2373c2558bf4cb5e";
     const signature = "0xce639afc9733cbffe7a2dd87e096856e5a81fc5094c9292919eb04eb9a751b7747986f7351d562a64b9b9c9d7989eec344570e754b0461a34bb598c1ee262aef00";
-    expect(web3.eth.accounts.recover(messageHash, signature, true)).to.be.equal("0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed");
+    expect(web3.eth.accounts.recover(messageHash, signature, true)).to.be.equal("0x7567d83b7b8d80addcb281a71d54fc7b3364ffed");
   });
 
   it("recover with object", async () => {
     const messageHash = "0xf1d201623965f4a21390705e83ba1fb2c33600a529bd2fab2373c2558bf4cb5e";
     const signature = "0xce639afc9733cbffe7a2dd87e096856e5a81fc5094c9292919eb04eb9a751b7747986f7351d562a64b9b9c9d7989eec344570e754b0461a34bb598c1ee262aef00";
-    expect(web3.eth.accounts.recover({messageHash, signature})).to.be.equal("0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed");
+    expect(web3.eth.accounts.recover({ messageHash, signature })).to.be.equal("0x7567d83b7b8d80addcb281a71d54fc7b3364ffed");
   });
 
 });

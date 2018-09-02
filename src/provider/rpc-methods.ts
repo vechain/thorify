@@ -4,17 +4,16 @@ import * as utils from "../utils";
 import { JSONRPC, RPCResult } from "./json-rpc";
 import { HTTP, SimpleResponse} from "./simple-http";
 
-type RPCExecutor = (rpc: JSONRPC, host: string, timeout: number) => Promise<RPCResult>;
+export type RPCExecutor = (rpc: JSONRPC, host: string, timeout: number) => Promise<RPCResult>;
 
-const RPCMethodMap = new Map<string, RPCExecutor>();
+export const RPCMethodMap = new Map<string, RPCExecutor>();
 
 const HTTPPostProcessor = function(res: SimpleResponse): Promise<any> {
-    // TODO：need more test
     if (res.Code === 0) {
-        throw new Error(`[thorify-provider] Invalid response, check the host`);
+        return Promise.reject(new Error(`[thorify-provider] Invalid response, check the host`));
     }
     if (res.Code !== 200) {
-        throw new Error(res.Body ? res.Body as string : ("[thorify-provider] Invalid response code from provider: " + res.Code) );
+        return Promise.reject(new Error(res.Body ? res.Body as string : ("[thorify-provider] Invalid response code from provider: " + res.Code) ));
     }
     return Promise.resolve(res.Body);
 };
@@ -22,25 +21,7 @@ const HTTPPostProcessor = function(res: SimpleResponse): Promise<any> {
 RPCMethodMap.set("eth_getBlockByNumber", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/blocks/" + utils.fromETHBlockNumber(rpc.params[0]);
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
-
-    return rpc.makeResult(res);
-});
-
-RPCMethodMap.set("eth_getBlockByNumber", async function(rpc: JSONRPC, host: string, timeout: number) {
-    const URL = host + "/blocks/" + utils.fromETHBlockNumber(rpc.params[0]);
-
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     return rpc.makeResult(res);
 });
@@ -48,12 +29,7 @@ RPCMethodMap.set("eth_getBlockByNumber", async function(rpc: JSONRPC, host: stri
 RPCMethodMap.set("eth_getBlockByHash", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/blocks/" + rpc.params[0];
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     return rpc.makeResult(res);
 });
@@ -61,12 +37,7 @@ RPCMethodMap.set("eth_getBlockByHash", async function(rpc: JSONRPC, host: string
 RPCMethodMap.set("eth_blockNumber", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/blocks/best";
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     return rpc.makeResult(!res  ? null : res.number);
 });
@@ -74,12 +45,7 @@ RPCMethodMap.set("eth_blockNumber", async function(rpc: JSONRPC, host: string, t
 RPCMethodMap.set("eth_getBalance", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/accounts/" + rpc.params[0] + "?revision=" + utils.fromETHBlockNumber(rpc.params[1]);
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     return rpc.makeResult(!res ? null : res.balance);
 });
@@ -87,12 +53,7 @@ RPCMethodMap.set("eth_getBalance", async function(rpc: JSONRPC, host: string, ti
 RPCMethodMap.set("eth_getEnergy", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/accounts/" + rpc.params[0] + "?revision=" + utils.fromETHBlockNumber(rpc.params[1]);
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     return rpc.makeResult(!res ? null : res.energy);
 });
@@ -100,12 +61,7 @@ RPCMethodMap.set("eth_getEnergy", async function(rpc: JSONRPC, host: string, tim
 RPCMethodMap.set("eth_getCode", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/accounts/" + rpc.params[0] + "/code?revision=" + utils.fromETHBlockNumber(rpc.params[1]);
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     return rpc.makeResult(!res ? null : res.code);
 });
@@ -113,12 +69,7 @@ RPCMethodMap.set("eth_getCode", async function(rpc: JSONRPC, host: string, timeo
 RPCMethodMap.set("eth_getStorageAt", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/accounts/" + rpc.params[0] + "/storage/" + rpc.params[1] + "?revision=" + utils.fromETHBlockNumber(rpc.params[2]);
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     return rpc.makeResult(!res ? null : res.value);
 });
@@ -129,12 +80,7 @@ RPCMethodMap.set("eth_sendRawTransaction", async function(rpc: JSONRPC, host: st
         raw: rpc.params[0],
     };
 
-    let res;
-    try {
-        res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor);
 
     return rpc.makeResult(!res ? null : res.id);
 });
@@ -142,12 +88,7 @@ RPCMethodMap.set("eth_sendRawTransaction", async function(rpc: JSONRPC, host: st
 RPCMethodMap.set("eth_getTransactionByHash", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/transactions/" + rpc.params[0];
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     if (!res) {
         return rpc.makeResult(null);
@@ -160,12 +101,7 @@ RPCMethodMap.set("eth_getTransactionByHash", async function(rpc: JSONRPC, host: 
 RPCMethodMap.set("eth_getTransactionReceipt", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/transactions/" + rpc.params[0] + "/receipt";
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     if (!res) {
         return rpc.makeResult(null);
@@ -211,12 +147,7 @@ RPCMethodMap.set("eth_call", async function(rpc: JSONRPC, host: string, timeout:
         reqBody.caller = rpc.params[0].from;
     }
 
-    let res;
-    try {
-        res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor);
 
     if (!res) {
         return rpc.makeResult(null);
@@ -253,12 +184,7 @@ RPCMethodMap.set("eth_estimateGas", async function(rpc: JSONRPC, host: string, t
         reqBody.caller = rpc.params[0].from;
     }
 
-    let res;
-    try {
-        res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor);
 
     if (!res) {
         return rpc.makeResult(null);
@@ -290,12 +216,7 @@ RPCMethodMap.set("eth_getLogs", async function(rpc: JSONRPC, host: string, timeo
 
     const reqBody = utils.formatLogQuery(rpc.params[0]);
 
-    let res;
-    try {
-        res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor);
 
     if (!res) {
         return rpc.makeResult(null);
@@ -313,12 +234,7 @@ RPCMethodMap.set("eth_getLogs", async function(rpc: JSONRPC, host: string, timeo
 RPCMethodMap.set("eth_getBlockRef", async function(rpc: JSONRPC, host: string, timeout: number) {
     const URL = host + "/blocks/best";
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     if (!res || !res.id) {
         return rpc.makeResult(null);
@@ -328,14 +244,9 @@ RPCMethodMap.set("eth_getBlockRef", async function(rpc: JSONRPC, host: string, t
 });
 
 RPCMethodMap.set("eth_getChainTag", async function(rpc: JSONRPC, host: string, timeout: number) {
-    const URL = host + "/blocks/best";
+    const URL = host + "/blocks/0";
 
-    let res;
-    try {
-        res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
-    } catch (e) {
-        return rpc.makeError(e.message);
-    }
+    const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor);
 
     if (!res || !res.id || res.id.length !== 66) {
         return rpc.makeResult(null);

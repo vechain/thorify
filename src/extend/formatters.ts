@@ -1,8 +1,6 @@
 "use strict";
 const debug = require("debug")("thor:injector");
 const web3Utils = require("web3-utils");
-import * as utils from "../utils";
-/* tslint:disable:max-line-length */
 
 const extendFormatters = function(web3: any) {
 

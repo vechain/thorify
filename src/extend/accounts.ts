@@ -49,7 +49,7 @@ const extendAccounts = function(web3: any): any {
       }
 
       const clause: Transaction.Clause = {
-        value: utils.validNumberOrDefault(tx.value, 0),
+        value: tx.value || 0,
         to: tx.to || null,
         data: "0x",
       };
@@ -72,6 +72,8 @@ const extendAccounts = function(web3: any): any {
         nonce: typeof tx.nonce === "string" ? utils.toPrefixedHex(tx.nonce) : tx.nonce,
         clauses: [clause],
       };
+
+      debug("body: %O", body);
 
       const ThorTx = new Transaction(body);
       const priKey = Buffer.from(utils.sanitizeHex(privateKey), "hex");

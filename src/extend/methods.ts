@@ -1,9 +1,5 @@
 "use strict";
 
-const debug = require("debug")("thor:injector");
-import { Callback, IClause, StringOrNull, StringOrNumber } from "../types";
-import * as utils from "../utils";
-
 const extendMethods = function(web3: any) {
   web3.extend({
     property: "eth",

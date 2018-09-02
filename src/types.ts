@@ -3,7 +3,7 @@ export type StringOrNull = string | null;
 export type StringOrNumber = string | number;
 export type Callback = (err: Error | null, result?: any) => void;
 
-export interface IThorTransaction {
+export interface ThorTransaction {
   chainTag?: number;
   blockRef?: Buffer;
   expiration?: StringOrNumber;
@@ -12,18 +12,18 @@ export interface IThorTransaction {
   dependsOn?: Buffer|null;
   nonce?: string;
   signature?: string;
-  clauses: IClause[];
+  clauses: Clause[];
   origin?: string;
   isThorified ?: () => boolean;
 }
 
-export interface IClause {
+export interface Clause {
   to?: StringOrNull;
   value: string;
   data?: Buffer;
 }
 
-export interface IEthTransaction {
+export interface EthTransaction {
   chainId?: StringOrNumber;
   to?: StringOrNull;
   value?: string;
@@ -40,12 +40,12 @@ export interface IEthTransaction {
 }
 
 export type topicName = "topic0" | "topic1" | "topic2" | "topic3" | "topic4";
-export interface ITopicItem {
+export interface TopicItem {
   name: string;
   array: [string];
 }
 
-export interface ITopicSet {
+export interface TopicSet {
   topic0?: string;
   topic1?: string;
   topic2?: string;
@@ -53,19 +53,19 @@ export interface ITopicSet {
   topic4?: string;
 }
 
-export interface ILogQueryBody {
-  range?: ILogQueryRange;
-  options?: ILogQueryOptions;
-  topicSets: ITopicSet[];
+export interface LogQueryBody {
+  range?: LogQueryRange;
+  options?: LogQueryOptions;
+  topicSets: TopicSet[];
 }
 
-export interface ILogQueryRange {
+export interface LogQueryRange {
   unit?: string;
   from?: number;
   to?: number;
 }
 
-export interface ILogQueryOptions {
+export interface LogQueryOptions {
   offset?: number;
   limit?: number;
 }

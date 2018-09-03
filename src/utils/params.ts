@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 // params from thor source code and vechain foundation's suggestion
 const params = {
@@ -9,8 +9,8 @@ const params = {
     ClauseGasContractCreation: 53000 - 5000,
     TxDataZeroGas: 4,
     TxDataNonZeroGas: 68,
-};
+}
 
 export {
     params,
-};
+}

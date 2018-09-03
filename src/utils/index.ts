@@ -1,6 +1,6 @@
 'use strict'
 const web3Utils = require('web3-utils')
-import {EthTransaction} from '../types'
+import { EthTransaction } from '../types'
 import { params } from './params'
 
 export * from './params'

@@ -49,14 +49,14 @@
         "ts-node": "^5.0.1",
         "tslint": "^5.9.1",
         "typescript": "^2.8.1",
-        "web3": "1.0.0-beta.34"
+        "web3": "^1.0.0-beta.35"
     },
     "dependencies": {
         "debug": "^3.1.0",
         "elliptic": "^6.4.0",
         "eth-lib": "^0.2.8",
         "thor-devkit": "^0.2.3",
-        "web3-utils": "1.0.0-beta.34",
+        "web3-utils": "^1.0.0-beta.36",
         "xhr2": "0.1.4"
     },
     "directories": {

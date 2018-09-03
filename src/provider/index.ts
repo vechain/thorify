@@ -1,6 +1,6 @@
 'use strict'
 import { parse } from 'url'
-import {Callback} from '../types'
+import { Callback } from '../types'
 const debug = require('debug')('thor:http-provider')
 import { JSONRPC } from './json-rpc'
 import { RPCExecutor, RPCMethodMap } from './rpc-methods'

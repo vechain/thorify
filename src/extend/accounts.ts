@@ -31,12 +31,17 @@ const extendAccounts = function(web3: any): any {
                     throw new Error('error getting blockRef')
                 }
             }
+            if (tx.data && utils.isHex(tx.data)) {
+                tx.data = utils.toPrefixedHex(tx.data)
+            } else {
+                throw new Error('Data must be valid hex')
+            }
             if (!tx.gas) {
                 const gas = await web3.eth.estimateGas({
                     from: EthLib.account.fromPrivate(utils.toPrefixedHex(privateKey)).address,
                     to: tx.to ? tx.to : '',
                     value: tx.value ? tx.value : 0,
-                    data: utils.isHex(tx.data as string) ? tx.data : '0x',
+                    data: tx.data,
                 })
                 if (gas) {
                     tx.gas = gas
@@ -51,15 +56,7 @@ const extendAccounts = function(web3: any): any {
             const clause: Transaction.Clause = {
                 value: tx.value || 0,
                 to: tx.to || null,
-                data: '0x',
-            }
-
-            if (tx.data) {
-                if (!utils.isHex(tx.data)) {
-                    throw new Error('The data field must be HEX encoded data.')
-                } else {
-                    clause.data = utils.sanitizeHex(tx.data)
-                }
+                data: tx.data,
             }
 
             const body: Transaction.Body = {

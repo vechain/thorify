@@ -4,21 +4,21 @@ node_js:
     - "7"
     - "8"
 env:
-  - CXX=g++-4.8
+    - CXX=g++-4.8
 addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - g++-4.8
 after_script:
-  - npm run coverall
-  - bash <(curl -s https://codecov.io/bash)
+    - npm run coverall
+    - bash <(curl -s https://codecov.io/bash)
 deploy:
-  provider: npm
-  email: tony.li@vechain.com
-  api_key: $NPM_TOKEN
-  skip_cleanup: true
-  on:
-    tags: true
-    node: '8'
+    provider: npm
+    email: tony.li@vechain.com
+    api_key: $NPM_TOKEN
+    skip_cleanup: true
+    on:
+        tags: true
+        node: '8'

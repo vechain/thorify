@@ -1,110 +1,110 @@
-"use strict";
-const web3Utils = require("web3-utils");
-import {EthTransaction} from "../types";
-import { params } from "./params";
+'use strict'
+const web3Utils = require('web3-utils')
+import {EthTransaction} from '../types'
+import { params } from './params'
 
-export * from "./params";
-export * from "./option-formatters";
+export * from './params'
+export * from './option-formatters'
 
 export const calcIntrinsicGas = function(tx: EthTransaction): number {
-    let totalGas = params.TxGas;
+    let totalGas = params.TxGas
 
     // calculate data gas
     if (tx.data) {
-        const buffer = new Buffer(sanitizeHex(tx.data), "hex");
-        let z = 0;
-        let nz = 0;
+        const buffer = new Buffer(sanitizeHex(tx.data), 'hex')
+        let z = 0
+        let nz = 0
         for (const byte of buffer) {
             if (byte) {
-                nz++;
+                nz++
             } else {
-                z++;
+                z++
             }
         }
-        totalGas += params.TxDataZeroGas * z;
-        totalGas += params.TxDataNonZeroGas * nz;
+        totalGas += params.TxDataZeroGas * z
+        totalGas += params.TxDataNonZeroGas * nz
     }
 
     if (!!tx.to) {
-        totalGas += params.ClauseGas;
+        totalGas += params.ClauseGas
     } else {
-        totalGas += params.ClauseGasContractCreation;
+        totalGas += params.ClauseGasContractCreation
     }
 
-    return totalGas;
-};
+    return totalGas
+}
 
 export const toPrefixedHex = function(hexStr: string): string {
-    if (hexStr.indexOf("0x") === 0) {
-        return hexStr;
+    if (hexStr.indexOf('0x') === 0) {
+        return hexStr
     } else {
-        return "0x" + hexStr;
+        return '0x' + hexStr
     }
-};
+}
 
 export const sanitizeHex = function(hexStr: string): string {
-    if (hexStr.indexOf("0x") === 0) {
-        return hexStr.substr(2);
+    if (hexStr.indexOf('0x') === 0) {
+        return hexStr.substr(2)
     } else {
-        return hexStr;
+        return hexStr
     }
-};
+}
 
 export const isHex = function(hex: string): boolean {
-    return !!hex && ((typeof hex === "string") && /^(-0x|0x)?[0-9a-f]+$/i.test(hex));
-};
+    return !!hex && ((typeof hex === 'string') && /^(-0x|0x)?[0-9a-f]+$/i.test(hex))
+}
 
 export const newNonce = function(): number {
-    return Math.floor((new Date().getTime() / 0xffff) * Math.random() * 0xffff);
-};
+    return Math.floor((new Date().getTime() / 0xffff) * Math.random() * 0xffff)
+}
 
 export const toInteger = function(input: any): number | null {
-    const num = Number.parseInt(input);
+    const num = Number.parseInt(input)
     if (Number.isInteger(num)) {
-        return num;
+        return num
     } else {
-        return null;
+        return null
     }
-};
+}
 
 export const isArray = function(o: any): boolean {
-    return Object.prototype.toString.call(o) === "[object Array]";
-};
+    return Object.prototype.toString.call(o) === '[object Array]'
+}
 
 export const isObject = function(o: any): boolean {
-    return Object.prototype.toString.call(o) === "[object Object]";
-};
+    return Object.prototype.toString.call(o) === '[object Object]'
+}
 
 export const isNull = function(o: any): boolean {
-    return Object.prototype.toString.call(o) === "[object Null]";
-};
+    return Object.prototype.toString.call(o) === '[object Null]'
+}
 
 export const isUndefined = function(o: any): boolean {
-    return Object.prototype.toString.call(o) === "[object Undefined]";
-};
+    return Object.prototype.toString.call(o) === '[object Undefined]'
+}
 
 export const mustToBN = function(value: any) {
     if (isNull(value) || isUndefined(value)) {
-        throw new Error("input can't be null or undefined");
+        throw new Error('input can\'t be null or undefined')
     }
 
-    const num = web3Utils.toBN(value);
-    return num.abs();
-};
+    const num = web3Utils.toBN(value)
+    return num.abs()
+}
 
 export const validNumberOrDefault = function(value: any, defaultValue: number) {
-    if (typeof value === "number" && Number.isInteger(value)) {
-        return Math.abs(value);
+    if (typeof value === 'number' && Number.isInteger(value)) {
+        return Math.abs(value)
     }
     if (Number.isNaN(Number.parseInt(value)) === false) {
-        return Math.abs(Number.parseInt(value));
+        return Math.abs(Number.parseInt(value))
     }
-    return defaultValue;
-};
+    return defaultValue
+}
 
 export const leftPadBuffer = function(buf: Buffer, length: number) {
     if (buf.length > length) {
-        return buf;
+        return buf
     }
-    return Buffer.concat([Buffer.alloc(length - buf.length), buf]);
-};
+    return Buffer.concat([Buffer.alloc(length - buf.length), buf])
+}

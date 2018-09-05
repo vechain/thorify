@@ -1,4 +1,6 @@
 'use strict'
+const Subscriptions = require('web3-core-subscriptions').subscriptions
+import * as utils from '../utils'
 
 const extendMethods = function(web3: any) {
     web3.extend({
@@ -51,6 +53,57 @@ const extendMethods = function(web3: any) {
             }),
         ],
     })
+
+    // subscriptions
+    const subs = new Subscriptions({
+        name: 'subscribe',
+        type: 'eth',
+        subscriptions: {
+            newBlockHeaders: {
+                subscriptionName: 'newHeads',
+                params: 0,
+                subscriptionHandler(subscriptionMsg: any) {
+                    if (subscriptionMsg.error) {
+                        this.emit('error', subscriptionMsg.error)
+                        if (utils.isFunction(this.callback)) {
+                            this.callback(subscriptionMsg.error, null, this)
+                        }
+                        this.unsubscribe()
+                    } else {
+                        const result = web3.extend.formatters.outputBlockFormatter(subscriptionMsg.data)
+                        if (result.removed) {
+                            this.emit('changed', result)
+                        } else {
+                            this.emit('data', result)
+                        }
+                        if (utils.isFunction(this.callback)) {
+                            this.callback(null, result, this)
+                        }
+                    }
+                },
+            },
+            // logs: {
+            //     params: 1,
+            //     inputFormatter: [web3.extend.formatters.inputLogFormatter],
+            //     outputFormatter: web3.extend.formatters.outputLogFormatter,
+            //     // DUBLICATE, also in web3-eth-contract
+            //     subscriptionHandler(output) {
+            //         if (output.removed) {
+            //             this.emit('changed', output)
+            //         } else {
+            //             this.emit('data', output)
+            //         }
+
+            //         if (utils.isFunction(this.callback)) {
+            //             this.callback(null, output, this)
+            //         }
+            //     },
+            // },
+        },
+    })
+
+    subs.attachToObject(web3.eth)
+    subs.setRequestManager(web3.eth._requestManager)
 }
 
 export {

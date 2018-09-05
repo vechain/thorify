@@ -33,8 +33,10 @@ const extendAccounts = function(web3: any): any {
             }
             if (tx.data && utils.isHex(tx.data)) {
                 tx.data = utils.toPrefixedHex(tx.data)
-            } else {
+            } else if (tx.data) {
                 throw new Error('Data must be valid hex')
+            } else {
+                tx.data = '0x'
             }
             if (!tx.gas) {
                 const gas = await web3.eth.estimateGas({

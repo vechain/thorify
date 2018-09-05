@@ -17,6 +17,20 @@ export interface RPCResult {
     }
 }
 
+// not standard JSON_RPC, just to work with web3-core-requestmanager
+export interface RPCSubResult {
+    id: number
+    jsonrpc: '2.0'
+    method: string
+    params: {
+        result: {
+            data?: any
+            error?: any,
+        },
+        subscription: number,
+    }
+}
+
 const thorifyResult = function(result: any) {
     // tricks for compatible with original web3 instance
     // non-objects or non-arrays doesn't need isThorified property since thorify just overwritten 3 formatters
@@ -60,4 +74,33 @@ export class JSONRPC {
             },
         }
     }
+
+    public makeSubResult(result: any): RPCSubResult {
+        return {
+            id: this.id,
+            jsonrpc: '2.0',
+            method: this.method,
+            params: {
+                result: {
+                    data: thorifyResult(result),
+                },
+                subscription: this.id,
+            },
+        }
+    }
+
+    public makeSubError(error: any): RPCSubResult {
+        return {
+            id: this.id,
+            jsonrpc: '2.0',
+            method: this.method,
+            params: {
+                result: {
+                    error,
+                },
+                subscription: this.id,
+            },
+        }
+    }
+
 }

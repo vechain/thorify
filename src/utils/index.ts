@@ -83,6 +83,10 @@ export const isUndefined = function(o: any): boolean {
     return Object.prototype.toString.call(o) === '[object Undefined]'
 }
 
+export const isFunction = function(o: any): boolean {
+    return typeof o === 'function'
+}
+
 export const mustToBN = function(value: any) {
     if (isNull(value) || isUndefined(value)) {
         throw new Error('input can\'t be null or undefined')

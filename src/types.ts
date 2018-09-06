@@ -69,3 +69,20 @@ export interface LogQueryOptions {
     offset?: number
     limit?: number
 }
+
+export interface LogFilterOptions {
+    address?: string
+    position?: string
+    t0?: string
+    t1?: string
+    t2?: string
+    t3?: string
+    t4?: string
+}
+
+export interface TransferFilterOptions {
+    position?: string
+    txOrigin?: string
+    sender?: string
+    recipient?: string
+}

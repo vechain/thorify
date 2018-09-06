@@ -75,45 +75,29 @@ const extendFormatters = function(web3: any) {
     }
 }
 
-const validAddressOrError = function(input: any, msg= 'Invalid address string') {
-    if (/^(-0x|0x)?[0-9a-fA-F]{40}$/i.test(input)) {
-        return utils.toPrefixedHex(input)
-    } else {
-        throw new Error(msg)
-    }
-}
-
-const validBytes32 = function(input: any, msg = 'Invalid hex string') {
-    if (/^(-0x|0x)?[0-9a-fA-F]{64}$/i.test(input)) {
-        return utils.toPrefixedHex(input)
-    } else {
-        throw new Error(msg)
-    }
-}
-
 const inputLogFilterFormatter = function(options: LogFilterOptions) {
     if (options) {
         const logFilterOptions: LogFilterOptions = {}
         if (options.address) {
-            logFilterOptions.address = validAddressOrError(options.address)
+            logFilterOptions.address = utils.validAddressOrError(options.address)
         }
         if (options.position) {
-            logFilterOptions.position = validBytes32(options.position, 'Invalid position(block ID)')
+            logFilterOptions.position = utils.validBytes32(options.position, 'Invalid position(block ID)')
         }
         if (options.t0) {
-            logFilterOptions.t0 = validBytes32(options.t0, 'Invalid topic0')
+            logFilterOptions.t0 = utils.validBytes32(options.t0, 'Invalid topic0')
         }
         if (options.t1) {
-            logFilterOptions.t1 = validBytes32(options.t1, 'Invalid t1')
+            logFilterOptions.t1 = utils.validBytes32(options.t1, 'Invalid t1')
         }
         if (options.t2) {
-            logFilterOptions.t2 = validBytes32(options.t2, 'Invalid t2')
+            logFilterOptions.t2 = utils.validBytes32(options.t2, 'Invalid t2')
         }
         if (options.t3) {
-            logFilterOptions.t3 = validBytes32(options.t3, 'Invalid t3')
+            logFilterOptions.t3 = utils.validBytes32(options.t3, 'Invalid t3')
         }
         if (options.t4) {
-            logFilterOptions.t4 = validBytes32(options.t4, 'Invalid t4')
+            logFilterOptions.t4 = utils.validBytes32(options.t4, 'Invalid t4')
         }
         return logFilterOptions
     }
@@ -121,7 +105,7 @@ const inputLogFilterFormatter = function(options: LogFilterOptions) {
 
 const inputBlockFilterFormatter = function(blockID: string|null) {
     if (blockID) {
-        blockID = validBytes32(blockID, 'Invalid position(block ID)')
+        blockID = utils.validBytes32(blockID, 'Invalid position(block ID)')
         return blockID
     }
 }
@@ -130,16 +114,16 @@ const inputTransferFilterFormatter = function(options: TransferFilterOptions) {
     if (options) {
         const transferFilterOptions: TransferFilterOptions = {}
         if (options.position) {
-            transferFilterOptions.position = validBytes32(options.position, 'Invalid position(block ID)')
+            transferFilterOptions.position = utils.validBytes32(options.position, 'Invalid position(block ID)')
         }
         if (options.txOrigin) {
-            transferFilterOptions.txOrigin = validAddressOrError(options.txOrigin)
+            transferFilterOptions.txOrigin = utils.validAddressOrError(options.txOrigin)
         }
         if (options.sender) {
-            transferFilterOptions.sender = validAddressOrError(options.sender)
+            transferFilterOptions.sender = utils.validAddressOrError(options.sender)
         }
         if (options.recipient) {
-            transferFilterOptions.recipient = validAddressOrError(options.recipient)
+            transferFilterOptions.recipient = utils.validAddressOrError(options.recipient)
         }
         return transferFilterOptions
     }

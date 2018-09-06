@@ -112,3 +112,19 @@ export const leftPadBuffer = function(buf: Buffer, length: number) {
     }
     return Buffer.concat([Buffer.alloc(length - buf.length), buf])
 }
+
+export const validAddressOrError = function(input: any, msg = 'Invalid address string') {
+    if (/^(-0x|0x)?[0-9a-fA-F]{40}$/i.test(input)) {
+        return toPrefixedHex(input)
+    } else {
+        throw new Error(msg)
+    }
+}
+
+export const validBytes32 = function(input: any, msg = 'Invalid hex string') {
+    if (/^(-0x|0x)?[0-9a-fA-F]{64}$/i.test(input)) {
+        return toPrefixedHex(input)
+    } else {
+        throw new Error(msg)
+    }
+}

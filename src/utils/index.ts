@@ -100,8 +100,8 @@ export const validNumberOrDefault = function(value: any, defaultValue: number) {
     if (typeof value === 'number' && Number.isInteger(value)) {
         return Math.abs(value)
     }
-    if (Number.isNaN(Number.parseInt(value, 10)) === false) {
-        return Math.abs(Number.parseInt(value, 10))
+    if (Number.isNaN(Number.parseInt(value)) === false) {
+        return Math.abs(Number.parseInt(value))
     }
     return defaultValue
 }

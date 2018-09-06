@@ -3,6 +3,7 @@ import { parse } from 'url'
 import { Callback } from '../types'
 const debug = require('debug')('thor:http-provider')
 import {EventEmitter} from 'eventemitter3'
+import * as QS from 'querystring'
 import * as WebSocket from 'ws'
 import { JSONRPC } from './json-rpc'
 import { RPCExecutor, RPCMethodMap } from './rpc-methods'
@@ -67,11 +68,29 @@ class ThorProvider extends EventEmitter {
     }
 
     public ManagerSubscription(rpc: JSONRPC, callback: Callback) {
+        let query = ''
         if (rpc.method === 'eth_subscribe') {
             let URI = '/subscriptions/'
             switch (rpc.params[0]) {
                 case 'newHeads':
                     URI += 'block'
+                    if (rpc.params[1] && rpc.params[1] !== 'best') {
+                        URI += '?pos=' + rpc.params[1]
+                    }
+                    break
+                case 'logs':
+                    URI += 'event'
+                    query = QS.stringify(rpc.params[1])
+                    if (query) {
+                        URI += '?' + query
+                    }
+                    break
+                case 'transfers':
+                    URI += 'transfer'
+                    query = QS.stringify(rpc.params[1])
+                    if (query) {
+                        URI += '?' + query
+                    }
                     break
                 default:
                     callback(new Error(`Subscription ${rpc.params[0]} not supported!`))
@@ -108,7 +127,7 @@ class ThorProvider extends EventEmitter {
                 debug('[ws]opened')
                 ws.on('close', (code, reason) => {
                     debug('[ws]close', code, reason)
-                    this.emit('data', rpc.makeSubError(new Error('Connection closed')))
+                    this.emit('data', rpc.makeSubError(new Error(`Connection closed${reason ? (':' + reason) : ''}`)))
                 })
             })
 
@@ -120,7 +139,7 @@ class ThorProvider extends EventEmitter {
             if (this.sockets[rpc.params[0]]) {
                 const ws = this.sockets[rpc.params[0]].ws
                 if (ws && ws.readyState === ws.OPEN) {
-                    ws.terminate()
+                    ws.close()
                     ws.removeAllListeners()
                     ws.on('close', () => {
                         delete this.sockets[rpc.params[0]]

@@ -1,6 +1,7 @@
 'use strict'
 const Subscriptions = require('web3-core-subscriptions').subscriptions
 import * as utils from '../utils'
+import { inputBlockFilterFormatter, inputLogFilterFormatter, inputTransferFilterFormatter } from './formatters'
 
 const extendMethods = function(web3: any) {
     web3.extend({
@@ -61,7 +62,8 @@ const extendMethods = function(web3: any) {
         subscriptions: {
             newBlockHeaders: {
                 subscriptionName: 'newHeads',
-                params: 0,
+                params: 1,
+                inputFormatter: [inputBlockFilterFormatter],
                 subscriptionHandler(subscriptionMsg: any) {
                     if (subscriptionMsg.error) {
                         this.emit('error', subscriptionMsg.error)
@@ -82,23 +84,53 @@ const extendMethods = function(web3: any) {
                     }
                 },
             },
-            // logs: {
-            //     params: 1,
-            //     inputFormatter: [web3.extend.formatters.inputLogFormatter],
-            //     outputFormatter: web3.extend.formatters.outputLogFormatter,
-            //     // DUBLICATE, also in web3-eth-contract
-            //     subscriptionHandler(output) {
-            //         if (output.removed) {
-            //             this.emit('changed', output)
-            //         } else {
-            //             this.emit('data', output)
-            //         }
-
-            //         if (utils.isFunction(this.callback)) {
-            //             this.callback(null, output, this)
-            //         }
-            //     },
-            // },
+            logs: {
+                params: 1,
+                inputFormatter: [inputLogFilterFormatter],
+                subscriptionHandler(subscriptionMsg: any) {
+                    if (subscriptionMsg.error) {
+                        this.emit('error', subscriptionMsg.error)
+                        if (utils.isFunction(this.callback)) {
+                            this.callback(subscriptionMsg.error, null, this)
+                        }
+                        this.unsubscribe()
+                    } else {
+                        const result = web3.extend.formatters.outputLogFormatter(subscriptionMsg.data)
+                        if (result.removed) {
+                            this.emit('changed', result)
+                        } else {
+                            this.emit('data', result)
+                        }
+                        if (utils.isFunction(this.callback)) {
+                            this.callback(null, result, this)
+                        }
+                    }
+                },
+            },
+            transfers: {
+                params: 1,
+                inputFormatter: [inputTransferFilterFormatter],
+                subscriptionHandler(subscriptionMsg: any) {
+                    if (subscriptionMsg.error) {
+                        this.emit('error', subscriptionMsg.error)
+                        if (utils.isFunction(this.callback)) {
+                            this.callback(subscriptionMsg.error, null, this)
+                        }
+                        this.unsubscribe()
+                    } else {
+                        // const result = web3.extend.formatters.outputLogFormatter(subscriptionMsg.data)
+                        const result = subscriptionMsg.data
+                        if (result.removed) {
+                            this.emit('changed', result)
+                        } else {
+                            this.emit('data', result)
+                        }
+                        if (utils.isFunction(this.callback)) {
+                            this.callback(null, result, this)
+                        }
+                    }
+                },
+            },
         },
     })
 

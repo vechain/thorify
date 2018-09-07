@@ -70,7 +70,6 @@ const extendMethods = function(web3: any) {
                         if (utils.isFunction(this.callback)) {
                             this.callback(subscriptionMsg.error, null, this)
                         }
-                        this.unsubscribe()
                     } else {
                         const result = web3.extend.formatters.outputBlockFormatter(subscriptionMsg.data)
                         if (result.removed) {
@@ -93,7 +92,6 @@ const extendMethods = function(web3: any) {
                         if (utils.isFunction(this.callback)) {
                             this.callback(subscriptionMsg.error, null, this)
                         }
-                        this.unsubscribe()
                     } else {
                         const result = web3.extend.formatters.outputLogFormatter(subscriptionMsg.data)
                         if (result.removed) {
@@ -116,7 +114,6 @@ const extendMethods = function(web3: any) {
                         if (utils.isFunction(this.callback)) {
                             this.callback(subscriptionMsg.error, null, this)
                         }
-                        this.unsubscribe()
                     } else {
                         // const result = web3.extend.formatters.outputLogFormatter(subscriptionMsg.data)
                         const result = subscriptionMsg.data

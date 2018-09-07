@@ -67,7 +67,6 @@ const extendContracts = function(web3: any) {
                         if (utils.isFunction(this.callback)) {
                             this.callback(subscriptionMsg.error, null, this)
                         }
-                        this.unsubscribe()
                     } else {
                         const result = decodeEventABI(subscriptionMsg.data)
                         if (result.removed) {

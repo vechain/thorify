@@ -1,54 +1,49 @@
-"use strict";
-import { expect } from "chai";
-import { thorify } from "./test-utils/thorify";
+'use strict'
+import { expect } from 'chai'
+import { web3, xhrUtility } from './test-utils/init'
 
-const Web3 = require("web3");
-const web3 = new Web3();
-thorify(web3);
+describe('web3.eth', () => {
 
-describe("web3.eth", () => {
+    it('getBlock without parameter', async () => {
+        await web3.eth.getBlock()
 
-  it("getBlock without parameter", async () => {
-    const ret = await web3.eth.getBlock();
-    const req = ret.reqBody;
-    expect(req).to.have.nested.property("params[0]");
-    expect(req.params[0]).to.equal(undefined);
-  });
+        const { url } = xhrUtility.exactRequest()
+        expect(url).to.be.equal('/blocks/best')
+    })
 
-  it("getBlock with earliest", async () => {
-    const ret = await web3.eth.getBlock("earliest");
-    const req = ret.reqBody;
-    expect(req).to.have.nested.property("params[0]");
-    expect(req.params[0]).to.equal("earliest");
-  });
+    it('getBlock with earliest', async () => {
+        await web3.eth.getBlock('earliest')
 
-  it("getBlock with latest", async () => {
-    const ret = await web3.eth.getBlock("latest");
-    const req = ret.reqBody;
-    expect(req).to.have.nested.property("params[0]");
-    expect(req.params[0]).to.equal("latest");
-  });
+        const { url } = xhrUtility.exactRequest()
+        expect(url).to.be.equal('/blocks/0')
+    })
 
-  it("getBlock with pending", async () => {
-    const ret = await web3.eth.getBlock("pending");
-    const req = ret.reqBody;
-    expect(req).to.have.nested.property("params[0]");
-    expect(req.params[0]).to.equal("pending");
-  });
+    it('getBlock with latest', async () => {
+        await web3.eth.getBlock('latest')
 
-  it("getBlock with blockHash", async () => {
-    const ret = await web3.eth.getBlock("0x00003800dfbcc35f2010ebcc26f28f009268b1df58886a0c698545ed07bd1c7b");
-    const req = ret.reqBody;
-    expect(req).to.have.nested.property("params[0]");
-    expect(req.method).to.equal("eth_getBlockByHash");
-    expect(req.params[0]).to.equal("0x00003800dfbcc35f2010ebcc26f28f009268b1df58886a0c698545ed07bd1c7b");
-  });
+        const { url } = xhrUtility.exactRequest()
+        expect(url).to.be.equal('/blocks/best')
+    })
 
-  it("getBlock with blockNumber", async () => {
-    const ret = await web3.eth.getBlock(1);
-    const req = ret.reqBody;
-    expect(req).to.have.nested.property("params[0]");
-    expect(req.params[0]).to.equal("0x1");
-  });
+    it('getBlock with pending', async () => {
+        await web3.eth.getBlock('pending')
 
-});
+        const { url } = xhrUtility.exactRequest()
+        expect(url).to.be.equal('/blocks/best')
+    })
+
+    it('getBlock with blockHash', async () => {
+        web3.eth.getBlock('0x00003800dfbcc35f2010ebcc26f28f009268b1df58886a0c698545ed07bd1c7b')
+
+        const { url } = xhrUtility.exactRequest()
+        expect(url).to.be.equal('/blocks/0x00003800dfbcc35f2010ebcc26f28f009268b1df58886a0c698545ed07bd1c7b')
+    })
+
+    it('getBlock with blockNumber', async () => {
+        await web3.eth.getBlock(1)
+
+        const { url } = xhrUtility.exactRequest()
+        expect(url).to.be.equal('/blocks/1')
+    })
+
+})

@@ -151,7 +151,7 @@ describe('utils:utilities', () => {
         expect(utils.toPrefixedHex('0001')).to.be.equal('0x0001')
     })
 
-    it('isHex', () => {
+    it('isHex without 0x prefix', () => {
         expect(utils.isHex('0001')).to.be.equal(true)
     })
 

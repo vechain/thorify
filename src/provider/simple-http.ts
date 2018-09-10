@@ -40,7 +40,7 @@ const request = function(method: Method, url: string, body: object | null, timeo
                     try {
                         res.Body = JSON.parse(xhr.responseText)
                     } catch (e) {
-                        return reject(new Error(`[thorify-provider]Error parsing the response: ${e.message}`))
+                        return reject(new Error(`[thor-provider]Error parsing the response: ${e.message}`))
                     }
                 } else if (xhr.responseText.length) {
                     res.Body = xhr.responseText
@@ -51,13 +51,13 @@ const request = function(method: Method, url: string, body: object | null, timeo
         }
 
         xhr.ontimeout = () => {
-            return reject(new Error(`[thorify-provider]Time out for whatever reason, check your provider).`))
+            return reject(new Error(`[thor-provider]Time out for whatever reason, check your provider).`))
         }
 
         try {
             xhr.send(method === Method.POST ? JSON.stringify(body) : null)
         } catch (e) {
-            return reject(new Error(`[thorify-provider]Connect error: ${e.message}`))
+            return reject(new Error(`[thor-provider]Connect error: ${e.message}`))
         }
     })
 }

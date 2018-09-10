@@ -11,7 +11,8 @@ interface CachedResponse {
 
 let cache: CachedResponse = {}
 let request: Request  = {}
-let response: object|null = null
+let responseBody: object | null = null
+let responseCode = -1
 
 const FakeXHR2 = function() {
     this.responseText = null
@@ -23,12 +24,11 @@ const FakeXHR2 = function() {
         'Content-Type': 'application/json',
     }
     this.host = ''
-    request = {}
-    response = null
 }
 
-FakeXHR2.prototype.setResponse = function(res: any) {
-    response = res
+FakeXHR2.prototype.setResponse = function(res: any, status = 200) {
+    responseBody = res
+    responseCode = status
 }
 
 FakeXHR2.prototype.extractRequest = function() {
@@ -56,15 +56,28 @@ FakeXHR2.prototype.setRequestHeader = function(name, value) {
     this.headers[name] = value
 }
 
+FakeXHR2.prototype.resetMockData = function() {
+    responseBody = null
+    responseCode = -1
+    request = {}
+
+    this.status = 200
+    this.responseText = null
+}
+
 FakeXHR2.prototype.send = function(payload) {
     request.body = payload
 
     if (cache[this.host]) {
-        response = cache[this.host]
+        responseBody = cache[this.host]
     }
 
-    if (response) {
-        this.responseText = JSON.stringify(response)
+    if (responseBody) {
+        this.responseText = JSON.stringify(responseBody)
+    }
+
+    if (responseCode !== -1) {
+        this.status = responseCode
     }
 
     // const ret = JSON.parse(payload)

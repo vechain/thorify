@@ -9,6 +9,9 @@ const Address = '0x0000000000000000000000000000456e65726779'
 const contract = new web3.eth.Contract(ABI, Address)
 
 describe('web3.contract', () => {
+    beforeEach(() => {
+        xhrUtility.resetMockData()
+    })
 
     it('getPastEvents without parameter', async () => {
         await contract.getPastEvents('Transfer')

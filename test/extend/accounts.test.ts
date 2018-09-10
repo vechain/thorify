@@ -12,8 +12,9 @@ describe('extend:accounts', () => {
             gasPriceCoef: 128,
             chainTag: '0x89',
             blockRef: '0x000000352985d99d',
+            dependsOn: '0x4ad4be11393f26dabf2b0d95a410c847981193bd1ff804095852606e5e7681c0',
             gas: 53000,
-            nonce: 1198344495087,
+            nonce: 'dead',
         }, '0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65')
         expect(ret).to.have.property('rawTransaction')
         expect(ret).to.have.property('messageHash')

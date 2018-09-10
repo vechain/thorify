@@ -85,7 +85,7 @@ const inputLogFilterFormatter = function(options: LogFilterOptions) {
             logFilterOptions.position = utils.validBytes32OrError(options.position, 'Invalid position(block ID)')
         }
         if (options.t0) {
-            logFilterOptions.t0 = utils.validBytes32OrError(options.t0, 'Invalid topic0')
+            logFilterOptions.t0 = utils.validBytes32OrError(options.t0, 'Invalid t0')
         }
         if (options.t1) {
             logFilterOptions.t1 = utils.validBytes32OrError(options.t1, 'Invalid t1')

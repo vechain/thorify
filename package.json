@@ -1,82 +1,85 @@
 {
-  "name": "thorify",
-  "version": "0.3.6",
-  "description": "A web3 adaptor for VeChain Thor RESTful HTTP API.",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc -p .",
-    "lint": "tslint  --fix -p .",
-    "prepare": "rm -rf dist/; npm run build",
-    "test": "NODE_ENV=test mocha --require ts-node/register --timeout 20000 --recursive  './**/*.test.ts'",
-    "cover": "NODE_ENV=test nyc npm t",
-    "coverall": "NODE_ENV=test nyc npm t && nyc report --reporter=text-lcov | coveralls"
-  },
-  "nyc": {
-    "include": [
-      "src/**/*.ts"
+    "name": "thorify",
+    "version": "0.3.6",
+    "description": "A web3 adaptor for VeChain Thor RESTful HTTP API.",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -p .",
+        "lint": "tslint  --fix -p .",
+        "prepare": "rm -rf dist/; npm run build",
+        "test": "NODE_ENV=test mocha --require ts-node/register --timeout 20000 --recursive  './**/*.test.ts'",
+        "cover": "NODE_ENV=test nyc npm t",
+        "coverall": "NODE_ENV=test nyc npm t && nyc report --reporter=text-lcov | coveralls"
+    },
+    "nyc": {
+        "include": [
+            "src/**/*.ts"
+        ],
+        "exclude": [
+            "test/",
+            "**/*.d.ts",
+            "src/types.ts"
+        ],
+        "extension": [
+            ".ts"
+        ],
+        "require": [
+            "ts-node/register"
+        ],
+        "reporter": [
+            "json",
+            "html",
+            "text-summary"
+        ],
+        "all": true
+    },
+    "author": "tony.li@vechain.com",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/chai": "^4.1.3",
+        "@types/mocha": "^5.2.0",
+        "@types/node": "^10.0.3",
+        "@types/ws": "^6.0.0",
+        "chai": "^4.1.2",
+        "coveralls": "^3.0.1",
+        "mocha": "^5.1.1",
+        "nyc": "^11.8.0",
+        "repl-x": "^0.1.4",
+        "rewiremock": "^3.7.2",
+        "ts-node": "^5.0.1",
+        "tslint": "^5.9.1",
+        "typescript": "^2.8.1",
+        "web3": "^1.0.0-beta.36"
+    },
+    "dependencies": {
+        "debug": "^3.1.0",
+        "elliptic": "^6.4.0",
+        "eth-lib": "^0.2.8",
+        "eventemitter3": "^3.1.0",
+        "thor-devkit": "^0.2.3",
+        "web3-core-subscriptions": "^1.0.0-beta.36",
+        "web3-utils": "^1.0.0-beta.36",
+        "ws": "^6.0.0",
+        "xhr2": "0.1.4"
+    },
+    "directories": {
+        "test": "test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vechain/thorify.git"
+    },
+    "keywords": [
+        "thor",
+        "web3",
+        "vechain",
+        "blockchain",
+        "smart",
+        "contract"
     ],
-    "exclude": [
-      "test/",
-      "**/*.d.ts",
-      "src/types.ts"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "json",
-      "html",
-      "text-summary"
-    ],
-    "all": true
-  },
-  "author": "tony.li@vechain.com",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/chai": "^4.1.3",
-    "@types/mocha": "^5.2.0",
-    "@types/node": "^10.0.3",
-    "chai": "^4.1.2",
-    "coveralls": "^3.0.1",
-    "mocha": "^5.1.1",
-    "nyc": "^11.8.0",
-    "repl-x": "^0.1.4",
-    "rewiremock": "^3.7.2",
-    "ts-node": "^5.0.1",
-    "tslint": "^5.9.1",
-    "typescript": "^2.8.1",
-    "web3": "1.0.0-beta.34"
-  },
-  "dependencies": {
-    "blakejs": "^1.1.0",
-    "debug": "^3.1.0",
-    "elliptic": "^6.4.0",
-    "eth-lib": "^0.2.8",
-    "thor-model-kit": "^0.2.0",
-    "web3-utils": "1.0.0-beta.34",
-    "xhr2": "0.1.4"
-  },
-  "directories": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vechain/thorify.git"
-  },
-  "keywords": [
-    "thor",
-    "web3",
-    "vechain",
-    "blockchain",
-    "smart",
-    "contract"
-  ],
-  "bugs": {
-    "url": "https://github.com/vechain/thorify/issues"
-  },
-  "homepage": "https://vechain.github.io/thorify"
+    "bugs": {
+        "url": "https://github.com/vechain/thorify/issues"
+    },
+    "homepage": "https://vechain.github.io/thorify"
 }

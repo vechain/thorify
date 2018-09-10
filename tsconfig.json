@@ -1,17 +1,17 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "strictNullChecks": true,
-    "outDir": "./dist",
-    "noImplicitAny": true,
-    "removeComments": false,
-    "preserveConstEnums": true,
-    "inlineSourceMap": true,
-    "declaration": true
-  },
-  "exclude": [],
-  "include": [
-    "./src"
-  ]
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "strictNullChecks": true,
+        "outDir": "./dist",
+        "noImplicitAny": true,
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "inlineSourceMap": true,
+        "declaration": true
+    },
+    "exclude": [],
+    "include": [
+        "./src",
+    ]
 }

@@ -5,10 +5,14 @@
     ],
     "jsRules": {},
     "rules": {
-      "object-literal-sort-keys": false,
-      "no-var-requires": false,
-      "only-arrow-functions": false,
-      "no-shadowed-variable": false
+        "quotemark": [true, "single"],
+        "semicolon": [true, "never"],
+        "object-literal-sort-keys": false,
+        "no-var-requires": false,
+        "only-arrow-functions": false,
+        "interface-name": false,
+        "max-line-length":false,
+        "no-namespace":false
     },
     "rulesDirectory": []
 }

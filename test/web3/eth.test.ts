@@ -1,6 +1,6 @@
 'use strict'
 import { expect } from 'chai'
-import { web3, xhrUtility } from './test-utils/init'
+import { web3, xhrUtility } from '../test-utils/init'
 
 describe('web3.eth', () => {
 
@@ -44,6 +44,22 @@ describe('web3.eth', () => {
 
         const { url } = xhrUtility.extractRequest()
         expect(url).to.be.equal('/blocks/1')
+    })
+
+    it('sendRawTransaction with wrong signature should throw error', (done) => {
+        // this code is for testing omitCallBackedPromise in provider/index.ts
+        xhrUtility.resetMockData()
+        xhrUtility.setResponse('bad tx: recovery failed', 400)
+        web3.eth.sendSignedTransaction('0xf8be4a').then(() => {
+            done(new Error('no error thrown'))
+        }).catch((e) => {
+            try {
+                expect(() => { throw e || 'no error' }).to.throw('bad tx: recovery failed')
+                done()
+            } catch (err) {
+                done(err)
+            }
+        })
     })
 
 })

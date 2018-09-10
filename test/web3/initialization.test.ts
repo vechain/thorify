@@ -1,8 +1,8 @@
 'use strict'
 
 import { expect } from 'chai'
-import { thorify } from '../src'
-import {ThorProvider} from '../src/provider'
+import { thorify } from '../../src'
+import {ThorProvider} from '../../src/provider'
 const Web3 = require('web3')
 
 describe('initialization', () => {

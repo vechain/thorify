@@ -31,7 +31,7 @@ FakeXHR2.prototype.setResponse = function(res: any) {
     response = res
 }
 
-FakeXHR2.prototype.exactRequest = function() {
+FakeXHR2.prototype.extractRequest = function() {
     return request
 }
 

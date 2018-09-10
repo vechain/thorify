@@ -1,15 +1,12 @@
 'use strict'
-/*tslint:disable:max-line-length*/
 import { expect } from 'chai'
-import { JSONRPC } from '../../src/provider/json-rpc'
-import { RPCMethodMap } from '../../src/provider/rpc-methods'
 import { web3, xhrUtility } from '../test-utils/init'
 
 describe('extend:accounts', () => {
 
     it('normal sign Transaction', async () => {
         const ret = await web3.eth.accounts.signTransaction({
-            to: '0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602',
+            to: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602',
             value: '0x3e8',
             expiration: 720,
             gasPriceCoef: 128,
@@ -64,6 +61,9 @@ describe('extend:accounts', () => {
     })
 
     it('sign Transaction without chainTag', (done) => {
+        xhrUtility.setCachedResponse('/blocks/best', {
+            id: '',
+        })
         web3.eth.accounts.signTransaction({
             to: '0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602',
             value: '0x3e8',
@@ -85,6 +85,9 @@ describe('extend:accounts', () => {
     })
 
     it('sign Transaction with callback should return error in callback', (done) => {
+        xhrUtility.setCachedResponse('/blocks/best', {
+            id: '',
+        })
         web3.eth.accounts.signTransaction({
             to: '0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602',
             value: '0x3e8',
@@ -95,7 +98,7 @@ describe('extend:accounts', () => {
             nonce: 1198344495087,
         }, '0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65', (e) => {
             try {
-                expect(() => { throw e }).to.throw('error getting chainTag')
+                expect(() => { throw e || 'no error'  }).to.throw('error getting chainTag')
                 done()
             } catch (err) {
                 done(err)
@@ -104,6 +107,9 @@ describe('extend:accounts', () => {
     })
 
     it('sign Transaction without blockRef', (done) => {
+        xhrUtility.setCachedResponse('/blocks/best', {
+            id: '',
+        })
         web3.eth.accounts.signTransaction({
             to: '0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602',
             value: '0x3e8',
@@ -125,8 +131,12 @@ describe('extend:accounts', () => {
     })
 
     it('sign Transaction without gas', (done) => {
+        // if reverted estimateGas will return null
+        xhrUtility.setCachedResponse('/accounts/0xd3ae78222beadb038203be21ed5ce7c9b1bff602?revision=best', {
+            reverted: true,
+        })
         web3.eth.accounts.signTransaction({
-            to: '0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602',
+            to: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602',
             value: '0x3e8',
             expiration: 720,
             gasPriceCoef: 128,
@@ -134,9 +144,35 @@ describe('extend:accounts', () => {
             blockRef: '0x000000352985d99d',
             data: '0xdead',
             nonce: 1198344495087,
-        }, '0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65').catch((e) => {
+        }, '0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65').then(() => {
+            done(new Error('no error thrown'))
+        }).catch((e) => {
             try {
                 expect(() => { throw e }).to.throw('error getting gas')
+                done()
+            } catch (err) {
+                done(err)
+            }
+        })
+
+    })
+
+    it('sign Transaction invalid data', (done) => {
+        web3.eth.accounts.signTransaction({
+            to: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602',
+            value: '0x3e8',
+            expiration: 720,
+            gasPriceCoef: 128,
+            chainTag: '0x89',
+            blockRef: '0x000000352985d99d',
+            data: 'invalid data',
+            gas: 100000,
+            nonce: 1198344495087,
+        }, '0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65').then(() => {
+            done(new Error('no error thrown'))
+        }).catch((e) => {
+            try {
+                expect(() => { throw e }).to.throw('Data must be valid hex')
                 done()
             } catch (err) {
                 done(err)

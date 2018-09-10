@@ -23,11 +23,11 @@ class ThorProvider extends EventEmitter {
 
     constructor(host: string, timeout = 0) {
         super()
-        if (!host) { throw new Error('[thorify-provider] Thorify requires that the host be specified (e.g. "http://localhost:8669")') }
+        if (!host) { throw new Error('[thor-provider]Thorify requires that the host be specified(e.g. "http://localhost:8669")') }
 
         const hostURL = parse(host)
-        if (!hostURL.protocol) {
-            hostURL.protocol = 'http:'
+        if (!hostURL.protocol || !hostURL.host) {
+            throw new Error('[thor-provider]Parsing url failed!')
         }
 
         this.RESTHost = `${hostURL.protocol}//${hostURL.host}`
@@ -42,7 +42,7 @@ class ThorProvider extends EventEmitter {
 
         // kindly remind developers about the usage about send transaction
         if (rpc.method === 'eth_sendTransaction') {
-            return callback(null, rpc.makeError('The private key corresponding to from filed can\'t be found in local eth.accounts.wallet!'))
+            return callback(null, rpc.makeError('[thor-provider]The private key corresponding to from filed can\'t be found in local eth.accounts.wallet!'))
         }
 
         // subscriptions
@@ -61,7 +61,7 @@ class ThorProvider extends EventEmitter {
                 return
             })
         } else {
-            callback(null, rpc.makeError('Method not supported!'))
+            callback(null, rpc.makeError('[thor-provider]Method not supported!'))
             return
         }
 

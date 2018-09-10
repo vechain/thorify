@@ -82,22 +82,22 @@ const inputLogFilterFormatter = function(options: LogFilterOptions) {
             logFilterOptions.address = utils.validAddressOrError(options.address)
         }
         if (options.position) {
-            logFilterOptions.position = utils.validBytes32(options.position, 'Invalid position(block ID)')
+            logFilterOptions.position = utils.validBytes32OrError(options.position, 'Invalid position(block ID)')
         }
         if (options.t0) {
-            logFilterOptions.t0 = utils.validBytes32(options.t0, 'Invalid topic0')
+            logFilterOptions.t0 = utils.validBytes32OrError(options.t0, 'Invalid topic0')
         }
         if (options.t1) {
-            logFilterOptions.t1 = utils.validBytes32(options.t1, 'Invalid t1')
+            logFilterOptions.t1 = utils.validBytes32OrError(options.t1, 'Invalid t1')
         }
         if (options.t2) {
-            logFilterOptions.t2 = utils.validBytes32(options.t2, 'Invalid t2')
+            logFilterOptions.t2 = utils.validBytes32OrError(options.t2, 'Invalid t2')
         }
         if (options.t3) {
-            logFilterOptions.t3 = utils.validBytes32(options.t3, 'Invalid t3')
+            logFilterOptions.t3 = utils.validBytes32OrError(options.t3, 'Invalid t3')
         }
         if (options.t4) {
-            logFilterOptions.t4 = utils.validBytes32(options.t4, 'Invalid t4')
+            logFilterOptions.t4 = utils.validBytes32OrError(options.t4, 'Invalid t4')
         }
         return logFilterOptions
     }
@@ -105,7 +105,7 @@ const inputLogFilterFormatter = function(options: LogFilterOptions) {
 
 const inputBlockFilterFormatter = function(blockID: string|null) {
     if (blockID) {
-        blockID = utils.validBytes32(blockID, 'Invalid position(block ID)')
+        blockID = utils.validBytes32OrError(blockID, 'Invalid position(block ID)')
         return blockID
     }
 }
@@ -114,7 +114,7 @@ const inputTransferFilterFormatter = function(options: TransferFilterOptions) {
     if (options) {
         const transferFilterOptions: TransferFilterOptions = {}
         if (options.position) {
-            transferFilterOptions.position = utils.validBytes32(options.position, 'Invalid position(block ID)')
+            transferFilterOptions.position = utils.validBytes32OrError(options.position, 'Invalid position(block ID)')
         }
         if (options.txOrigin) {
             transferFilterOptions.txOrigin = utils.validAddressOrError(options.txOrigin)

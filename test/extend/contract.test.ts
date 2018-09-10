@@ -22,7 +22,7 @@ describe('web3.contract', () => {
     it('getPastEvents', async () => {
         await contract.getPastEvents('Transfer', { range: {}, options: {}, order: 'ASC' })
 
-        const { url, body } = xhrUtility.exactRequest()
+        const { url } = xhrUtility.exactRequest()
 
         expect(url).to.be.equal('/events?address=0x0000000000000000000000000000456e65726779&order=ASC')
       })

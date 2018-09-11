@@ -13,6 +13,7 @@ let cache: CachedResponse = {}
 let request: Request  = {}
 let responseBody: object | null = null
 let responseCode = -1
+let errorType: null | 'ParseError' | 'TimeoutError' | 'ConnectError' = null
 
 class FakeXHR2 {
     public responseText: string | null
@@ -69,9 +70,14 @@ class FakeXHR2 {
         responseBody = null
         responseCode = -1
         request = {}
+        errorType = null
 
         this.status = 200
         this.responseText = null
+    }
+
+    public setError = function(error: 'ParseError'| 'TimeoutError'|'ConnectError') {
+        errorType = error
     }
 
     public send = function(payload) {
@@ -89,30 +95,26 @@ class FakeXHR2 {
             this.status = responseCode
         }
 
-        // const ret = JSON.parse(payload)
-        // if (ret && ret.type === 'invalid response text') {
-        //     this.responseText = '{test'
-        // } else if (ret && ret.type === 'timeout') {
-        //     this.ontimeout()
-        //     return
-        // } else if (ret && ret.type === 'connect error') {
-        //     throw new Error()
-        // } else if (ret && ret.type === 'invalid status code') {
-        //     this.status = 400
-        // } else if (ret && ret.type === 'invalid status code with response text') {
-        //     this.status = 400
-        //     this.responseText = ret.responseText
-        // } else if (ret && ret.type === 'wrong ready state') {
-        //     this.readyState = 3
-        // } else if (ret && ret.type === 'invalid response') {
-        //     this.status = 0
-        // } else {
-        //     this.responseText = payload
-        // }
+        if (errorType === 'ParseError') {
+            this.responseText = '{test'
+            this.status = 200
+        }
+
+        if (errorType === 'TimeoutError') {
+            this.ontimeout()
+            return
+        }
+
+        if (errorType === 'ConnectError') {
+            throw new Error('send failed')
+        }
 
         expect(payload === null || typeof payload === 'string').to.be.equal(true)
         if (this.async) {
             expect(this.onreadystatechange).to.be.a('function')
+            this.readyState = 3
+            this.onreadystatechange()
+            this.readyState = 4
             this.onreadystatechange()
         }
     }

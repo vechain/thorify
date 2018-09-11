@@ -51,7 +51,7 @@ const request = function(method: Method, url: string, body: object | null, timeo
         }
 
         xhr.ontimeout = () => {
-            return reject(new Error(`[thor-provider]Time out for whatever reason, check your provider).`))
+            return reject(new Error(`[thor-provider]Time out for whatever reason, check your provider`))
         }
 
         try {

@@ -9,10 +9,13 @@ const Address = '0x0000000000000000000000000000456e65726779'
 const contract = new web3.eth.Contract(ABI, Address)
 
 describe('web3.contract', () => {
+    beforeEach(() => {
+        xhrUtility.resetMockData()
+    })
 
     it('getPastEvents without parameter', async () => {
         await contract.getPastEvents('Transfer')
-        const { url, body } = xhrUtility.exactRequest()
+        const { url, body } = xhrUtility.extractRequest()
 
         expect(url).to.be.equal('/events?address=0x0000000000000000000000000000456e65726779')
         expect(body).to.not.have.property('range')
@@ -22,7 +25,7 @@ describe('web3.contract', () => {
     it('getPastEvents', async () => {
         await contract.getPastEvents('Transfer', { range: {}, options: {}, order: 'ASC' })
 
-        const { url } = xhrUtility.exactRequest()
+        const { url } = xhrUtility.extractRequest()
 
         expect(url).to.be.equal('/events?address=0x0000000000000000000000000000456e65726779&order=ASC')
       })

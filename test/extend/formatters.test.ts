@@ -1,8 +1,8 @@
 'use strict'
-/* tslint:disable:max-line-length */
 
 import { expect } from 'chai'
-import { web3, xhrUtility } from '../test-utils/init'
+import { inputBlockFilterFormatter, inputLogFilterFormatter, inputTransferFilterFormatter } from '../../src/extend/formatters'
+import { web3 } from '../test-utils/init'
 
 const ethTx = {
     blockHash: '0xf7e2fb83191da98ab0dbc59596113058ed5d393634c87b5efac7f609bf010538',
@@ -250,4 +250,87 @@ describe('web3 formatters', () => {
         ret = web3.extend.formatters.outputLogFormatter(logWithUnsafeFields)
         expect(ret).to.have.all.keys('data', 'topics')
     })
+})
+
+describe('thorify input formatters', () => {
+
+    it('inputLogFilterFormatter with none input', () => {
+        expect(inputLogFilterFormatter(undefined)).to.be.equal(undefined)
+    })
+
+    it('inputLogFilterFormatter with invalid input', () => {
+        expect(() => { inputLogFilterFormatter({ address: 'invalid address' }) }).to.throw('Invalid address string')
+        expect(() => { inputLogFilterFormatter({ position: 'invalid position' }) }).to.throw('Invalid position(block ID)')
+        expect(() => { inputLogFilterFormatter({ t0: 'invalid topic' }) }).to.throw('Invalid t0')
+        expect(() => { inputLogFilterFormatter({ t1: 'invalid topic' }) }).to.throw('Invalid t1')
+        expect(() => { inputLogFilterFormatter({ t2: 'invalid topic' }) }).to.throw('Invalid t2')
+        expect(() => { inputLogFilterFormatter({ t3: 'invalid topic' }) }).to.throw('Invalid t3')
+        expect(() => { inputLogFilterFormatter({ t4: 'invalid topic' }) }).to.throw('Invalid t4')
+    })
+
+    it('inputLogFilterFormatter with valid input', () => {
+        const logFilterOption = {
+            address: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+            t0: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0',
+            t1: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e1',
+            t2: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e2',
+            t3: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e3',
+            t4: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e4',
+        }
+        const result = inputLogFilterFormatter(logFilterOption)
+
+        expect(result).to.have.property('address', '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed')
+        expect(result).to.have.property('t0', '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0')
+        expect(result).to.have.property('t1', '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e1')
+        expect(result).to.have.property('t2', '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e2')
+        expect(result).to.have.property('t3', '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e3')
+        expect(result).to.have.property('t4', '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e4')
+    })
+
+    it('inputLogFilterFormatter with only 1 property input', () => {
+        expect(inputLogFilterFormatter({ t0: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0'})).to.have.property('t0', '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0')
+    })
+
+    it('inputBlockFilterFormatter with none input', () => {
+        expect(inputBlockFilterFormatter(undefined)).to.be.equal(undefined)
+    })
+
+    it('inputBlockFilterFormatter with invalid input', () => {
+        expect(() => { inputBlockFilterFormatter('invalid position') }).to.throw('Invalid position(block ID)')
+    })
+
+    it('inputBlockFilterFormatter with valid input', () => {
+        expect(inputBlockFilterFormatter('0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0')).to.be.equal('0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0')
+    })
+
+    it('inputTransferFilterFormatter with none input', () => {
+        expect(inputTransferFilterFormatter(undefined)).to.be.equal(undefined)
+    })
+
+    it('inputTransferFilterFormatter with invalid input', () => {
+        expect(() => { inputTransferFilterFormatter({ position: 'invalid position' }) }).to.throw('Invalid position(block ID)')
+        expect(() => { inputTransferFilterFormatter({ txOrigin: 'invalid address' }) }).to.throw('Invalid address string')
+        expect(() => { inputTransferFilterFormatter({ sender: 'invalid address' }) }).to.throw('Invalid address string')
+        expect(() => { inputTransferFilterFormatter({ recipient: 'invalid address' }) }).to.throw('Invalid address string')
+    })
+
+    it('inputTransferFilterFormatter with valid input', () => {
+        const transferFilterOption = {
+            position: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0',
+            txOrigin: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffea',
+            sender: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffeb',
+            recipient: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffec',
+        }
+        const result = inputTransferFilterFormatter(transferFilterOption)
+
+        expect(result).to.have.property('position', '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0')
+        expect(result).to.have.property('txOrigin', '0x7567d83b7b8d80addcb281a71d54fc7b3364ffea')
+        expect(result).to.have.property('sender', '0x7567d83b7b8d80addcb281a71d54fc7b3364ffeb')
+        expect(result).to.have.property('recipient', '0x7567d83b7b8d80addcb281a71d54fc7b3364ffec')
+    })
+
+    it('inputTransferFilterFormatter with only 1 property input', () => {
+        expect(inputTransferFilterFormatter({ position: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0' })).to.have.property('position', '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3e0')
+    })
+
 })

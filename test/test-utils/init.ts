@@ -1,7 +1,7 @@
 'use strict'
 
 import rewiremock from 'rewiremock'
-const FakeXHR2 = require('./fake-xhr2')
+import FakeXHR2 = require('./fake-xhr2')
 const Web3 = require('web3')
 
 // Test utilities

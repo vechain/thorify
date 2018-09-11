@@ -1,7 +1,6 @@
 'use strict'
 
 import { extend } from './extend'
-// import { ThorHttpProvider } from "./http-provider";
 import { ThorProvider } from './provider'
 
 const thorify = function(web3Instance: any, host = 'http://localhost:8669', timeout = 0) {

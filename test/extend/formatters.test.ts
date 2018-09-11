@@ -252,7 +252,7 @@ describe('web3 formatters', () => {
     })
 })
 
-describe('Thorify input formatters', () => {
+describe('thorify input formatters', () => {
 
     it('inputLogFilterFormatter with none input', () => {
         expect(inputLogFilterFormatter(undefined)).to.be.equal(undefined)

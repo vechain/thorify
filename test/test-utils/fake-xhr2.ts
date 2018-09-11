@@ -75,7 +75,7 @@ class FakeXHR2 {
     }
 
     public send = function(payload) {
-        request.body = payload
+        request.body = JSON.parse(payload)
 
         if (cache[this.host]) {
             responseBody = cache[this.host]

@@ -3,6 +3,9 @@ import { expect } from 'chai'
 import { web3, xhrUtility } from '../test-utils/init'
 
 describe('web3.eth', () => {
+    beforeEach(() => {
+        xhrUtility.resetMockData()
+    })
 
     it('getBlock without parameter', async () => {
         await web3.eth.getBlock()
@@ -46,9 +49,42 @@ describe('web3.eth', () => {
         expect(url).to.be.equal('/blocks/1')
     })
 
+})
+
+describe('web3.eth:error handling', () => {
+
+    it('execute method with response code 0(means server is not responding) throw error', (done) => {
+        xhrUtility.setResponse(null, 0)
+
+        web3.eth.getBlock(1).then(() => {
+            done(new Error('no error thrown'))
+        }).catch((e) => {
+            try {
+                expect(() => { throw e || 'no error' }).to.throw('[thor-provider] Invalid response, check the host')
+                done()
+            } catch (err) {
+                done(err)
+            }
+        })
+    })
+
+    it('execute method with invalid response code and no response body should throw error', (done) => {
+        xhrUtility.setResponse(null, 500)
+
+        web3.eth.getBlock(1).then(() => {
+            done(new Error('no error thrown'))
+        }).catch((e) => {
+            try {
+                expect(() => { throw e || 'no error' }).to.throw('[thor-provider] Invalid response code from provider: 500')
+                done()
+            } catch (err) {
+                done(err)
+            }
+        })
+    })
+
     it('sendRawTransaction with wrong signature should throw error', (done) => {
         // this code is for testing omitCallBackedPromise in provider/index.ts
-        xhrUtility.resetMockData()
         xhrUtility.setResponse('bad tx: recovery failed', 400)
         web3.eth.sendSignedTransaction('0xf8be4a').then(() => {
             done(new Error('no error thrown'))

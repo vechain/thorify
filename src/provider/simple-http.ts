@@ -42,7 +42,7 @@ const request = function(method: Method, url: string, body: object | null, timeo
                     } catch (e) {
                         return reject(new Error(`[thor-provider]Error parsing the response: ${e.message}`))
                     }
-                } else if (xhr.responseText.length) {
+                } else if (xhr.responseText && xhr.responseText.length) {
                     res.Body = xhr.responseText
                 }
 

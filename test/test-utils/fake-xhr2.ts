@@ -14,98 +14,108 @@ let request: Request  = {}
 let responseBody: object | null = null
 let responseCode = -1
 
-const FakeXHR2 = function() {
-    this.responseText = null
-    this.readyState = 4
-    this.status = 200
-    this.onreadystatechange = null
-    this.async = true
-    this.headers = {
-        'Content-Type': 'application/json',
-    }
-    this.host = ''
-}
+class FakeXHR2 {
+    public responseText: string | null
+    public readyState: number
+    public status: number
+    public onreadystatechange: any
+    public async: boolean
+    public headers: object
+    public host: string
 
-FakeXHR2.prototype.setResponse = function(res: any, status = 200) {
-    responseBody = res
-    responseCode = status
-}
-
-FakeXHR2.prototype.extractRequest = function() {
-    return request
-}
-
-FakeXHR2.prototype.setCachedResponse = function(url: string, res: object) {
-    url = 'http://localhost:8669' + url
-    cache[url] = res
-}
-
-FakeXHR2.prototype.clearCachedResponse = function() {
-    cache = {}
-}
-
-FakeXHR2.prototype.open = function(method, host, async) {
-    expect(method).to.be.oneOf(['GET', 'POST'])
-    expect(!!host).to.be.equal(true)
-    this.async = typeof async === 'boolean' ? async : true
-    this.host = host
-    request.url = host.replace('http://localhost:8669' , '')
-}
-
-FakeXHR2.prototype.setRequestHeader = function(name, value) {
-    this.headers[name] = value
-}
-
-FakeXHR2.prototype.resetMockData = function() {
-    responseBody = null
-    responseCode = -1
-    request = {}
-
-    this.status = 200
-    this.responseText = null
-}
-
-FakeXHR2.prototype.send = function(payload) {
-    request.body = payload
-
-    if (cache[this.host]) {
-        responseBody = cache[this.host]
+    constructor() {
+        this.responseText = null
+        this.readyState = 4
+        this.status = 200
+        this.onreadystatechange = null
+        this.async = true
+        this.headers = {
+            'Content-Type': 'application/json',
+        }
+        this.host = ''
     }
 
-    if (responseBody) {
-        this.responseText = JSON.stringify(responseBody)
+    public setResponse = function(res: any, status = 200) {
+        responseBody = res
+        responseCode = status
     }
 
-    if (responseCode !== -1) {
-        this.status = responseCode
+    public extractRequest = function() {
+        return request
     }
 
-    // const ret = JSON.parse(payload)
-    // if (ret && ret.type === 'invalid response text') {
-    //     this.responseText = '{test'
-    // } else if (ret && ret.type === 'timeout') {
-    //     this.ontimeout()
-    //     return
-    // } else if (ret && ret.type === 'connect error') {
-    //     throw new Error()
-    // } else if (ret && ret.type === 'invalid status code') {
-    //     this.status = 400
-    // } else if (ret && ret.type === 'invalid status code with response text') {
-    //     this.status = 400
-    //     this.responseText = ret.responseText
-    // } else if (ret && ret.type === 'wrong ready state') {
-    //     this.readyState = 3
-    // } else if (ret && ret.type === 'invalid response') {
-    //     this.status = 0
-    // } else {
-    //     this.responseText = payload
-    // }
+    public setCachedResponse = function(url: string, res: object) {
+        url = 'http://localhost:8669' + url
+        cache[url] = res
+    }
 
-    expect(payload === null || typeof payload === 'string').to.be.equal(true)
-    if (this.async) {
-        expect(this.onreadystatechange).to.be.a('function')
-        this.onreadystatechange()
+    public clearCachedResponse = function() {
+        cache = {}
+    }
+
+    public open = function(method, host, async) {
+        expect(method).to.be.oneOf(['GET', 'POST'])
+        expect(!!host).to.be.equal(true)
+        this.async = typeof async === 'boolean' ? async : true
+        this.host = host
+        request.url = host.replace('http://localhost:8669', '')
+    }
+
+    public setRequestHeader = function(name, value) {
+        this.headers[name] = value
+    }
+
+    public resetMockData = function() {
+        responseBody = null
+        responseCode = -1
+        request = {}
+
+        this.status = 200
+        this.responseText = null
+    }
+
+    public send = function(payload) {
+        request.body = payload
+
+        if (cache[this.host]) {
+            responseBody = cache[this.host]
+        }
+
+        if (responseBody) {
+            this.responseText = JSON.stringify(responseBody)
+        }
+
+        if (responseCode !== -1) {
+            this.status = responseCode
+        }
+
+        // const ret = JSON.parse(payload)
+        // if (ret && ret.type === 'invalid response text') {
+        //     this.responseText = '{test'
+        // } else if (ret && ret.type === 'timeout') {
+        //     this.ontimeout()
+        //     return
+        // } else if (ret && ret.type === 'connect error') {
+        //     throw new Error()
+        // } else if (ret && ret.type === 'invalid status code') {
+        //     this.status = 400
+        // } else if (ret && ret.type === 'invalid status code with response text') {
+        //     this.status = 400
+        //     this.responseText = ret.responseText
+        // } else if (ret && ret.type === 'wrong ready state') {
+        //     this.readyState = 3
+        // } else if (ret && ret.type === 'invalid response') {
+        //     this.status = 0
+        // } else {
+        //     this.responseText = payload
+        // }
+
+        expect(payload === null || typeof payload === 'string').to.be.equal(true)
+        if (this.async) {
+            expect(this.onreadystatechange).to.be.a('function')
+            this.onreadystatechange()
+        }
     }
 }
 
-module.exports = FakeXHR2
+export = FakeXHR2

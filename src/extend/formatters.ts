@@ -81,8 +81,8 @@ const inputLogFilterFormatter = function(options: LogFilterOptions) {
         if (options.address) {
             logFilterOptions.address = utils.validAddressOrError(options.address)
         }
-        if (options.position) {
-            logFilterOptions.position = utils.validBytes32OrError(options.position, 'Invalid position(block ID)')
+        if (options.pos) {
+            logFilterOptions.pos = utils.validBytes32OrError(options.pos, 'Invalid position(block ID)')
         }
         if (options.t0) {
             logFilterOptions.t0 = utils.validBytes32OrError(options.t0, 'Invalid t0')
@@ -113,8 +113,8 @@ const inputBlockFilterFormatter = function(blockID: string|null) {
 const inputTransferFilterFormatter = function(options: TransferFilterOptions) {
     if (options) {
         const transferFilterOptions: TransferFilterOptions = {}
-        if (options.position) {
-            transferFilterOptions.position = utils.validBytes32OrError(options.position, 'Invalid position(block ID)')
+        if (options.pos) {
+            transferFilterOptions.pos = utils.validBytes32OrError(options.pos, 'Invalid position(block ID)')
         }
         if (options.txOrigin) {
             transferFilterOptions.txOrigin = utils.validAddressOrError(options.txOrigin)

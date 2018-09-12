@@ -64,9 +64,8 @@ const extendContracts = function(web3: any) {
                 subscriptionHandler(subscriptionMsg: any) {
                     if (subscriptionMsg.error) {
                         this.emit('error', subscriptionMsg.error)
-                        if (utils.isFunction(this.callback)) {
-                            this.callback(subscriptionMsg.error, null, this)
-                        }
+                        // web3-core-subscriptions/subscription sets a default value for this.callback
+                        this.callback(subscriptionMsg.error, null, this)
                     } else {
                         const result = decodeEventABI(subscriptionMsg.data)
                         if (result.removed) {
@@ -74,9 +73,8 @@ const extendContracts = function(web3: any) {
                         } else {
                             this.emit('data', result)
                         }
-                        if (utils.isFunction(this.callback)) {
-                            this.callback(null, result, this)
-                        }
+                        // web3-core-subscriptions/subscription sets a default value for this.callback
+                        this.callback(null, result, this)
                     }
                 },
             },

@@ -72,7 +72,7 @@ export interface LogQueryOptions {
 
 export interface LogFilterOptions {
     address?: string
-    position?: string
+    pos?: string
     t0?: string
     t1?: string
     t2?: string
@@ -81,7 +81,7 @@ export interface LogFilterOptions {
 }
 
 export interface TransferFilterOptions {
-    position?: string
+    pos?: string
     txOrigin?: string
     sender?: string
     recipient?: string

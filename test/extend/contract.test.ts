@@ -17,7 +17,7 @@ describe('web3.contract', () => {
         await contract.getPastEvents('Transfer')
         const { url, body } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/events?address=0x0000000000000000000000000000456e65726779')
+        expect(url).to.be.equal('/logs/events?address=0x0000000000000000000000000000456e65726779')
         expect(body).to.not.have.property('range')
         expect(body).to.not.have.property('options')
     })
@@ -27,7 +27,7 @@ describe('web3.contract', () => {
 
         const { url } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/events?address=0x0000000000000000000000000000456e65726779&order=ASC')
+        expect(url).to.be.equal('/logs/events?address=0x0000000000000000000000000000456e65726779&order=ASC')
       })
 
 })

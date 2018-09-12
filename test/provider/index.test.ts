@@ -1,6 +1,7 @@
 'use strict'
 import { expect } from 'chai'
 import { ThorProvider } from '../../src/provider'
+import { JSONRPC } from '../../src/provider/json-rpc'
 
 describe('thor-provider initialization', () => {
 
@@ -60,6 +61,43 @@ describe('thor-provider methods', () => {
                 done()
             } else {
                 done(new Error('No error thrown!'))
+            }
+        })
+    })
+
+})
+
+describe('subscriptions', () => {
+
+    it('subscribe an unsupported subscription should return error', (done) => {
+        const provider = new ThorProvider('http://localhost:8669')
+        provider.sendAsync({
+            method: 'eth_subscribe',
+            params: ['unsupported'],
+        }, (err, ret) => {
+            if (err) {
+                done(new Error('Return error in wrong place!'))
+            }
+            if (ret.error) {
+                expect(ret.error.message).to.be.equal('Subscription unsupported not supported!')
+                done()
+            } else {
+                done(new Error('No error thrown!'))
+            }
+        })
+    })
+
+    it('unsubscribe not exist subscription should return true', (done) => {
+        const provider = new ThorProvider('http://localhost:8669')
+        provider.sendAsync({
+            method: 'eth_unsubscribe',
+            params: [100],
+        }, (err, ret) => {
+            try {
+                expect(ret.result).to.be.equal(true)
+                done()
+            } catch (e) {
+              done(e)
             }
         })
     })

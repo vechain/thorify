@@ -93,7 +93,7 @@ class ThorProvider extends EventEmitter {
                     }
                     break
                 default:
-                    callback(new Error(`Subscription ${rpc.params[0]} not supported!`))
+                    callback(null, rpc.makeError(`Subscription ${rpc.params[0]} not supported!`))
                     return
             }
 

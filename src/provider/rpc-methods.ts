@@ -254,14 +254,3 @@ RPCMethodMap.set('eth_getChainTag', async function(rpc: JSONRPC, host: string, t
 
     return rpc.makeResult('0x' + res.id.substr(64, 2))
 })
-
-// thor_test: {
-//     prepare(payload: any): InterceptorRet {
-//         return {
-//             Method: payload.testMethod && payload.testMethod === "POST" ? "POST" : "GET",
-//             Body: payload.testBody || {},
-//             URL: "/thor/test",
-//             ResFormatter: () => { if (payload.testResult) { return payload.testResult; } else { return {}; } },
-//         };
-//     },
-// },

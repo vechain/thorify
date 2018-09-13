@@ -10,7 +10,6 @@ import * as utils from '../utils'
 const extendAccounts = function(web3: any): any {
 
     // signTransaction supports both callback and promise style
-    // tslint:disable-next-line:max-line-length
     web3.eth.accounts.signTransaction = function signTransaction(ethTx: EthTransaction, privateKey: string, callback: Callback) {
         debug('tx to sign: %O', ethTx)
 

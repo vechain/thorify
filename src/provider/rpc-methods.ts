@@ -67,7 +67,7 @@ RPCMethodMap.set('eth_getCode', async function(rpc: JSONRPC, host: string, timeo
 })
 
 RPCMethodMap.set('eth_getStorageAt', async function(rpc: JSONRPC, host: string, timeout: number) {
-    const URL = host + '/accounts/' + rpc.params[0] + '/storage/' + rpc.params[1] + '?revision=' + utils.fromETHBlockNumber(rpc.params[2])
+    const URL = host + '/accounts/' + rpc.params[0] + '/storage/' + utils.leftPadToBytes32(rpc.params[1]) + '?revision=' + utils.fromETHBlockNumber(rpc.params[2])
 
     const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor)
 

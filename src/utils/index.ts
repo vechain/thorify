@@ -121,3 +121,7 @@ export const validBytes32OrError = function(input: any, msg = 'Invalid hex strin
         throw new Error(msg)
     }
 }
+
+export const leftPadToBytes32 = function(input: string) {
+    return ('0x' + '0'.repeat(64 - sanitizeHex(input).length) + sanitizeHex(input))
+}

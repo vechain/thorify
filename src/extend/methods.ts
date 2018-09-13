@@ -126,6 +126,8 @@ const extendMethods = function(web3: any) {
 
     subs.attachToObject(web3.eth)
     subs.setRequestManager(web3.eth._requestManager)
+
+    web3.eth.clearSubscriptions = web3.eth._requestManager.clearSubscriptions.bind(web3.eth._requestManager)
 }
 
 export {

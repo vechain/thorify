@@ -1,5 +1,4 @@
 'use strict'
-/* tslint:disable:max-line-length */
 
 import { expect } from 'chai'
 import { web3, xhrUtility } from '../test-utils/init'

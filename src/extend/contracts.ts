@@ -2,7 +2,6 @@
 const debug = require('debug')('thor:injector')
 const Subscription = require('web3-core-subscriptions').subscription
 import { LogFilterOptions } from '../types'
-import * as utils from '../utils'
 import { inputLogFilterFormatter } from './formatters'
 
 const extendContracts = function(web3: any) {

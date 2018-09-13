@@ -67,7 +67,7 @@ RPCMethodMap.set('eth_getCode', async function(rpc: JSONRPC, host: string, timeo
 })
 
 RPCMethodMap.set('eth_getStorageAt', async function(rpc: JSONRPC, host: string, timeout: number) {
-    const URL = host + '/accounts/' + rpc.params[0] + '/storage/' + rpc.params[1] + '?revision=' + utils.fromETHBlockNumber(rpc.params[2])
+    const URL = host + '/accounts/' + rpc.params[0] + '/storage/' + utils.leftPadToBytes32(rpc.params[1]) + '?revision=' + utils.fromETHBlockNumber(rpc.params[2])
 
     const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor)
 
@@ -254,14 +254,3 @@ RPCMethodMap.set('eth_getChainTag', async function(rpc: JSONRPC, host: string, t
 
     return rpc.makeResult('0x' + res.id.substr(64, 2))
 })
-
-// thor_test: {
-//     prepare(payload: any): InterceptorRet {
-//         return {
-//             Method: payload.testMethod && payload.testMethod === "POST" ? "POST" : "GET",
-//             Body: payload.testBody || {},
-//             URL: "/thor/test",
-//             ResFormatter: () => { if (payload.testResult) { return payload.testResult; } else { return {}; } },
-//         };
-//     },
-// },

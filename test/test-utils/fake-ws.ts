@@ -47,7 +47,7 @@ class FakeWebSocket extends EventEmitter {
         isClose = true
     }
 
-    public close() {
+    public close() { 
         this.stopMockLoop()
         setTimeout(() => {
             this.emit('close', 1001, 'closed')

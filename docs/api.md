@@ -13,7 +13,7 @@ Query the balance of an address.
 
 ``` javascript
 web3Instance.eth.getBalance(address[,blockNumberOrHash]).then(result => {
-	console.log(result)
+	  console.log(result)
 })
 > "1000000000000000000"
 ```
@@ -42,7 +42,7 @@ Query the energy(VTHO) balance of an address
 
 ``` javascript
 web3Instance.eth.getEnergy(address[,blockNumberOrHash]).then(result => {
-	console.log(result)
+	  console.log(result)
 })
 > "1000000000000000000"
 ```
@@ -70,7 +70,7 @@ Return genesis block information , chain tag is the last byte of the genesis blo
 
 ``` javascript
 web3Instance.eth.getChainTag().then(result => {
-	console.log(result)
+	  console.log(result)
 })
 > "0x27"
 ```
@@ -85,7 +85,7 @@ Query the current best block number
 
 ``` javascript
 web3Instance.eth.getBlockNumber().then(result => {
-	console.log(result)
+	  console.log(result)
 })
 > 100
 ```
@@ -205,7 +205,7 @@ web3Instance.eth.getTransaction(transactionID).then(result => {
 `Clause Object`:
 
 + `to` - `String|Null`: Recipient of clause ,`Null` for contract deployment (byte32) 
-+ `value` - `String`: Hex form of token to be transferred
++ `value` - `String`: Hex form of vet to be transferred
 + `data` - `String`: Input data (bytes)
 
 `Meta Object`:
@@ -270,9 +270,9 @@ web3Instance.eth.getTransactionReceipt(transactionHash).then(result => {
 + `reverted` - `Boolean`: true means the transaction was reverted
 + `meta` - `Meta Object`
 + `outputs` - `Array of TransactionReceipt Output Object`: Clause's corresponding output
-+ `blockNumber`: Same as `block.number`
-+ `blockHash`: Same as `block.id`
-+ `transactionHash`: Same as `tx.id`
++ `blockNumber`: Same as `meta.blockNumber`
++ `blockHash`: Same as `meta.BlockID`
++ `transactionHash`: Same as `meta.txID`
 + `status`: `0x0` when `revert` is true and `0x1` when `revert` is false
 
 `Meta Object`:
@@ -297,9 +297,9 @@ web3Instance.eth.getTransactionReceipt(transactionHash).then(result => {
 
 `Transfer Object`:
 
-+ `sender` - `String`: Adress that sends tokens
-+ `recipient` - `String`: Address that receives tokens
-+ `amount` - `String`: Amount of vet in `wei`
++ `sender` - `String`: Address that sends vet.
++ `recipient` - `String`: Address that receives vet.
++ `amount` - `String`: Amount of vet in `wei`.
 
 ### Send signed transaction
 
@@ -307,7 +307,7 @@ Send a signed transaction to the network.
 
 ``` javascript
 web3Instance.eth.sendSignedTransaction(signedTransaction).then(result => {
-	console.log(result)
+	  console.log(result)
 })
 > "TransactionID will be displayed if sent successfully"
 ```
@@ -340,19 +340,19 @@ The APIs that follows the mechanism are:
 
 ``` javascript
 // Initiate the web3 instance
-web3Instance.eth.accounts.wallet.add("0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65");
+web3Instance.eth.accounts.wallet.add("0xdce1443bd2ef0c2631adc1c67e5c93f13dc23a41c18b536effbbdcbcdb96fb65")
 
 web3Instance.eth.sendTransaction({
-  from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
-  to: "0xd3ae78222beadb038203be21ed5ce7c9b1bff602",
-  value: 100,
-}).then(ret=>console.log(ret));
+    from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
+    to: "0xd3ae78222beadb038203be21ed5ce7c9b1bff602",
+    value: 100,
+}).then(ret=>console.log(ret))
 // Transaction receipt will be displayed
 
 // Initiate the contract instance
 ERC20ContractInstance.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff602",100).send({
- from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
-}).then(ret=>console.log(ret));
+  from: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
+}).then(ret=>console.log(ret))
 // Transaction receipt will be displayed
 ```
 
@@ -383,7 +383,7 @@ ERC20ContractInstance.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff6
 
 
 !> **This is not the only way for developers signing a transaction! <br>
-We encourage developers find a proper way to store private key and sign a transaction.**
+We encourage developers find a proper way to manage private key and sign a transaction.**
 
 ### Contract call
 
@@ -391,7 +391,7 @@ Executes a message call, which is directly executed in the VM based on the speci
 
 ``` javascript
 web3Instance.eth.call(callObject [, blockNumberOrHash]).then(result => {
-	console.log(result)
+	  console.log(result)
 })
 > "0x00000000000000000000000000000000000000000000000000000000000000"
 ```
@@ -427,7 +427,7 @@ Executes a message call or transaction and returns the amount of the gas used.
 
 ``` javascript
 web3Instance.eth.estimateGas(callObject).then(result => {
-	console.log(result)
+	  console.log(result)
 })
 > 1000
 ```
@@ -501,9 +501,320 @@ web3Instance.eth.getPastLogs(options).then(result => {
 + `data` - `String`: The data containing non-indexed log parameter
 + `topics` - `Array`: An array with max 4 32 Byte topics, topic 1-3 contains indexed parameters of the log
 + `meta` - `Meta Object`
-+ `blockNumber`: Same as `block.number`
-+ `blockHash`: Same as `block.id`
-+ `transactionHash`: Same as `tx.id`
++ `blockNumber`: Same as `meta.blockNumber`
++ `blockHash`: Same as `meta.blockID`
++ `transactionHash`: Same as `meta.txID`
+
+`Meta Object`:
+
++ `blockID` - `String`: Identifier of the block(bytes32) this event was created in
++ `blockNumber` - `Unit32`: Number of block  this event was created in
++ `blockTimestamp` - `Uint64`: Unix timestamp of block
++ `txID` - `String`: Identifier of the transaction this event was created in
++ `txOrigin` - `String`: The one who signed the transaction
+
+## web3.eth.subscribe
+
+The `web3Instance.eth.subscribe` function lets you subscribe to specific events in the blockchain.
+
+### subscribe
+
+``` javascript
+web3.eth.subscribe(type [, options] [, callback]);
+```
+**Parameters**
+
+- `type` - `String`: The subscription, you want to subscribe to.
+- `options` - `Mixed(optional)`: Optional additional parameters, depending on the subscription type.
+- `callback` - `Function(optional)`: Optional callback, returns an error object as first parameter and the result as second. **Will be called for each incoming subscription, and the subscription itself as 3 parameter**.
+
+**Returns**
+
+`EventEmitter` - A Subscription instance:
+
++ `id` - `Number`: The subscription id, used to identify and unsubscribing the subscription.
++ `subscribe([callback])` - `Function`:  Can be used to re-subscribe with the same parameters.
++ `unsubscribe([callback])` - `Function`: Unsubscribes the subscription and returns TRUE in the callback if success.
++ `on('data')` - `returns Object`: Fires on each incoming log with the log object as argument.
++ `on('changed')` - `returns Object`: Fires on each log which was removed from the blockchain. The object will have the additional property `removed: true`.
++ `on('error')` - `returns Object`: Fires when an error in the subscription occurs.
+
+### clearSubscriptions
+
+Resets subscriptions.
+
+``` javascript
+web3Instance.eth.subscribe('logs', {} ,function(){ ... })
+
+...
+
+web3Instance.eth.clearSubscriptions()
+```
+
+**Parameters**
+
+none
+
+**Returns**
+
+none
+
+### subscribe('newBlockHeaders')
+
+Subscribes to incoming block headers. This can be used as ticker to check for changes on the blockchain.
+
+``` javascript
+web3Instance.eth.subscribe('newBlockHeaders' [, position, callback])
+
+const subscription = web3Instance.eth.subscribe('newBlockHeaders' , '0x000000003a3e7437634e9ab026cd279a88a8f086c2f332421d424668ac976bc7', (error, result) => {
+    if(error){
+        console.log(error)
+    }else{
+        console.log(result)
+    }
+})
+
+subscription.on('data', (data)=>{
+    console.log(data)
+})
+
+subscription.on('changed', (data)=>{
+    console.log(data)
+})
+
+subscription.on('error', (error)=>{
+    console.log(error)
+})
+
+
+subscription.unsubscribe(function(error, success){
+    if(success)
+        console.log('Successfully unsubscribed!')
+})
+
+>
+{ 
+  number: 4579,
+  id: "0x000011e3a0c28cf93a531c92afc55b7f7dd8a44f055e9bef83acbacd26e1beb2",
+  size: 238,
+  parentID: "0x000011e2f7019aa0e0c9a31fdec74d47c1504a1580fa4d3600d23627a6d2b8ca",
+  timestamp: 1536842904,
+  gasLimit: 10000000,
+  beneficiary: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
+  gasUsed: 0,
+  totalScore: 4579,
+  txsRoot: "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
+  stateRoot: "0xb861395c3401de6fc3269ec78eec673429dc4a39f250ffe9ce26784b85fd5275",
+  receiptsRoot: "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
+  signer: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
+  transactions: [],
+  removed: false 
+}
+```
+
+**Parameters**
+
+- `newBlockHeaders` - `String`: The type of the subscription.
+- `pos` - `String(optional)`: A saved block ID for resuming the subscription, best block ID is assumed if omitted.
+- `callback` - `Function(optional)`: Optional callback, returns an error object as first parameter and the result as second. **Will be called for each incoming subscription**.
+
+**Returns**
+
+`EventEmitter`: An [subscription instance](#subscribe) as an event emitter with the following events:
+
+- `data` - `Block Object`: Fires on each incoming block header.
+- `changed` - `Block Object`: Fires on each block header which has become the branch block in the blockchain. The object will have the additional property "removed: true"
+- `error` - `String(Error message)`:  Fires when an error in the subscription occurs.
+
+`Block Object`:
+
++ `number` - `Uint32`: Number of block
++ `id` - `String`: Identifier of the block(bytes32)
++ `parentID` - `String`: ID of parent block(bytes32)
++ `timestamp` - `Uint64`: Unix timestamp of block
++ `gasLimit` - `Uint64`: Gas limit of the block
++ `beneficiary` - `String`: Address of account to receive block reward
++ `gasUsed` - `Uint64`: Actual gas used of block
++ `totalScore` - `Uint64`: Score of the main chain
++ `txRoot` - `String`: Root hash of transaction in the block(bytes32)
++ `stateRoot` - `String`: Root hash of state(bytes32)
++ `singer` - `String`: Address of who signed the block(bytes20)
++ `transactions` - `Array of String`: Array of transaction IDs
++ `removed` - `Boolean`: Indicates whether the block containing this data become branch block
+
+### subscribe('transfers')
+
+Subscribes to incoming vet transfers. This can be used to watch an address's vet balance change.
+
+``` javascript
+web3Instance.eth.subscribe('transfers', option [, callback])
+
+const subscription = web3Instance.eth.subscribe('transfers' , {
+  txOrigin: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+}, (error, result) => {
+    if(error){
+        console.log(error)
+    }else{
+        console.log(result)
+    }
+})
+
+subscription.on('data', (data)=>{
+    console.log(data)
+})
+
+subscription.on('changed', (data)=>{
+    console.log(data)
+})
+
+subscription.on('error', (error)=>{
+    console.log(error)
+})
+
+
+subscription.unsubscribe(function(error, success){
+    if(success)
+        console.log('Successfully unsubscribed!')
+})
+
+>
+{ 
+    sender: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed",
+    recipient: "0xd3ae78222beadb038203be21ed5ce7c9b1bff602",
+    amount: "0x64",
+    meta:
+    { 
+        blockID: "0x000014c682b47a840c3defd340513768de25f0e232613cf06ad4437548008c66",
+        blockNumber: 5318,
+        blockTimestamp: 1536895430,
+        txID: "0x3fef2cdeb70ee2412b4059317794557f182764af098461f1badadd827f25dd5a",
+        txOrigin: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed" 
+    },
+    removed: false 
+}
+```
+
+**Parameters**
+
+- `transfers` - `String`: The type of the subscription.
+- `options` - `TransferFilterOption Object(optional)`: The subscription options
+- `callback` - `Function(optional)`: Optional callback, returns an error object as first parameter and the result as second. **Will be called for each incoming subscription**.
+
+`TransferFilterOption Object`:
+
++ `pos` - `String(optional)`: A saved block ID for resuming the subscription, best block ID is assumed if omitted.
++ `txOrigin` - `String(optional)`: Signer address of tx 
++ `sender` - `String(optional)`: Vet sender address
++ `recipient` - `String(optional)`: Vet recipient address
+
+**Returns**
+
+`EventEmitter`: An [subscription instance](#subscribe) as an event emitter with the following events:
+
+- `data` - `Transfer Object`: Fires on each incoming block header.
+- `changed` - `Transfer Object`: Fires on each log when the block containing the log has become the branch block in the blockchain. The object will have the additional property "removed: true"
+- `error` - `String(Error message)`:  Fires when an error in the subscription occurs.
+
+`Transfer Object`:
+
++ `sender` - `String`: Vet sender address
++ `recipient` - `String`: Vet recipient address
++ `amount` - `String`: Amount of vet in `wei`
++ `removed` - `Boolean`: Indicates whether the block containing this data become branch block
++ `meta` - `Meta Object`
+
+`Meta Object`:
+
++ `blockID` - `String`: Identifier of the block(bytes32) this event was created in
++ `blockNumber` - `Unit32`: Number of block  this event was created in
++ `blockTimestamp` - `Uint64`: Unix timestamp of block
++ `txID` - `String`: Identifier of the transaction this event was created in
++ `txOrigin` - `String`: The one who signed the transaction
+
+### subscribe('logs')
+
+Subscribes to incoming logs, filtered by the given options.
+
+``` javascript
+web3Instance.eth.subscribe('logs', option [, callback])
+
+const subscription = web3Instance.eth.subscribe('logs' , {
+  pos: '0x000011e3a0c28cf93a531c92afc55b7f7dd8a44f055e9bef83acbacd26e1beb2'
+}, (error, result) => {
+    if(error){
+        console.log(error)
+    }else{
+        console.log(result)
+    }
+})
+
+subscription.on('data', (data)=>{
+    console.log(data)
+})
+
+subscription.on('changed', (data)=>{
+    console.log(data)
+})
+
+subscription.on('error', (error)=>{
+    console.log(error)
+})
+
+
+subscription.unsubscribe(function(error, success){
+    if(success)
+        console.log('Successfully unsubscribed!')
+})
+
+>
+{ 
+    address: "0x0000000000000000000000000000456e65726779",
+    topics:
+    [   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        "0x0000000000000000000000007567d83b7b8d80addcb281a71d54fc7b3364ffed",
+        "0x000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff602" ],
+    data: "0x0000000000000000000000000000000000000000000000000000000000000064",
+    meta:
+    {   blockID: "0x0000001060a426cd19a970b234571690f7e78a4be608fa792aa14a1ab7f7bf7d",
+        blockNumber: 16,
+        blockTimestamp: 1536906231,
+        txID: "0xaa669ab466f6e62740d87ecbdd517adae34339352e0d368a49bd45fefa881aa1",
+        txOrigin: "0x7567d83b7b8d80addcb281a71d54fc7b3364ffed" },
+    removed: false 
+}
+```
+
+**Parameters**
+
+- `logs` - `String`: The type of the subscription.
+- `options` - `LogFilterOption Object(optional)`: The subscription options
+- `callback` - `Function(optional)`: Optional callback, returns an error object as first parameter and the result as second. **Will be called for each incoming subscription**.
+
+`LogFilterOption Object`:
+
++ `pos` - `String(optional)`: A saved block ID for resuming the subscription, best block ID is assumed if omitted.
++ `address` - `String(optional)`: An address to only get logs from particular account.
++ `t0` - `String(optional)`: Topic0 to match
++ `t1` - `String(optional)`: Topic1 to match
++ `t2` - `String(optional)`: Topic2 to match
++ `t3` - `String(optional)`: Topic3 to match
++ `t4` - `String(optional)`: Topic4 to match
+
+**Returns**
+
+`EventEmitter`: An [subscription instance](#subscribe) as an event emitter with the following events:
+
+- `data` - `Log Object`: Fires on each incoming block header.
+- `changed` - `Log Object`: Fires on each transfer when the block containing the log has become the branch block in the blockchain. The object will have the additional property "removed: true"
+- `error` - `String(Error message)`:  Fires when an error in the subscription occurs.
+
+`Transfer Object`:
+
++ `address` - `String`: From which this event originated from
++ `data` - `String`: The data containing non-indexed log parameter
++ `topics` - `Array`: An array with max 4 32 Byte topics, topic 1-3 contains indexed parameters of the log
++ `removed` - `Boolean`: Indicates whether the block containing this data become branch block
++ `meta` - `Meta Object`
 
 `Meta Object`:
 
@@ -524,7 +835,7 @@ This allows you to interact with smart contracts as if they were JavaScript obje
 Creates a new contract instance with all its methods and events defined in its [json interface](https://web3js.readthedocs.io/en/1.0/glossary.html#glossary-json-interface) object.
 
 ``` javascript
-const contractInstance = new web3Instance.eth.Contract(jsonInterface[, address][, options]);
+const contractInstance = new web3Instance.eth.Contract(jsonInterface[, address][, options])
 ```
 
 **Parameters**
@@ -562,7 +873,7 @@ Clones the current contract instance.
 
 ``` javascript
 
-const contractInstance = new web3Instance.eth.Contract(jsonInterface[, address][, options]);
+const contractInstance = new web3Instance.eth.Contract(jsonInterface[, address][, options])
 const contract2 = contractInstance.clone()
 console.log(contract2.options.address === contractInstance.options.address)
 > true
@@ -636,7 +947,7 @@ Parameters of any method depend on the smart contracts methods, defined in the [
 
 For details to the methods see the documentation below.
 
-### Call
+#### Call
 
 Call the “constant” method and execute its smart contract method in the EVM without sending a transaction, can't alter the smart contract state.
 
@@ -669,7 +980,7 @@ contractInstance.methods.myMethod([param1[, param2[, ...]]]).call(callObject[, b
 
 `Promise` returns `Mixed`: The return value(s) of the smart contract method. If it returns a single value, it’s returned as is. If it has multiple return values they are returned as an object with properties and indices:
 
-### Send
+#### Send
 
 !>Send need account, please read [Send Transaction](#send-transaction-1) part first!
 
@@ -705,7 +1016,7 @@ contractInstance.methods.myMethod([param1[, param2[, ...]]]).send(transactionObj
 + `confirmation` returns `Number`, `TransactionReceipt Object`: Is fired for every confirmation up to the 12th confirmation. Receives the confirmation number as the first and the receipt as the second argument. Fired from confirmation 0 on, which is the block where its minded.
 + `error` returns `Error`: Is fired if an error occurs during sending. If a out of gas error, the second parameter is the receipt.
 
-### EstimateGas
+#### EstimateGas
 
 Estimate the gas a method execution will take when executed in the EVM without. The estimation can differ from the actual gas used when later sending a transaction, as the state of the smart contract can be different at that time
 
@@ -719,7 +1030,7 @@ contractInstance.methods.myMethod([param1[, param2[, ...]]]).estimateGas(callObj
 
 - `callObject` - `Transaction Object`: same as [Call](#call)
 
-### EncodeABI
+#### EncodeABI
 
 Encodes the ABI for this method. This can be send using a transaction, call the method or passing into another smart contracts method as argument
 
@@ -738,6 +1049,129 @@ none
 
 `String`: The encoded ABI byte code to send via a transaction or call.
 
+### Contract events
+
+#### once
+
+Subscribes to an event and unsubscribes immediately after the first event or error. Will only fire for a single event.
+
+``` javascript
+contractInstance.once(event[, options], callback)
+contractInstance.once('Transfer', {
+  _from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+}), (error, result) => {
+    if(error){
+        console.log(error)
+    }else{
+        console.log(result)
+    }
+})
+
+> { 
+    address: '0x0000000000000000000000000000456e65726779',
+    meta:
+    {   blockID: '0x0000000bb5ece55e16c426157c2bd14e49f5de58b1d56b11db4beec9578715c8',
+        blockNumber: 11,
+        blockTimestamp: 1536906181,
+        txID: '0x035d6ff4b64f9753aa59102f15233a7a721092f4b1ebc11a8f2990fd9b9099ac',
+        txOrigin: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed' },
+    removed: false,
+    returnValues:
+    {   _from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+        _to: '0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602',
+        _value: '100' },
+    event: 'Transfer',
+    signature: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+    raw:
+    {   data: '0x0000000000000000000000000000000000000000000000000000000000000064',
+        topics:
+          [   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+              '0x0000000000000000000000007567d83b7b8d80addcb281a71d54fc7b3364ffed',
+              '0x000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff602' ] 
+    } 
+}
+```
+
+**Parameters**
+
+- `event` - `String`: The name of the event in the contract, or `allEvents` to get all events.
+- `options` - `LogFilter Object (optional)`: The options.
+- `call` - `Function`: This callback will be fired for the first event as the second argument, or an error as the first argument. See [getPastEvents](#getpastevents) return values for details about the event structure.
+
+`LogFilter Object`: 
+
++ `filter` - `Object (optional)`: Lets you filter events by indexed parameters, e.g. {filter: {myNumber: 12}} means all events where “myNumber” is 12, **Subscription doesn't support one array as filter**.
++ `topics` - `Array(optional)`: This allows you to manually set the topics for the event filter. If given the filter property and event signature, (topic[0]) will not be set automatically, **Subscription doesn't support one array as filter**.
+
+**Returns**
+
+none
+
+#### myEvent
+
+Subscribe to an event
+
+``` javascript
+contractInstance.events.myEvent( [options][, callback])
+contractInstance.events.myEvent({
+  _from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+}), (error, result) => {
+    if(error){
+        console.log(error)
+    }else{
+        console.log(result)
+    }
+})
+
+> { 
+    address: '0x0000000000000000000000000000456e65726779',
+    meta:
+    {   blockID: '0x0000000bb5ece55e16c426157c2bd14e49f5de58b1d56b11db4beec9578715c8',
+        blockNumber: 11,
+        blockTimestamp: 1536906181,
+        txID: '0x035d6ff4b64f9753aa59102f15233a7a721092f4b1ebc11a8f2990fd9b9099ac',
+        txOrigin: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed' },
+    removed: false,
+    returnValues:
+    {   _from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+        _to: '0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602',
+        _value: '100' },
+    event: 'Transfer',
+    signature: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+    raw:
+    {   data: '0x0000000000000000000000000000000000000000000000000000000000000064',
+        topics:
+          [   '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+              '0x0000000000000000000000007567d83b7b8d80addcb281a71d54fc7b3364ffed',
+              '0x000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff602' ] 
+    } 
+}
+```
+
+**Parameters**
+
+- `options` - `LogFilter Object (optional)`: The options.
+- `call` - `Function`: This callback will be fired for the first event as the second argument, or an error as the first argument. See [getPastEvents](#getpastevents) return values for details about the event structure.
+
+`LogFilter Object`: 
+
++ `filter` - `Object (optional)`: Lets you filter events by indexed parameters, e.g. {filter: {myNumber: 12}} means all events where “myNumber” is 12, **Subscription doesn't support one array as filter**.
++ `topics` - `Array(optional)`: This allows you to manually set the topics for the event filter. If given the filter property and event signature, (topic[0]) will not be set automatically, **Subscription doesn't support one array as filter**.
+
+**Returns**
+
+`EventEmitter`: An [subscription instance](#subscribe) as an event emitter with the following events:
+
+- `data` - `Log Object`: Fires on each incoming block header.
+- `changed` - `Log Object`: Fires on each log when the block containing the log has become the branch block in the blockchain. The object will have the additional property "removed: true"
+- `error` - `String(Error message)`:  Fires when an error in the subscription occurs.
+
+For the structure of a returned `Log Object` see [getPastEvents](#getpastevents) return values.
+
+#### allEvents
+
+Same as [myEvent](#myevent) but receives all events from this smart contract. Optionally the filter property can filter those events.
+
 ### GetPastEvents
 
 Gets past events for this contract
@@ -745,7 +1179,7 @@ Gets past events for this contract
 ``` javascript
 
 contractInstance.getPastEvents(event[, options]).then(logs =>{
-  console.log(logs)
+    console.log(logs)
 })
 > [{
    meta:
@@ -818,9 +1252,9 @@ contractInstance.getPastEvents(event[, options]).then(logs =>{
 + `raw.data` - `String`: The data containing non-indexed log parameter
 + `raw.topics` - `Array`: An array with max 4 32 Byte topics, topic 1-3 contains indexed parameters of the log
 + `meta` - `Meta Object`
-+ `blockNumber`: Same as `block.number`
-+ `blockHash`: Same as `block.id`
-+ `transactionHash`: Same as `tx.id`
++ `blockNumber`: Same as `meta.blockNumber`
++ `blockHash`: Same as `meta.blockID`
++ `transactionHash`: Same as `meta.txID`
 
 `Meta Object`:
 
@@ -836,9 +1270,9 @@ contractInstance.getPastEvents(event[, options]).then(logs =>{
 
 A general purpose blockchain highly compatible with Ethereum's ecosystem
 
-### [**Thor Model Kit**](https://github.com/vechain/thor-model-kit)
+### [**Thor Dev Kit**](https://github.com/vechain/thor-devkit.js)
 
-Typescript library defines VeChain Thor data models, to aid DApp development
+Typescript library to aid DApp development on VeChain Thor
 
 ### [**Web3 Gear**](https://github.com/vechain/web3-gear)
 

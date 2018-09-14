@@ -16,10 +16,10 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 * [Documentation](https://vechain.github.io/thorify)
 * [Play with multi-clause](#play-with-multi-clause)
 * [FAQ](#faq)
-  * [Web3-Gear vs Thorify](#web3-gear-vs-thorify)
-  * [How do I send VTHO token](#how-do-i-send-vtho-token)
-  * [Multi party payment protocol or sponsored contract](#multi-party-payment-protocol-or-sponsored-contract)
-  * [Method not supported](#method-not-supported)
+    * [Web3-Gear vs Thorify](#web3-gear-vs-thorify)
+    * [How do I send VTHO token](#how-do-i-send-vtho-token)
+    * [Multi party payment protocol or sponsored contract](#multi-party-payment-protocol-or-sponsored-contract)
+    * [Method not supported](#method-not-supported)
 * [Notes](#notes)
 * [Compatibility](#compatibility)
 * [License](#License)
@@ -75,6 +75,8 @@ web3 instance
 │   ├── call
 │   ├── estimateGas
 │   ├── getPastLogs
+│   ├── subscribe
+│   ├── clearSubscriptions
 │   ├── getEnergy
 │   ├── getChainTag
 │   ├── getBlockRef
@@ -88,6 +90,10 @@ web3 instance
 │       ├── methods.myMethod.send
 │       ├── methods.myMethod.estimateGas
 │       ├── methods.myMethod.encodeABI
+│       ├── events
+│       ├── once
+│       ├── events.myEvent
+│       ├── events.allEvents
 │       └── getPastEvents
 └── utils
 
@@ -110,7 +116,7 @@ The APIs that follows the mechanism are:
 
 ## Play with multi-clause
 
-1. [thor-model-kit](https://github.com/vechain/thor-model-kit) supports multi-clause and sign transaction
+1. [thor-devkit.js](https://github.com/vechain/thor-devkit.js) supports multi-clause and sign transaction
 2. send signed transaction using [sendSignedTransaction](https://vechain.github.io/thorify/#/?id=send-signed-transaction)
 
 ## FAQ
@@ -146,7 +152,7 @@ There is a possibility that when you trying to call `sendTransaction` or `send` 
 
 ## Compatibility
 
-   Currently, `thorify` is compatible with `web3@1.0*`.
+    Currently, `thorify` is compatible with `web3@1.0*`.
 
 ## License
 

@@ -20,6 +20,7 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
     * [How do I send VTHO token](#how-do-i-send-vtho-token)
     * [Multi party payment protocol or sponsored contract](#multi-party-payment-protocol-or-sponsored-contract)
     * [Method not supported](#method-not-supported)
+    * [Subscriptions support](#subscriptions-support)
 * [Notes](#notes)
 * [Compatibility](#compatibility)
 * [License](#License)
@@ -30,7 +31,6 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 npm install --save thorify
 npm install --save web3 # Web3 is needed as dependency.
 ```
-
 
 ## Usage
 
@@ -146,13 +146,17 @@ The RESTful API of Thor is different with Ethereum's JSON-RPC, therefore, there 
 
 There is a possibility that when you trying to call `sendTransaction` or `send` functions, thorify will return `Method not supported` under version 0.3.1, due to account module will check the private key associated with `from` field. After upgrade to version 0.3.1 or newer, thorify will show `The private key corresponding to from filed can't be found in local eth.accounts.wallet ` to make an error more specific.
 
+### Subscriptions support
+
+Need thor@v1.0.2 and later to work with subscription module.
+
 ## Notes
 
 - There are three special block number in Ethereum: `earliest`,`latest`,`pending`. In VeChain Thor, we introduced `best` block and there is no `pending` block, so they will be replaced with `0` (aka genesis), `best`, `best`
 
 ## Compatibility
 
-    Currently, `thorify` is compatible with `web3@1.0*`.
+Currently, `thorify` is compatible with `web3@1.0*`.
 
 ## License
 

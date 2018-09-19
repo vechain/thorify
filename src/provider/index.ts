@@ -2,9 +2,9 @@
 import { parse } from 'url'
 import { Callback } from '../types'
 const debug = require('debug')('thor:http-provider')
-import {EventEmitter} from 'eventemitter3'
+import { EventEmitter } from 'eventemitter3'
+import WebSocket = require('isomorphic-ws')
 import * as QS from 'querystring'
-import * as WebSocket from 'ws'
 import { JSONRPC } from './json-rpc'
 import { RPCExecutor, RPCMethodMap } from './rpc-methods'
 
@@ -104,16 +104,16 @@ class ThorProvider extends EventEmitter {
 
             const ws = new WebSocket(this.WSHost + URI)
 
-            ws.on('error', (error) => {
-                debug('error from ws: %O', error)
-                this.emit('data', rpc.makeSubError(error))
-            })
+            ws.onerror = (event) => {
+                debug('error from ws: %O', event)
+                this.emit('data', rpc.makeSubError(event.error ? event.error : 'Error from upstream'))
+            }
 
-            ws.on('message', (message) => {
-                debug('[ws]message from ws: %O', message)
+            ws.onmessage = (event) => {
+                debug('[ws]message from ws: %O', event.data)
                 try {
                     // wrong type define of message, typeof message turns to be string
-                    const obj = JSON.parse(message as string)
+                    const obj = JSON.parse(event.data as string)
 
                     obj.removed = obj.obsolete
                     delete obj.obsolete
@@ -121,15 +121,15 @@ class ThorProvider extends EventEmitter {
                 } catch (e) {
                     debug('Parse message failed %O', e)
                 }
-            })
+            }
 
-            ws.on('open', () => {
+            ws.onopen = () => {
                 debug('[ws]opened')
-                ws.on('close', (code, reason) => {
-                    debug('[ws]close', code, reason)
-                    this.emit('data', rpc.makeSubError(new Error(`Connection closed${reason ? (':' + reason) : ''}`)))
-                })
-            })
+                ws.onclose = (event) => {
+                    debug('[ws]close', event.code, event.reason)
+                    this.emit('data', rpc.makeSubError(new Error(`Connection closed${event.reason ? (':' + event.reason) : ''}`)))
+                }
+            }
 
             this.sockets[rpc.id] = {rpc, ws}
 
@@ -140,11 +140,19 @@ class ThorProvider extends EventEmitter {
                 const ws = this.sockets[rpc.params[0]].ws
                 if (ws && ws.readyState === ws.OPEN) {
                     ws.close()
-                    ws.removeAllListeners()
-                    ws.on('close', () => {
-                        delete this.sockets[rpc.params[0]]
-                        callback(null, rpc.makeResult(true))
-                    })
+
+                    // clean up
+                    if (ws.removeAllListeners) {
+                        ws.removeAllListeners()
+                    } else {
+                        ws.onopen = null!
+                        ws.onerror = null!
+                        ws.onmessage = null!
+                        ws.onclose = null!
+                    }
+
+                    delete this.sockets[rpc.params[0]]
+                    callback(null, rpc.makeResult(true))
                 } else {
                     delete this.sockets[rpc.params[0]]
                     callback(null, rpc.makeResult(true))

@@ -20,6 +20,26 @@ class FakeWebSocket extends EventEmitter {
         }, 10)
     }
 
+    set onopen(value) {
+        this.removeListener('open')
+        this.addListener('open', value)
+    }
+
+    set onclose(value) {
+        this.removeListener('close')
+        this.addListener('close', value)
+    }
+
+    set onmessage(value) {
+        this.removeListener('')
+        this.addListener('message', value)
+    }
+
+    set onerror(value) {
+        this.removeListener('error')
+        this.addListener('error', value)
+    }
+
     public resetMockData() {
         data = null
         error = null
@@ -47,21 +67,21 @@ class FakeWebSocket extends EventEmitter {
         isClose = true
     }
 
-    public close() { 
+    public close() {
         this.stopMockLoop()
         setTimeout(() => {
-            this.emit('close', 1001, 'closed')
+            this.emit('close', { code: 1001, reaseon: 'closed' })
         }, 100)
     }
 
     private startMockLoop() {
         this.interval = setInterval(() => {
             if (data) {
-                this.emit('message', JSON.stringify(data))
+                this.emit('message', { data: JSON.stringify(data) })
                 data = null
             }
             if (error) {
-                this.emit('error', error)
+                this.emit('error', {error})
                 error = null
             }
             if (isClose) {

@@ -11,7 +11,7 @@ const wsUtility = new FakeWebSocket(null)
 wsUtility.close()
 
 rewiremock('xhr2').with(require('./fake-xhr2'))
-rewiremock('ws').with(require('./fake-ws'))
+rewiremock('isomorphic-ws').with(require('./fake-ws'))
 
 rewiremock.enable()
 

@@ -64,7 +64,7 @@ describe('utils:validNumberOrDefault', () => {
 
 })
 
-describe('utils:valid*OrError', () => {
+describe('utils:validOrError', () => {
     it('validAddressOrError with valid input', () => {
         expect(utils.validAddressOrError('7567d83b7b8d80addcb281a71d54fc7b3364ffed')).to.be.equal('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed')
     })

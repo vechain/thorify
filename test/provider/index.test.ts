@@ -1,7 +1,6 @@
 'use strict'
 import { expect } from 'chai'
 import { ThorProvider } from '../../src/provider'
-import { JSONRPC } from '../../src/provider/json-rpc'
 
 describe('thor-provider initialization', () => {
 

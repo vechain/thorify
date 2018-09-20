@@ -898,6 +898,28 @@ Call this function will create a `Transaction Object` for deploying the contract
 
 contractInstance.deploy(options)
 
+// const jsonInterface = [...](ABI definition)
+const contractInstance = new web3Instance.eth.Contract(jsonInterface)
+
+contractInstance.deploy({
+    data: '0x60...' // contract bytecode
+    arguments: [123, 'My String'] // optional(depends on the constructor of contract source)
+}).send({
+    from: '0x1234567890123456789012345678901234567891'
+    gas: 1500000,
+}).then((newContractInstance) => {
+    console.log(newContractInstance.options.address) // instance with the new contract address
+})
+
+// Another example
+// const jsonInterface = [...](ABI definition)
+const contractInstance = new web3Instance.eth.Contract(jsonInterface)
+// When the data is already set as an option to the contract itself
+contractInstance.options.data = '0x12345...';
+
+contractInstance.deploy({
+    arguments: [123, 'My String'] // optional(depends on the constructor of contract source)
+}) // .send .call .encodeABI .estimateGas
 ```
 
 **Parameters**

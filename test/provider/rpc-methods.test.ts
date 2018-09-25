@@ -374,7 +374,7 @@ describe('rpc methods', () => {
 
             expect(url).to.be.equal('/accounts/0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed?revision=best')
             expect(body).to.have.property('value', '0x64')
-            expect(body).to.have.property('gas', 100)
+            expect(body).to.not.have.property('gas')
             expect(body).to.have.property('gasPrice', '0x64')
             expect(body).to.have.property('caller', '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed')
             expect(ret.result).to.be.equal(21000)
@@ -425,7 +425,7 @@ describe('rpc methods', () => {
             const { body } = xhrUtility.extractRequest()
 
             expect(ret.result).to.be.equal(null)
-            expect(body).to.have.property('gas', 100)
+            expect(body).to.not.have.property('gas')
             expect(body).to.not.have.property('caller')
 
         })

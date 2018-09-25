@@ -127,7 +127,14 @@ class ThorProvider extends EventEmitter {
                 debug('[ws]opened')
                 ws.onclose = (event) => {
                     debug('[ws]close', event.code, event.reason)
-                    this.emit('data', rpc.makeSubError(new Error(`Connection closed${event.reason ? (':' + event.reason) : ''}`)))
+                    let errMsg = 'Connection closed.'
+                    if (event.code) {
+                        errMsg += ' Error code: ' + event.code
+                    }
+                    if (event.reason) {
+                        errMsg += ' Error reason: ' + event.reason
+                    }
+                    this.emit('data', rpc.makeSubError(new Error(errMsg)))
                 }
             }
 

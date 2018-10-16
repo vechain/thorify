@@ -33,6 +33,18 @@ describe('utils:fromETHBlockNumber', () => {
 
 })
 
+describe('utils:fromETHBlockNumberOrHash', () => {
+
+    it('with number', () => {
+        expect(utils.fromETHBlockNumberOrHash(100)).to.be.equal(100)
+    })
+
+    it('with blockID', () => {
+        expect(utils.fromETHBlockNumberOrHash('0x000000003a3e7437634e9ab026cd279a88a8f086c2f332421d424668ac976bc7')).to.be.equal('0x000000003a3e7437634e9ab026cd279a88a8f086c2f332421d424668ac976bc7')
+    })
+
+})
+
 describe('utils:formatRange', () => {
 
     it('empty input', () => {

@@ -20,6 +20,14 @@ export const fromETHBlockNumber = function(blockNumber: StringOrNumber): StringO
     }
 }
 
+export const fromETHBlockNumberOrHash = function(blockRevision: any): StringOrNumber {
+    if (/^(-0x|0x)?[0-9a-fA-F]{64}$/i.test(blockRevision)) {
+        return blockRevision
+    } else {
+        return fromETHBlockNumber(blockRevision)
+    }
+}
+
 export const formatRange = function(range: any): LogQueryRange | null {
     const ret: LogQueryRange = {}
     if (range.unit !== 'block' && range.unit !== 'time') {

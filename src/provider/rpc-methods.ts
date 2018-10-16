@@ -2,7 +2,8 @@
 
 import * as utils from '../utils'
 import { JSONRPC, RPCResult } from './json-rpc'
-import { HTTP, SimpleResponse} from './simple-http'
+import { HTTP, SimpleResponse } from './simple-http'
+const debug = require('debug')('thor:http-provider:rpc')
 
 export type RPCExecutor = (rpc: JSONRPC, host: string, timeout: number) => Promise<RPCResult>
 
@@ -43,7 +44,7 @@ RPCMethodMap.set('eth_blockNumber', async function(rpc: JSONRPC, host: string, t
 })
 
 RPCMethodMap.set('eth_getBalance', async function(rpc: JSONRPC, host: string, timeout: number) {
-    const URL = host + '/accounts/' + rpc.params[0] + '?revision=' + utils.fromETHBlockNumber(rpc.params[1])
+    const URL = host + '/accounts/' + rpc.params[0] + '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
 
     const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor)
 
@@ -51,7 +52,7 @@ RPCMethodMap.set('eth_getBalance', async function(rpc: JSONRPC, host: string, ti
 })
 
 RPCMethodMap.set('eth_getEnergy', async function(rpc: JSONRPC, host: string, timeout: number) {
-    const URL = host + '/accounts/' + rpc.params[0] + '?revision=' + utils.fromETHBlockNumber(rpc.params[1])
+    const URL = host + '/accounts/' + rpc.params[0] + '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
 
     const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor)
 
@@ -59,7 +60,7 @@ RPCMethodMap.set('eth_getEnergy', async function(rpc: JSONRPC, host: string, tim
 })
 
 RPCMethodMap.set('eth_getCode', async function(rpc: JSONRPC, host: string, timeout: number) {
-    const URL = host + '/accounts/' + rpc.params[0] + '/code?revision=' + utils.fromETHBlockNumber(rpc.params[1])
+    const URL = host + '/accounts/' + rpc.params[0] + '/code?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
 
     const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor)
 
@@ -67,7 +68,7 @@ RPCMethodMap.set('eth_getCode', async function(rpc: JSONRPC, host: string, timeo
 })
 
 RPCMethodMap.set('eth_getStorageAt', async function(rpc: JSONRPC, host: string, timeout: number) {
-    const URL = host + '/accounts/' + rpc.params[0] + '/storage/' + utils.leftPadToBytes32(rpc.params[1]) + '?revision=' + utils.fromETHBlockNumber(rpc.params[2])
+    const URL = host + '/accounts/' + rpc.params[0] + '/storage/' + utils.leftPadToBytes32(rpc.params[1]) + '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[2])
 
     const res = await HTTP.get(URL, timeout).then(HTTPPostProcessor)
 
@@ -128,7 +129,7 @@ RPCMethodMap.set('eth_call', async function(rpc: JSONRPC, host: string, timeout:
     if (rpc.params[0].to) {
         extraURI = '/' + rpc.params[0].to
     }
-    extraURI += '?revision=' + utils.fromETHBlockNumber(rpc.params[1])
+    extraURI += '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
     const URL = host + '/accounts' + extraURI
 
     const reqBody: any = {
@@ -153,6 +154,9 @@ RPCMethodMap.set('eth_call', async function(rpc: JSONRPC, host: string, timeout:
         return rpc.makeResult(null)
     } else {
         if (res.reverted) {
+            if (res.data && (res.data as string).startsWith('0x08c379a0')) {
+                debug('VM reverted with message:', require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+            }
             return rpc.makeResult(null)
         } else {
             return rpc.makeResult(res.data)
@@ -165,7 +169,7 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
     if (rpc.params[0].to) {
         extraURI = '/' + rpc.params[0].to
     }
-    extraURI += '?revision=' + utils.fromETHBlockNumber(rpc.params[1])
+    extraURI += '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
     const URL = host + '/accounts' + extraURI
 
     const reqBody: any = {
@@ -183,6 +187,9 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
         return rpc.makeResult(null)
     } else {
         if (res.reverted) {
+            if (res.data && (res.data as string).startsWith('0x08c379a0')) {
+                debug('VM reverted with message:', require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+            }
             return rpc.makeResult(null)
         } else {
             // ignore the overflow since block gas limit is uint64 and JavaScript's max number is 2^53

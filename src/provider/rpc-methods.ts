@@ -153,13 +153,15 @@ RPCMethodMap.set('eth_call', async function(rpc: JSONRPC, host: string, timeout:
     if (!res) {
         return rpc.makeResult(null)
     } else {
-        if (res.reverted) {
+        if (res.reverted || res.vmError) {
             if (res.data && (res.data as string).startsWith('0x08c379a0')) {
                 debug('VM reverted with message:', require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+            } else if (res.vmError) {
+                debug('VM returned error:', res.vmError)
             }
             return rpc.makeResult(null)
         } else {
-            return rpc.makeResult(res.data)
+            return rpc.makeResult(res.data === '0x' ? '' : res.data)
         }
     }
 })
@@ -186,12 +188,15 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
     if (!res) {
         return rpc.makeResult(null)
     } else {
-        if (res.reverted) {
+        if (res.reverted || res.vmError) {
             if (res.data && (res.data as string).startsWith('0x08c379a0')) {
                 debug('VM reverted with message:', require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+            } else if (res.vmError) {
+                debug('VM returned error:', res.vmError)
             }
             return rpc.makeResult(null)
         } else {
+            debug('VM gas:', res.gasUsed)
             // ignore the overflow since block gas limit is uint64 and JavaScript's max number is 2^53
             const intrinsicGas = utils.calcIntrinsicGas(Object.assign(reqBody, { to: rpc.params[0].to }))
             if (res.gasUsed === 0 && (reqBody.data === '0x')) {

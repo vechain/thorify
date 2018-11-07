@@ -263,6 +263,23 @@ describe('rpc methods', () => {
 
         })
 
+        it('"0x" of data should return empty string', async () => {
+            xhrUtility.setResponse({ data: '0x' })
+            const executor = RPCMethodMap.get('eth_call')
+            const rpc = makeRPCRequest('eth_call', [{
+                to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+                from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+                gas: '0x64',
+                value: '0x64',
+                gasPrice: '0x64',
+            }])
+
+            const ret = await executor(rpc, host, timeout)
+            const { body } = xhrUtility.extractRequest()
+
+            expect(ret.result).to.be.equal('')
+        })
+
         it('return null', async () => {
             const executor = RPCMethodMap.get('eth_call')
             const rpc = makeRPCRequest('eth_call', ['0xa5b3d1dbafe79a41dce8ec33a83e68cf506cdcd1df7776c3afd8fc67a76cecf2'])

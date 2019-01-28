@@ -156,7 +156,7 @@ Need thor@v1.0.2 and later to work with subscription module.
 
 ## Compatibility
 
-Currently, `thorify` is compatible with `web3@1.0*`.
+Currently, `thorify` is compatible with `>= web3@1.0.0-beta.1` and `<= web3@1.0.0-beta.38`.
 
 ## License
 

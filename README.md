@@ -29,7 +29,7 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 
 ``` bash
 npm install --save thorify
-npm install --save web3 # Web3 is needed as dependency.
+npm install --save web3@1.0.0-beta.37   # Web3 is needed as dependency.
 ```
 
 ## Usage
@@ -123,7 +123,7 @@ The APIs that follows the mechanism are:
 
 ### Web3-Gear vs Thorify
 
-Thor only supports RESTful API other than ethereum's JSON-RPC, so we developed two component for the developers familiar with ethereum's develop kits. `Web3-Gear` is a standalone program that accepts JSON-RPC calls and transforms the requests to thor's RESTful API and `Thorify` is an extended web3 that sends the request directly to thor's RESTful API.So,
+Thor only supports RESTful API other than ethereum's JSON-RPC, so we developed two component for the developers familiar with ethereum's develop kits. `web3-gear` is a standalone program that accepts JSON-RPC calls and transforms the requests to thor's RESTful API and `thorify` is an extended web3 that sends the request directly to thor's RESTful API.So,
 
 + If you are writing smart contract using [truffle](http://truffleframework.com/)/[remix-ide](https://remix.ethereum.org/) or other tools that uses original web3, you should use `Web3-Gear`.
 
@@ -156,7 +156,7 @@ Need thor@v1.0.2 and later to work with subscription module.
 
 ## Compatibility
 
-Currently, `thorify` is compatible with `>= web3@1.0.0-beta.1` and `<= web3@1.0.0-beta.38`.
+Currently, `thorify` is compatible with `>= web3@1.0.0-beta.1` and `<= web3@1.0.0-beta.37`.
 
 ## License
 

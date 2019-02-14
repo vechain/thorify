@@ -115,8 +115,11 @@ const extendAccounts = function(web3: any): any {
     web3.eth.accounts.hashMessage = function hashMessage(data: string | Buffer) {
         const message = web3Utils.isHexStrict(data) ? web3Utils.hexToBytes(data) : data
         const messageBuffer = Buffer.from(message)
+        const prefix = '\u0019VeChain Signed Message:\n' + message.length.toString()
+        const prefixBuffer = Buffer.from(prefix)
+        const prefixedMessage = Buffer.concat([prefixBuffer, messageBuffer])
 
-        return utils.toPrefixedHex(cry.blake2b256(messageBuffer).toString('hex'))
+        return utils.toPrefixedHex(cry.blake2b256(prefixedMessage).toString('hex'))
     }
 
     web3.eth.accounts.sign = function sign(data: string | Buffer, privateKey: string) {

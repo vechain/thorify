@@ -69,7 +69,7 @@
         "ws": "^6.0.0",
         "xhr2": "0.1.4"
     },
-    "peerDependencies":{
+    "peerDependencies": {
         "web3": ">=1.0.0-beta.1 <=1.0.0-beta.37"
     },
     "directories": {

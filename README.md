@@ -15,6 +15,7 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 * [Send transaction](#send-transaction)
 * [Documentation](https://thorify.vecha.in)
 * [Play with multi-clause](#play-with-multi-clause)
+* [Which Stack Should I Choose Regarding Connex,Thorify And Web3-Gear](#which-stack-should-i-choose-regarding-connexthorify-and-web3-gear)
 * [FAQ](#faq)
     * [Web3-Gear vs Thorify](#web3-gear-vs-thorify)
     * [How do I send VTHO token](#how-do-i-send-vtho-token)
@@ -119,15 +120,24 @@ The APIs that follows the mechanism are:
 1. [thor-devkit.js](https://github.com/vechain/thor-devkit.js) supports multi-clause and sign transaction
 2. send signed transaction using [sendSignedTransaction](https://thorify.vecha.in/#/?id=send-signed-transaction)
 
+## Which Stack Should I Choose Regarding Connex,Thorify And Web3-Gear
+
++ [Connex](https://github.com/vechain/connex#connex-): The standard interface to connect VeChain apps with VeChain blockchain and user.
++ [Web3-Gear](https://github.com/vechain/web3-gear#web3-gear): Proxy Thor's RESTful API to Eth's JSON-RPC, to support Remix, Truffle and more.
+
+Below is an reference when you are planning your technical stack:
+
+![tech-stack](./tech-stack.png)
+
+Here are some most common scenarios:
+
+1. Develop a web application(**Recommend**): `Connex` + [Connex powered VeChain wallets](https://env.vechain.org/)
+2. An alternative for web application: `Thorify + Web3` + [Comet](https://env.vechain.org/#comet)
+3. Backend service in Node.js: `Thorify+Web3`
+4. Contract development in [Truffle](https://truffleframework.com/): `Web3+Web3-Gear`
+5. Contract development in [Remix-IDE](https://remix.ethereum.org/): `Web3+Web3-Gear`
+
 ## FAQ
-
-### Web3-Gear vs Thorify
-
-Thor only supports RESTful API other than ethereum's JSON-RPC, so we developed two component for the developers familiar with ethereum's develop kits. `Web3-Gear` is a standalone program that accepts JSON-RPC calls and transforms the requests to thor's RESTful API and `Thorify` is an extended web3 that sends the request directly to thor's RESTful API.So,
-
-+ If you are writing smart contract using [truffle](http://truffleframework.com/)/[remix-ide](https://remix.ethereum.org/) or other tools that uses original web3, you should use `Web3-Gear`.
-
-+ If you are writing some application or scripts executing in `Node.js` or `Browser` environment, you should use `Thorify`.
 
 ### How do I send VTHO token
 
@@ -144,8 +154,6 @@ It's done by calling the functions of prototype contract, check [wiki page](http
 
 The RESTful API of Thor is different with Ethereum's JSON-RPC, therefore, there are some methods in web3 are not supported by thorify, feel free to open an issue discuss the features.
 
-There is a possibility that when you trying to call `sendTransaction` or `send` functions, thorify will return `Method not supported` under version 0.3.1, due to account module will check the private key associated with `from` field. After upgrade to version 0.3.1 or newer, thorify will show `The private key corresponding to from filed can't be found in local eth.accounts.wallet ` to make an error more specific.
-
 ### Subscriptions support
 
 Need thor@v1.0.2 and later to work with subscription module.
@@ -161,27 +169,3 @@ Currently, `Thorify` is compatible with `>= web3@1.0.0-beta.1` and `<= web3@1.0.
 ## License
 
 This project is licensed under the MIT license, Copyright (c) 2017 VeChain Foundation. For more information see [LICENSE.md](LICENSE.md).
-
-```
-The MIT License
-
-Copyright (c) 2017 VeChain Foundation
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```

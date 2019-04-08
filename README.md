@@ -24,6 +24,7 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
     * [Subscriptions support](#subscriptions-support)
 * [Notes](#notes)
 * [Compatibility](#compatibility)
+* [Debugging](#debugging)
 * [License](#License)
 
 ## Install
@@ -133,9 +134,9 @@ Here are some most common scenarios:
 
 1. Develop a web application(**Recommend**): `Connex` + [Connex powered VeChain wallets](https://env.vechain.org/)
 2. An alternative for web application: `Thorify + Web3` + [Comet](https://env.vechain.org/#comet)
-3. Backend service in Node.js: `Thorify+Web3`
-4. Contract development in [Truffle](https://truffleframework.com/): `Web3+Web3-Gear`
-5. Contract development in [Remix-IDE](https://remix.ethereum.org/): `Web3+Web3-Gear`
+3. Backend service in Node.js: `Thorify + Web3`
+4. Contract development in [Truffle](https://truffleframework.com/): `Web3 + Web3-Gear`
+5. Contract development in [Remix-IDE](https://remix.ethereum.org/): `Web3 + Web3-Gear`
 
 ## FAQ
 
@@ -165,6 +166,15 @@ Need thor@v1.0.2 and later to work with subscription module.
 ## Compatibility
 
 Currently, `Thorify` is compatible with `>= web3@1.0.0-beta.1` and `<= web3@1.0.0-beta.37`.
+
+## Debugging
+
+```shell
+DEBUG=thor:* ts-node index.ts 
+```
+
+`ts-node index.ts` can be replaced with command to run your code, this example is only for Node.js environment. For more detailed info, please refer to [debug](https://www.npmjs.com/package/debug).
+
 
 ## License
 

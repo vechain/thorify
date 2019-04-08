@@ -133,9 +133,9 @@ Here are some most common scenarios:
 
 1. Develop a web application(**Recommend**): `Connex` + [Connex powered VeChain wallets](https://env.vechain.org/)
 2. An alternative for web application: `Thorify + Web3` + [Comet](https://env.vechain.org/#comet)
-3. Backend service in Node.js: `Thorify+Web3`
-4. Contract development in [Truffle](https://truffleframework.com/): `Web3+Web3-Gear`
-5. Contract development in [Remix-IDE](https://remix.ethereum.org/): `Web3+Web3-Gear`
+3. Backend service in Node.js: `Thorify + Web3`
+4. Contract development in [Truffle](https://truffleframework.com/): `Web3 + Web3-Gear`
+5. Contract development in [Remix-IDE](https://remix.ethereum.org/): `Web3 + Web3-Gear`
 
 ## FAQ
 

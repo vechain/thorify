@@ -128,7 +128,7 @@ The APIs that follows the mechanism are:
 
 Below is an reference when you are planning your technical stack:
 
-![tech-stack](./tech-stack.png)
+![tech-stack](https://raw.githubusercontent.com/vechain/thorify/master/tech-stack.png)
 
 Here are some most common scenarios:
 

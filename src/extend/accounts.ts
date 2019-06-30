@@ -44,11 +44,7 @@ const extendAccounts = function(web3: any): any {
                     value: tx.value ? tx.value : 0,
                     data: tx.data,
                 })
-                if (gas) {
-                    tx.gas = gas
-                } else {
-                    throw new Error('error getting gas')
-                }
+                tx.gas = gas
             }
             if (!tx.nonce) {
                 tx.nonce = utils.newNonce()

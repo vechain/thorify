@@ -158,7 +158,7 @@ RPCMethodMap.set('eth_call', async function(rpc: JSONRPC, host: string, timeout:
             if (res.data && (res.data as string).startsWith('0x08c379a0')) {
                 return rpc.makeError('VM reverted: ' + require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
             } else {
-                return rpc.makeError('VM executing failed: ' + res.vmError)
+                return rpc.makeError('VM executing failed' + (res.vmError ? ': ' + res.vmError : ''))
             }
         } else {
             return rpc.makeResult(res.data === '0x' ? '' : res.data)
@@ -190,9 +190,9 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
     } else {
         if (res.reverted || res.vmError) {
             if (res.data && (res.data as string).startsWith('0x08c379a0')) {
-                return rpc.makeError('Gas estimation failed with VM reverted : ' + require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+                return rpc.makeError('Gas estimation failed with VM reverted: ' + require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
             } else {
-                return rpc.makeError('Gas estimation failed: ' + res.vmError)
+                return rpc.makeError('Gas estimation failed' + (res.vmError ? ': ' + res.vmError : ''))
             }
         } else {
             debug('VM gas:', res.gasUsed)

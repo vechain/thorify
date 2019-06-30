@@ -150,16 +150,16 @@ RPCMethodMap.set('eth_call', async function(rpc: JSONRPC, host: string, timeout:
 
     const res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor)
 
+    debug('eth_call returns', res)
     if (!res) {
         return rpc.makeResult(null)
     } else {
         if (res.reverted || res.vmError) {
             if (res.data && (res.data as string).startsWith('0x08c379a0')) {
-                debug('VM reverted with message:', require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
-            } else if (res.vmError) {
-                debug('VM returned error:', res.vmError)
+                return rpc.makeError('VM reverted: ' + require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+            } else {
+                return rpc.makeError('VM executing failed' + (res.vmError ? ': ' + res.vmError : ''))
             }
-            return rpc.makeResult(null)
         } else {
             return rpc.makeResult(res.data === '0x' ? '' : res.data)
         }
@@ -179,6 +179,13 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
         data: rpc.params[0].data || '0x',
         gasPrice: rpc.params[0].gasPrice || '',
     }
+    if (rpc.params[0].gas) {
+        if (typeof rpc.params[0].gas === 'number') {
+            reqBody.gas = rpc.params[0].gas
+        } else {
+            reqBody.gas = parseInt(utils.sanitizeHex(rpc.params[0].gas), 16)
+        }
+    }
     if (rpc.params[0].from) {
         reqBody.caller = rpc.params[0].from
     }
@@ -190,11 +197,10 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
     } else {
         if (res.reverted || res.vmError) {
             if (res.data && (res.data as string).startsWith('0x08c379a0')) {
-                debug('VM reverted with message:', require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
-            } else if (res.vmError) {
-                debug('VM returned error:', res.vmError)
+                return rpc.makeError('Gas estimation failed with VM reverted: ' + require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+            } else {
+                return rpc.makeError('Gas estimation failed' + (res.vmError ? ': ' + res.vmError : ''))
             }
-            return rpc.makeResult(null)
         } else {
             debug('VM gas:', res.gasUsed)
             // ignore the overflow since block gas limit is uint64 and JavaScript's max number is 2^53

@@ -196,11 +196,11 @@ web3Instance.eth.getTransaction(transactionID).then(result => {
 + `expiration` - `Uint32` : Expiration relative to blockRef(in unit block)
 + `clauses` - `Array of Clause Object` 
 + `gasPriceCoef` - `Uint8`: Coefficient used to calculate the final gas price
-+ `gas`  - `Uint8`: Maximum of gas can be consumed to execute this transaction
++ `gas`  - `Uint8`: Maximum of gas can be consumed to execute this transaction, set by transaction origin
 + `dependsOn` - `String|Null`: ID of the transaction which the current transaction depends(bytes32)
 + `nonce` - `String`: Transaction nonce
 + `meta` - `Meta Object`
-+ `blockNumber`: Same as `meta.blockNumer`
++ `blockNumber`: Same as `meta.blockNumber`
 
 `Clause Object`:
 
@@ -363,7 +363,7 @@ ERC20ContractInstance.methods.transfer("0xd3ae78222beadb038203be21ed5ce7c9b1bff6
 + `from` - `String|Number`: Either The address of transaction sender"s account or the address/index of a local wallet in `web3Instance.eth.accounts.wallet `.
 + `to` - `String`: (optional) The destination address of the message, left undefined for a contract-creation transaction.
 + `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
-+ `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is going to be refunded right after the transaction execution).
++ `gas`  - `Number`: (optional) The maximum amount of gas that can be consumed by the transaction (unused gas is going to be refunded right after the transaction execution).
 + `data` - `String`: (optional) Either the [ABI byte string](http://solidity.readthedocs.io/en/latest/abi-spec.html) containing the data of the function call on a contract, or the initialization code of a contract-creation transaction.
 + `nonce` - `Number`: (optional) A random 64-bit scalar value that is different from ethereum"s nonce which is a transaction count. 
 + `chainTag` - `Number`: (optional) **The last byte** of the genesis block ID representing the identity of a chain.
@@ -405,7 +405,7 @@ web3Instance.eth.call(callObject [, blockNumberOrHash]).then(result => {
 + `from` - `String|Number`:(optional) Either The address of transaction sender"s account or the address/index of a local wallet in `web3.eth.accounts.wallet `.
 + `to` - `String`: (optional) The destination address of the message, left undefined for a contract-creation transaction.
 + `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
-+ `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is going to be refunded right after the transaction execution).
++ `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the call.
 + `data` - `String`: (optional) Either the [ABI byte string](http://solidity.readthedocs.io/en/latest/abi-spec.html) containing the data of the function call on a contract, or the initialization code of a contract-creation transaction.
 + `gasPrice` - `Number|String|BN|BigNumber`: (optional) The price of gas for this transaction in `wei`.
 
@@ -987,7 +987,7 @@ contractInstance.methods.myMethod([param1[, param2[, ...]]]).call(callObject[, b
 `Transaction Object`:
 + `from` - `String|Number`:(optional) Either The address of transaction sender"s account or the address/index of a local wallet in `web3.eth.accounts.wallet `.
 + `value`- `Number|String|BN|BigNumber`: (optional) The value, with an unit of `wei`, transferred through the transaction. Specifically, it plays the role of endowment when the transaction is contract-creation type.
-+ `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the transaction (unused gas is going to be refunded right after the transaction execution).
++ `gas`  - `Number`: (optional) The maximum amount of gas that can be used by the call.
 + `gasPrice` - `Number|String|BN|BigNumber`: (optional) The price of gas for this transaction in `wei`.
 
 `BlockNumberOrHash` parameters can be one of the following:

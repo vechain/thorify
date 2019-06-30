@@ -135,6 +135,7 @@ describe('extend:accounts', () => {
         // if reverted estimateGas will return null
         xhrUtility.setCachedResponse('/accounts/0xd3ae78222beadb038203be21ed5ce7c9b1bff602?revision=best', {
             reverted: true,
+            data: '0x08c379a00x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
         })
         web3.eth.accounts.signTransaction({
             to: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602',
@@ -149,7 +150,7 @@ describe('extend:accounts', () => {
             done(new Error('no error thrown'))
         }).catch((e) => {
             try {
-                expect(() => { throw e }).to.throw('error getting gas')
+                expect(() => { throw e }).to.throw('Returned error: Gas estimation failed with VM reverted: something wrong')
                 done()
             } catch (err) {
                 done(err)

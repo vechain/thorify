@@ -11,7 +11,7 @@ export const calcIntrinsicGas = function(tx: EthTransaction): number {
 
     // calculate data gas
     if (tx.data) {
-        const buffer = new Buffer(sanitizeHex(tx.data), 'hex')
+        const buffer = Buffer.from(sanitizeHex(tx.data), 'hex')
         let z = 0
         let nz = 0
         for (const byte of buffer) {

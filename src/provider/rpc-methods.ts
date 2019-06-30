@@ -179,6 +179,13 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
         data: rpc.params[0].data || '0x',
         gasPrice: rpc.params[0].gasPrice || '',
     }
+    if (rpc.params[0].gas) {
+        if (typeof rpc.params[0].gas === 'number') {
+            reqBody.gas = rpc.params[0].gas
+        } else {
+            reqBody.gas = parseInt(utils.sanitizeHex(rpc.params[0].gas), 16)
+        }
+    }
     if (rpc.params[0].from) {
         reqBody.caller = rpc.params[0].from
     }

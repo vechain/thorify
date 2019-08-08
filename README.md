@@ -155,17 +155,13 @@ It's done by calling the functions of prototype contract, check [wiki page](http
 
 The RESTful API of Thor is different with Ethereum's JSON-RPC, therefore, there are some methods in web3 are not supported by thorify, feel free to open an issue discuss the features.
 
-### Subscriptions support
-
-Need thor@v1.0.2 and later to work with subscription module.
-
 ## Notes
 
 - There are three special block number in Ethereum: `earliest`,`latest`,`pending`. In VeChain Thor, we introduced `best` block and there is no `pending` block, so they will be replaced with `0` (aka genesis), `best`, `best`
 
 ## Compatibility
 
-Currently, `Thorify` is compatible with `>= web3@1.0.0-beta.1` and `<= web3@1.0.0-beta.37`.
+Currently, `Thorify` is compatible with `web3@1.*`.
 
 ## Debugging
 

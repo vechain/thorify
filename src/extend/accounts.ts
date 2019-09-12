@@ -132,7 +132,6 @@ const extendAccounts = function(web3: any): any {
     }
 
     web3.eth.accounts.recover = function recover(message: any, signature: string, preFixed: boolean) {
-        const args = [].slice.apply(arguments)
 
         if (utils.isObject(message)) {
             return this.recover(message.messageHash, message.signature, true)

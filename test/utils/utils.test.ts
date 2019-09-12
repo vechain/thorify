@@ -3,33 +3,6 @@
 import { expect } from 'chai'
 import * as utils from '../../src/utils'
 
-describe('utils:mustToBN', () => {
-
-    it('input null', () => {
-        expect(() => { utils.mustToBN(null) }).to.throw('input can\'t be null or undefined')
-    })
-
-    it('input undefined', () => {
-        expect(() => { utils.mustToBN(undefined) }).to.throw('input can\'t be null or undefined')
-    })
-
-    it('input number', () => {
-        const ret = utils.mustToBN(100)
-        expect(ret.toString()).to.be.equal('100')
-    })
-
-    it('input string', () => {
-        const ret = utils.mustToBN('100')
-        expect(ret.toString()).to.be.equal('100')
-    })
-
-    it('input hex string', () => {
-        const ret = utils.mustToBN('0x64')
-        expect(ret.toString()).to.be.equal('100')
-    })
-
-})
-
 describe('utils:validNumberOrDefault', () => {
 
     it('input hex string', () => {

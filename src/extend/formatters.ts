@@ -1,11 +1,11 @@
 'use strict'
 const debug = require('debug')('thor:injector')
-const web3Utils = require('web3-utils')
 import { LogFilterOptions, TransferFilterOptions } from '../types'
 import * as utils from '../utils'
 
 const extendFormatters = function(web3: any) {
 
+    const web3Utils = web3.utils
     const outputTransactionFormatter = web3.extend.formatters.outputTransactionFormatter
     web3.extend.formatters.outputTransactionFormatter = function(tx: any) {
         if (tx && tx.isThorified) {

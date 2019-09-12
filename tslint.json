@@ -12,7 +12,8 @@
         "only-arrow-functions": false,
         "interface-name": false,
         "max-line-length":false,
-        "no-namespace":false
+        "no-namespace":false,
+        "radix": false
     },
     "rulesDirectory": []
 }

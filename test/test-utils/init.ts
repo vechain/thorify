@@ -7,7 +7,7 @@ const Web3 = require('web3')
 
 // Test utilities
 const xhrUtility = new FakeXHR2()
-const wsUtility = new FakeWebSocket(null)
+const wsUtility = new FakeWebSocket('')
 wsUtility.close()
 
 rewiremock('xhr2').with(require('./fake-xhr2'))

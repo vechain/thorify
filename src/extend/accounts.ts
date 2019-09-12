@@ -1,6 +1,5 @@
 'use strict'
 
-const web3Utils = require('web3-utils')
 const debug = require('debug')('thor:injector')
 import { cry, Transaction } from 'thor-devkit'
 import { Callback, EthTransaction } from '../types'
@@ -8,6 +7,7 @@ import * as utils from '../utils'
 
 const extendAccounts = function(web3: any): any {
 
+    const web3Utils = web3.utils
     // signTransaction supports both callback and promise style
     web3.eth.accounts.signTransaction = function signTransaction(ethTx: EthTransaction, privateKey: string, callback: Callback) {
         debug('tx to sign: %O', ethTx)

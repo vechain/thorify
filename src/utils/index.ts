@@ -1,5 +1,4 @@
 'use strict'
-const web3Utils = require('web3-utils')
 import { EthTransaction } from '../types'
 import { params } from './params'
 
@@ -85,15 +84,6 @@ export const isUndefined = function(o: any): boolean {
 
 export const isFunction = function(o: any): boolean {
     return typeof o === 'function'
-}
-
-export const mustToBN = function(value: any) {
-    if (isNull(value) || isUndefined(value)) {
-        throw new Error('input can\'t be null or undefined')
-    }
-
-    const num = web3Utils.toBN(value)
-    return num.abs()
 }
 
 export const validNumberOrDefault = function(value: any, defaultValue: number) {

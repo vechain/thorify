@@ -63,7 +63,6 @@
         "isomorphic-ws": "^4.0.1",
         "thor-devkit": "^1.1.0-beta1",
         "web3-core-subscriptions": "^1.2.1",
-        "web3-utils": "^1.2.1",
         "ws": "^6.0.0",
         "xhr2": "0.1.4"
     },

@@ -1,6 +1,5 @@
 'use strict'
 const Subscriptions = require('web3-core-subscriptions').subscriptions
-import * as utils from '../utils'
 import { inputBlockFilterFormatter, inputLogFilterFormatter, inputTransferFilterFormatter } from './formatters'
 
 const extendMethods = function(web3: any) {

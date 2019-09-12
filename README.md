@@ -31,7 +31,7 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 
 ``` bash
 npm install --save thorify
-npm install --save-exact web3@1.0.0-beta.37   # Web3 is needed as dependency.
+npm install --save web3@1.*  # Web3 is needed as dependency.
 ```
 
 ## Usage

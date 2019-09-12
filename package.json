@@ -26,7 +26,7 @@
             ".ts"
         ],
         "require": [
-            "ts-node/register"
+            "ts-node/register/transpile-only"
         ],
         "reporter": [
             "json",
@@ -59,7 +59,6 @@
     },
     "dependencies": {
         "debug": "^3.1.0",
-        "eth-lib": "^0.2.8",
         "eventemitter3": "^3.1.0",
         "isomorphic-ws": "^4.0.1",
         "thor-devkit": "^1.1.0-beta1",

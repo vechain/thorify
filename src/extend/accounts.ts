@@ -2,7 +2,6 @@
 
 const web3Utils = require('web3-utils')
 const debug = require('debug')('thor:injector')
-const EthLib = require('eth-lib/lib')
 import { cry, Transaction } from 'thor-devkit'
 import { Callback, EthTransaction } from '../types'
 import * as utils from '../utils'
@@ -38,8 +37,10 @@ const extendAccounts = function(web3: any): any {
                 tx.data = '0x'
             }
             if (!tx.gas) {
+                const pubKey = cry.secp256k1.derivePublicKey(Buffer.from(utils.sanitizeHex(privateKey), 'hex'))
+                const from = '0x' + cry.publicKeyToAddress(pubKey).toString('hex')
                 const gas = await web3.eth.estimateGas({
-                    from: EthLib.account.fromPrivate(utils.toPrefixedHex(privateKey)).address,
+                    from,
                     to: tx.to ? tx.to : '',
                     value: tx.value ? tx.value : 0,
                     data: tx.data,
@@ -95,17 +96,8 @@ const extendAccounts = function(web3: any): any {
     }
 
     web3.eth.accounts.recoverTransaction = function recoverTransaction(encodedRawTx: string) {
-        const values = EthLib.RLP.decode(encodedRawTx)
-
-        const signingDataHex = EthLib.RLP.encode(values.slice(0, 9))
-        const singingHashBuffer = cry.blake2b256(Buffer.from(utils.sanitizeHex(signingDataHex), 'hex'))
-        const signature = values[9]
-
-        const signatureBuffer = Buffer.from(utils.sanitizeHex(signature), 'hex')
-        const pubKey = cry.secp256k1.recover(singingHashBuffer, signatureBuffer)
-        const address = cry.publicKeyToAddress(pubKey)
-
-        return utils.toPrefixedHex(address.toString('hex'))
+        const decoded = Transaction.decode(Buffer.from(utils.sanitizeHex(encodedRawTx), 'hex'))
+        return decoded.origin
     }
 
     web3.eth.accounts.hashMessage = function hashMessage(data: string | Buffer) {

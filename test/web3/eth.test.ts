@@ -392,7 +392,7 @@ describe('web3.eth', () => {
         })
         const { url } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/logs/events?address=0x0000000000000000000000000000456e65726779')
+        expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000000000456e65726779')
         expect(result.length).to.be.equal(1)
     })
 
@@ -480,7 +480,7 @@ describe('web3.eth.Contract', () => {
         const result = await contract.getPastEvents('Transfer', { filter: { _from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed' } })
         const { url } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/logs/events?address=0x0000000000000000000000000000456e65726779')
+        expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000000000456e65726779')
         expect(result.length).to.be.equal(1)
         expect(result[0]).to.have.all.keys('address', 'blockHash', 'blockNumber', 'event', 'meta', 'raw', 'returnValues', 'signature', 'transactionHash')
     })

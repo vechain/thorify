@@ -475,7 +475,7 @@ describe('rpc methods', () => {
             const ret = await executor(rpc, host, timeout)
             const {url} = xhrUtility.extractRequest()
 
-            expect(url).to.be.equal('/logs/events?address=0x0000000000000000000000417574686f72697479&order=ASC')
+            expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000417574686f72697479&order=ASC')
             expect(ret.result).to.have.lengthOf(1)
             expect(ret.result[0]).to.have.property('blockNumber', 100)
             expect(ret.result[0]).to.have.property('blockHash', 'block-id')
@@ -492,7 +492,7 @@ describe('rpc methods', () => {
             await executor(rpc, host, timeout)
             const { url } = xhrUtility.extractRequest()
 
-            expect(url).to.be.equal('/logs/events?address=0x0000000000000000000000417574686f72697479&order=DESC')
+            expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000417574686f72697479&order=DESC')
         })
 
         it('minimum request param should get the minimum url', async () => {
@@ -502,7 +502,7 @@ describe('rpc methods', () => {
             await executor(rpc, host, timeout)
             const { url } = xhrUtility.extractRequest()
 
-            expect(url).to.be.equal('/logs/events')
+            expect(url).to.be.equal('/logs/event')
         })
 
         it('return null', async () => {

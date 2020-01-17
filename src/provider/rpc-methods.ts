@@ -223,7 +223,7 @@ RPCMethodMap.set('eth_getLogs', async function(rpc: JSONRPC, host: string, timeo
         query += '&order=' + rpc.params[0].order.toUpperCase()
     }
     query = query.replace('&', '?')
-    const URL = host + '/logs/events' + query
+    const URL = host + '/logs/event' + query
 
     const reqBody = utils.formatLogQuery(rpc.params[0])
 

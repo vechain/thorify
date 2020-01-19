@@ -332,9 +332,9 @@ describe('web3.eth', () => {
     })
 
     it('call with valid response', async () => {
-        xhrUtility.setResponse({
+        xhrUtility.setResponse([{
             data: '0x0000000000000000000000000000000000000000000000000000000000000001',
-        })
+        }])
         const result = await web3.eth.call({
             from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
             to: '0x0000000000000000000000000000456e65726779',
@@ -342,16 +342,19 @@ describe('web3.eth', () => {
         })
         const { url, body } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/accounts/0x0000000000000000000000000000456e65726779?revision=best')
+        expect(url).to.be.equal('/accounts/*?revision=best')
         expect(result).to.be.equal('0x0000000000000000000000000000000000000000000000000000000000000001')
         expect(body).to.have.property('caller', '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed')
-        expect(body).to.have.property('data', '0xa9059cbb000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff6020000000000000000000000000000000000000000000000000000000000000064')
+        expect(body).to.have.property('clauses')
+        expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+        expect((body as any).clauses[0]).to.have.property('to', '0x0000000000000000000000000000456e65726779')
+        expect((body as any).clauses[0]).to.have.property('data', '0xa9059cbb000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff6020000000000000000000000000000000000000000000000000000000000000064')
     })
 
     it('estimateGas with valid response', async () => {
-        xhrUtility.setResponse({
+        xhrUtility.setResponse([{
             gasUsed: 0,
-        })
+        }])
         const result = await web3.eth.estimateGas({
             from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
             to: '0x0000000000000000000000000000456e65726779',
@@ -360,10 +363,12 @@ describe('web3.eth', () => {
         })
         const { url, body } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/accounts/0x0000000000000000000000000000456e65726779?revision=best')
+        expect(url).to.be.equal('/accounts/*?revision=best')
         expect(result).to.be.equal(21000)
         expect(body).to.have.property('caller', '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed')
-        expect(body).to.have.property('value', '0x64')
+        expect(body).to.have.property('clauses')
+        expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+        expect((body as any).clauses[0]).to.have.property('value', '0x64')
     })
 
     it('getPastLogs with valid response', async () => {
@@ -434,27 +439,33 @@ describe('web3.eth', () => {
 describe('web3.eth.Contract', () => {
 
     it('call method', async () => {
-        xhrUtility.setResponse({
+        xhrUtility.setResponse([{
             data: '0x000000000000000000000000000000000000000003663fde3f5cc2921e0d7593',
-        })
+        }])
         const result = await contract.methods.balanceOf('0xd3ae78222beadb038203be21ed5ce7c9b1bff602').call()
         const { url, body } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/accounts/0x0000000000000000000000000000456e65726779?revision=best')
+        expect(url).to.be.equal('/accounts/*?revision=best')
         expect(result).to.be.equal('1052067071896070588235347347')
-        expect(body).to.have.property('data', '0x70a08231000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff602')
+
+        expect(body).to.have.property('clauses')
+        expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+        expect((body as any).clauses[0]).to.have.property('data', '0x70a08231000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff602')
     })
 
     it('estimateGas method', async () => {
-        xhrUtility.setResponse({
+        xhrUtility.setResponse([{
             gasUsed: 870,
-        })
+        }])
         const result = await contract.methods.balanceOf('0xd3ae78222beadb038203be21ed5ce7c9b1bff602').estimateGas()
         const { url, body } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/accounts/0x0000000000000000000000000000456e65726779?revision=best')
-        expect(body).to.have.property('data', '0x70a08231000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff602')
-        expect(result).to.be.equal(23724)
+        expect(url).to.be.equal('/accounts/*?revision=best')
+        expect(result).to.be.equal(36870)
+
+        expect(body).to.have.property('clauses')
+        expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+        expect((body as any).clauses[0]).to.have.property('data', '0x70a08231000000000000000000000000d3ae78222beadb038203be21ed5ce7c9b1bff602')
     })
 
     it('getPastLogs', async () => {

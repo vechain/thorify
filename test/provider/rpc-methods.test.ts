@@ -223,7 +223,7 @@ describe('rpc methods', () => {
     describe('eth_call', () => {
 
         it('valid response', async () => {
-            xhrUtility.setResponse({ reverted: false, data: '0xdata' })
+            xhrUtility.setResponse([{ reverted: false, data: '0xdata' }])
             const executor = RPCMethodMap.get('eth_call')
             const rpc = makeRPCRequest('eth_call', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -236,19 +236,21 @@ describe('rpc methods', () => {
             const ret = await executor(rpc, host, timeout)
             const { url, body } = xhrUtility.extractRequest()
 
-            expect(url).to.be.equal('/accounts/0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed?revision=best')
-            expect(body).to.have.property('value', '0x64')
+            expect(url).to.be.equal('/accounts/*?revision=best')
             expect(body).to.have.property('gas', 100)
             expect(body).to.have.property('gasPrice', '0x64')
             expect(body).to.have.property('caller', '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed')
+            expect(body).to.have.property('clauses')
+            expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+            expect((body as any).clauses[0]).to.have.property('value', '0x64')
             expect(ret.result).to.be.equal('0xdata')
         })
 
         it('reverted should return rpc error', async () => {
-            xhrUtility.setResponse({
+            xhrUtility.setResponse([{
                 reverted: true,
                 data: '0x08c379a00x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
-            })
+            }])
             const executor = RPCMethodMap.get('eth_call')
             const rpc = makeRPCRequest('eth_call', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -267,7 +269,7 @@ describe('rpc methods', () => {
         })
 
         it('"0x" of data should return empty string', async () => {
-            xhrUtility.setResponse({ data: '0x' })
+            xhrUtility.setResponse([{ data: '0x' }])
             const executor = RPCMethodMap.get('eth_call')
             const rpc = makeRPCRequest('eth_call', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -278,7 +280,6 @@ describe('rpc methods', () => {
             }])
 
             const ret = await executor(rpc, host, timeout)
-            const { body } = xhrUtility.extractRequest()
 
             expect(ret.result).to.be.equal('')
         })
@@ -296,7 +297,7 @@ describe('rpc methods', () => {
     describe('eth_call', () => {
 
         it('valid response', async () => {
-            xhrUtility.setResponse({ reverted: false, data: '0xdata' })
+            xhrUtility.setResponse([{ reverted: false, data: '0xdata' }])
             const executor = RPCMethodMap.get('eth_call')
             const rpc = makeRPCRequest('eth_call', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -309,16 +310,18 @@ describe('rpc methods', () => {
             const ret = await executor(rpc, host, timeout)
             const { url, body } = xhrUtility.extractRequest()
 
-            expect(url).to.be.equal('/accounts/0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed?revision=best')
-            expect(body).to.have.property('value', '0x64')
+            expect(url).to.be.equal('/accounts/*?revision=best')
             expect(body).to.have.property('gas', 100)
             expect(body).to.have.property('gasPrice', '0x64')
             expect(body).to.have.property('caller', '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed')
+            expect(body).to.have.property('clauses')
+            expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+            expect((body as any).clauses[0]).to.have.property('value', '0x64')
             expect(ret.result).to.be.equal('0xdata')
         })
 
         it('request without from should not have caller in body', async () => {
-            xhrUtility.setResponse({ reverted: true })
+            xhrUtility.setResponse([{ reverted: true }])
             const executor = RPCMethodMap.get('eth_call')
             const rpc = makeRPCRequest('eth_call', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -334,15 +337,19 @@ describe('rpc methods', () => {
             expect(body).to.not.have.property('caller')
         })
 
-        it('deploy contract should request the right url', async () => {
+        it('deploy contract should set "to" to null', async () => {
             const executor = RPCMethodMap.get('eth_call')
             const rpc = makeRPCRequest('eth_call', [{
                 from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
             }])
 
             await executor(rpc, host, timeout)
-            const { url } = xhrUtility.extractRequest()
-            expect(url).to.be.equal('/accounts?revision=best')
+            const { url, body } = xhrUtility.extractRequest()
+            expect(url).to.be.equal('/accounts/*?revision=best')
+
+            expect(body).to.have.property('clauses')
+            expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+            expect((body as any).clauses[0]).to.have.property('to', null)
         })
 
         it('return null', async () => {
@@ -358,7 +365,7 @@ describe('rpc methods', () => {
     describe('eth_estimateGas', () => {
 
         it('valid response', async () => {
-            xhrUtility.setResponse({ gasUsed: 0 })
+            xhrUtility.setResponse([{ gasUsed: 0 }])
             const executor = RPCMethodMap.get('eth_estimateGas')
             const rpc = makeRPCRequest('eth_estimateGas', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -371,16 +378,20 @@ describe('rpc methods', () => {
             const ret = await executor(rpc, host, timeout)
             const { url, body } = xhrUtility.extractRequest()
 
-            expect(url).to.be.equal('/accounts/0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed?revision=best')
-            expect(body).to.have.property('value', '0x64')
+            expect(url).to.be.equal('/accounts/*?revision=best')
             expect(body).to.have.property('gas', 100)
             expect(body).to.have.property('gasPrice', '0x64')
             expect(body).to.have.property('caller', '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed')
+
+            expect(body).to.have.property('clauses')
+            expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+            expect((body as any).clauses[0]).to.have.property('value', '0x64')
+
             expect(ret.result).to.be.equal(21000)
         })
 
-        it('gas Used should increase 20%', async () => {
-            xhrUtility.setResponse({ gasUsed: 10 })
+        it('gas Used should increase 15000', async () => {
+            xhrUtility.setResponse([{ gasUsed: 10 }])
             const executor = RPCMethodMap.get('eth_estimateGas')
             const rpc = makeRPCRequest('eth_estimateGas', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -391,14 +402,14 @@ describe('rpc methods', () => {
             }])
 
             const ret = await executor(rpc, host, timeout)
-            expect(ret.result).to.be.equal(21012)
+            expect(ret.result).to.be.equal(21000 + 10 + 15000)
         })
 
         it('reverted should return rpc error', async () => {
-            xhrUtility.setResponse({
+            xhrUtility.setResponse([{
                 reverted: true,
                 data: '0x08c379a00x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
-            })
+            }])
             const executor = RPCMethodMap.get('eth_estimateGas')
             const rpc = makeRPCRequest('eth_estimateGas', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -414,11 +425,30 @@ describe('rpc methods', () => {
 
         })
 
+        it('vmError present should return rpc error', async () => {
+            xhrUtility.setResponse([{
+                vmError: 'invalid opcode 0xfe',
+            }])
+            const executor = RPCMethodMap.get('eth_estimateGas')
+            const rpc = makeRPCRequest('eth_estimateGas', [{
+                to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+                from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+                gas: '0x64',
+                value: '0x64',
+                gasPrice: '0x64',
+            }])
+
+            const ret = await executor(rpc, host, timeout)
+            expect(ret).to.have.property('error')
+            expect(ret.error).to.have.property('message', 'Gas estimation failed: invalid opcode 0xfe')
+
+        })
+
         it('request without from should not have caller in body', async () => {
-            xhrUtility.setResponse({
+            xhrUtility.setResponse([{
                 reverted: true,
                 data: '0x08c379a00x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
-            })
+            }])
             const executor = RPCMethodMap.get('eth_estimateGas')
             const rpc = makeRPCRequest('eth_estimateGas', [{
                 to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
@@ -435,15 +465,19 @@ describe('rpc methods', () => {
 
         })
 
-        it('deploy contract should request the right url', async () => {
+        it('deploy contract should not set "to" to null', async () => {
             const executor = RPCMethodMap.get('eth_estimateGas')
             const rpc = makeRPCRequest('eth_estimateGas', [{
                 from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
             }])
 
             await executor(rpc, host, timeout)
-            const { url } = xhrUtility.extractRequest()
-            expect(url).to.be.equal('/accounts?revision=best')
+            const { url, body } = xhrUtility.extractRequest()
+            expect(url).to.be.equal('/accounts/*?revision=best')
+
+            expect(body).to.have.property('clauses')
+            expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)
+            expect((body as any).clauses[0]).to.have.property('to', null)
         })
 
         it('return null', async () => {

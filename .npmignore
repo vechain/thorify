@@ -1,6 +1,8 @@
 .vscode/
 src/
 test/
+.github
+docs/
 *.tgz
 tsconfig.json
 tslint.json

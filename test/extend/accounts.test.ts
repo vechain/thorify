@@ -27,9 +27,9 @@ describe('extend:accounts', () => {
         xhrUtility.setCachedResponse('/blocks/best', {
             id: '0x000000352985d99d',
         })
-        xhrUtility.setCachedResponse('/accounts/0xd3ae78222beadb038203be21ed5ce7c9b1bff602?revision=best', {
+        xhrUtility.setCachedResponse('/accounts/*?revision=best', [{
             gasUsed: 53000,
-        })
+        }])
 
         const ret = await web3.eth.accounts.signTransaction({
             to: '0xD3ae78222BEADB038203bE21eD5ce7C9B1BfF602',
@@ -133,10 +133,10 @@ describe('extend:accounts', () => {
 
     it('sign Transaction without gas', (done) => {
         // if reverted estimateGas will return null
-        xhrUtility.setCachedResponse('/accounts/0xd3ae78222beadb038203be21ed5ce7c9b1bff602?revision=best', {
+        xhrUtility.setCachedResponse('/accounts/*?revision=best', [{
             reverted: true,
             data: '0x08c379a00x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
-        })
+        }])
         web3.eth.accounts.signTransaction({
             to: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602',
             value: '0x3e8',
@@ -184,9 +184,9 @@ describe('extend:accounts', () => {
     })
 
     it('sign Transaction without gas and 0-length clause should not throw error', async () => {
-        xhrUtility.setCachedResponse('/accounts?revision=best', {
+        xhrUtility.setCachedResponse('/accounts/*?revision=best', [{
             gasUsed: 53000,
-        })
+        }])
 
         await web3.eth.accounts.signTransaction({
             expiration: 720,

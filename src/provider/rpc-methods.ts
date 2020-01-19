@@ -205,11 +205,8 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
             debug('VM gas:', res.gasUsed)
             // ignore the overflow since block gas limit is uint64 and JavaScript's max number is 2^53
             const intrinsicGas = utils.calcIntrinsicGas(Object.assign(reqBody, { to: rpc.params[0].to }))
-            if (res.gasUsed === 0 && (reqBody.data === '0x')) {
-                return rpc.makeResult(intrinsicGas)
-            } else {
-                return rpc.makeResult(Math.floor(res.gasUsed * 1.2) + intrinsicGas) // increase vm gas with 20% for safe since it's estimated from current block state, final state for the transaction is not determined for now
-            }
+            // increase vm gas by 15000 for safe since it's estimated from current block state, final state for the transaction is not determined for now
+            return rpc.makeResult(intrinsicGas + (result.gasUsed ? (result.gasUsed + 15000) : 0))
         }
     }
 })

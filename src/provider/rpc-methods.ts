@@ -125,17 +125,16 @@ RPCMethodMap.set('eth_getTransactionReceipt', async function(rpc: JSONRPC, host:
 })
 
 RPCMethodMap.set('eth_call', async function(rpc: JSONRPC, host: string, timeout: number) {
-    let extraURI = ''
-    if (rpc.params[0].to) {
-        extraURI = '/' + rpc.params[0].to
-    }
-    extraURI += '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
-    const URL = host + '/accounts' + extraURI
+    const extraURI = '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
+    const URL = host + '/accounts/*' + extraURI
 
     const reqBody: any = {
-        value: rpc.params[0].value || '',
-        data: rpc.params[0].data || '0x',
-        gasPrice: rpc.params[0].gasPrice || '',
+        clauses: [{
+            to: rpc.params[0].to || null,
+            value: rpc.params[0].value || '',
+            data: rpc.params[0].data || '0x',
+        }],
+        gasPrice: rpc.params[0].gasPrice || undefined,
     }
     if (rpc.params[0].gas) {
         if (typeof rpc.params[0].gas === 'number') {
@@ -151,33 +150,33 @@ RPCMethodMap.set('eth_call', async function(rpc: JSONRPC, host: string, timeout:
     const res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor)
 
     debug('eth_call returns', res)
-    if (!res) {
+    if (!res || res.length === 0) {
         return rpc.makeResult(null)
     } else {
-        if (res.reverted || res.vmError) {
-            if (res.data && (res.data as string).startsWith('0x08c379a0')) {
-                return rpc.makeError('VM reverted: ' + require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+        const result = res[0]
+        if (result.reverted || result.vmError) {
+            if (result.data && (result.data as string).startsWith('0x08c379a0')) {
+                return rpc.makeError('VM reverted: ' + require('web3-eth-abi').decodeParameter('string', result.data.replace(/^0x08c379a0/i, '')))
             } else {
-                return rpc.makeError('VM executing failed' + (res.vmError ? ': ' + res.vmError : ''))
+                return rpc.makeError('VM executing failed' + (result.vmError ? ': ' + result.vmError : ''))
             }
         } else {
-            return rpc.makeResult(res.data === '0x' ? '' : res.data)
+            return rpc.makeResult(result.data === '0x' ? '' : result.data)
         }
     }
 })
 
 RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, timeout: number) {
-    let extraURI = ''
-    if (rpc.params[0].to) {
-        extraURI = '/' + rpc.params[0].to
-    }
-    extraURI += '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
-    const URL = host + '/accounts' + extraURI
+    const extraURI = '?revision=' + utils.fromETHBlockNumberOrHash(rpc.params[1])
+    const URL = host + '/accounts/*' + extraURI
 
     const reqBody: any = {
-        value: rpc.params[0].value || '',
-        data: rpc.params[0].data || '0x',
-        gasPrice: rpc.params[0].gasPrice || '',
+        clauses: [{
+            to: rpc.params[0].to || null,
+            value: rpc.params[0].value || '',
+            data: rpc.params[0].data || '0x',
+        }],
+        gasPrice: rpc.params[0].gasPrice || undefined,
     }
     if (rpc.params[0].gas) {
         if (typeof rpc.params[0].gas === 'number') {
@@ -192,17 +191,18 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
 
     const res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor)
 
-    if (!res) {
+    if (!res || res.length === 0) {
         return rpc.makeResult(null)
     } else {
-        if (res.reverted || res.vmError) {
-            if (res.data && (res.data as string).startsWith('0x08c379a0')) {
-                return rpc.makeError('Gas estimation failed with VM reverted: ' + require('web3-eth-abi').decodeParameter('string', res.data.replace(/^0x08c379a0/i, '')))
+        const result = res[0]
+        if (result.reverted || result.vmError) {
+            if (result.data && (result.data as string).startsWith('0x08c379a0')) {
+                return rpc.makeError('Gas estimation failed with VM reverted: ' + require('web3-eth-abi').decodeParameter('string', result.data.replace(/^0x08c379a0/i, '')))
             } else {
-                return rpc.makeError('Gas estimation failed' + (res.vmError ? ': ' + res.vmError : ''))
+                return rpc.makeError('Gas estimation failed' + (result.vmError ? ': ' + result.vmError : ''))
             }
         } else {
-            debug('VM gas:', res.gasUsed)
+            debug('VM gas:', result.gasUsed)
             // ignore the overflow since block gas limit is uint64 and JavaScript's max number is 2^53
             const intrinsicGas = utils.calcIntrinsicGas(Object.assign(reqBody, { to: rpc.params[0].to }))
             // increase vm gas by 15000 for safe since it's estimated from current block state, final state for the transaction is not determined for now

@@ -393,11 +393,11 @@ describe('web3.eth', () => {
         }])
         const result = await web3.eth.getPastLogs({
             address: '0x0000000000000000000000000000456e65726779',
-            topics: ['0x0000000000000000000000000000456e65726779[0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'],
+            topics: ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'],
         })
         const { url } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000000000456e65726779')
+        expect(url).to.be.equal('/logs/event')
         expect(result.length).to.be.equal(1)
     })
 
@@ -489,9 +489,15 @@ describe('web3.eth.Contract', () => {
             transactionHash: '0x405611a6ba2f9a5f45b81a899f2c15f87c7938dcc01589a9f2981c7609dc153a',
         }])
         const result = await contract.getPastEvents('Transfer', { filter: { _from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed' } })
-        const { url } = xhrUtility.extractRequest()
+        const { url, body } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000000000456e65726779')
+        expect(url).to.be.equal('/logs/event')
+
+        expect(body).to.have.property('criteriaSet')
+        expect((body as any).criteriaSet).to.be.an('array').to.have.lengthOf(1)
+        expect((body as any).criteriaSet[0]).to.have.property('address', Address)
+        expect(body).to.have.property('order', 'ASC')
+
         expect(result.length).to.be.equal(1)
         expect(result[0]).to.have.all.keys('address', 'blockHash', 'blockNumber', 'event', 'meta', 'raw', 'returnValues', 'signature', 'transactionHash')
     })

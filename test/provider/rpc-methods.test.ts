@@ -507,16 +507,22 @@ describe('rpc methods', () => {
             }])
 
             const ret = await executor(rpc, host, timeout)
-            const {url} = xhrUtility.extractRequest()
+            const {url, body} = xhrUtility.extractRequest()
 
-            expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000417574686f72697479&order=ASC')
+            expect(url).to.be.equal('/logs/event')
+
+            expect(body).to.have.property('criteriaSet')
+            expect((body as any).criteriaSet).to.be.an('array').to.have.lengthOf(1)
+            expect((body as any).criteriaSet[0]).to.have.property('address', '0x0000000000000000000000417574686f72697479')
+            expect(body).to.have.property('order', 'ASC')
+
             expect(ret.result).to.have.lengthOf(1)
             expect(ret.result[0]).to.have.property('blockNumber', 100)
             expect(ret.result[0]).to.have.property('blockHash', 'block-id')
             expect(ret.result[0]).to.have.property('transactionHash', 'tx-id')
         })
 
-        it('order DESC should get the right url', async () => {
+        it('order DESC should get the right body', async () => {
             const executor = RPCMethodMap.get('eth_getLogs')
             const rpc = makeRPCRequest('eth_getLogs', [{
                 address: '0x0000000000000000000000417574686f72697479',
@@ -524,9 +530,25 @@ describe('rpc methods', () => {
             }])
 
             await executor(rpc, host, timeout)
-            const { url } = xhrUtility.extractRequest()
+            const { url, body } = xhrUtility.extractRequest()
 
-            expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000417574686f72697479&order=DESC')
+            expect(url).to.be.equal('/logs/event')
+
+            expect(body).to.have.property('criteriaSet')
+            expect((body as any).criteriaSet).to.be.an('array').to.have.lengthOf(1)
+            expect((body as any).criteriaSet[0]).to.have.property('address', '0x0000000000000000000000417574686f72697479')
+            expect(body).to.have.property('order', 'DESC')
+        })
+
+        it('default order should be ASC', async () => {
+            const executor = RPCMethodMap.get('eth_getLogs')
+            const rpc = makeRPCRequest('eth_getLogs', [{}])
+
+            await executor(rpc, host, timeout)
+            const { url, body } = xhrUtility.extractRequest()
+
+            expect(url).to.be.equal('/logs/event')
+            expect(body).to.have.property('order', 'ASC')
         })
 
         it('minimum request param should get the minimum url', async () => {

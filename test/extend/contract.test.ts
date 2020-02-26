@@ -16,7 +16,11 @@ describe('web3.contract', () => {
         await contract.getPastEvents('Transfer')
         const { url, body } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000000000456e65726779')
+        expect(url).to.be.equal('/logs/event')
+        expect(body).to.have.property('criteriaSet')
+        expect((body as any).criteriaSet).to.be.an('array').to.have.lengthOf(1)
+        expect((body as any).criteriaSet[0]).to.have.property('address', Address)
+
         expect(body).to.not.have.property('range')
         expect(body).to.not.have.property('options')
     })
@@ -24,9 +28,10 @@ describe('web3.contract', () => {
     it('getPastEvents', async () => {
         await contract.getPastEvents('Transfer', { range: {}, options: {}, order: 'ASC' })
 
-        const { url } = xhrUtility.extractRequest()
+        const { url, body } = xhrUtility.extractRequest()
 
-        expect(url).to.be.equal('/logs/event?address=0x0000000000000000000000000000456e65726779&order=ASC')
+        expect(url).to.be.equal('/logs/event')
+        expect(body).to.have.property('order', 'ASC')
       })
 
 })

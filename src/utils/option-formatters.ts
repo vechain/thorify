@@ -1,5 +1,5 @@
 'use strict'
-import { LogQueryBody, LogQueryOptions, LogQueryRange, StringOrNumber, TopicItem, topicName, TopicSet } from '../types'
+import { EventCriteriaSet, LogQueryBody, LogQueryOptions, LogQueryRange, Order, StringOrNumber, TopicItem, topicName } from '../types'
 
 import * as utils from './'
 
@@ -69,8 +69,18 @@ export const formatOptions = function(options: any): LogQueryOptions | null {
 }
 
 export const formatLogQuery = function(params: any): LogQueryBody {
+    let address = ''
+    let order: Order = 'ASC'
+    if (params.address) {
+        address = params.address
+    }
+    if (params.order && (params.order.toUpperCase() === 'ASC' || params.order.toUpperCase() === 'DESC')) {
+        order = params.order.toUpperCase()
+    }
+
     const body: LogQueryBody = {
-        topicSets: [],
+        criteriaSet: [],
+        order,
     }
 
     if (params.range) {
@@ -105,28 +115,30 @@ export const formatLogQuery = function(params: any): LogQueryBody {
 
     }
 
-    body.topicSets = []
     const topics: TopicItem[] = []
 
     if (params.topics && params.topics.length) {
         for (let i = 0; i < params.topics.length; i++) {
             if (typeof params.topics[i] === 'string') {
                 topics.push({
-                    name: 'topic' as topicName + i,
+                    name: 'topic' + i,
                     array: [params.topics[i]],
                 })
             } else if (utils.isArray(params.topics[i]) && params.topics[i].length) {
                 topics.push({
-                    name: 'topic' as topicName + i,
+                    name: 'topic' + i,
                     array: params.topics[i],
                 })
             }
         }
     }
 
-    const outputTopic = function(inputTopics: TopicItem[], index: number, receiver: TopicSet[], current: TopicSet) {
+    const outputTopic = function(inputTopics: TopicItem[], index: number, receiver: EventCriteriaSet[], current: EventCriteriaSet) {
         if (index === inputTopics.length) {
             const o = {}
+            if (address) {
+                current.address = address
+            }
             Object.assign(o, current)
             receiver.push(o)
             return
@@ -138,7 +150,13 @@ export const formatLogQuery = function(params: any): LogQueryBody {
     }
 
     if (topics.length) {
-        outputTopic(topics, 0, body.topicSets, {})
+        outputTopic(topics, 0, body.criteriaSet, {})
+    }
+
+    if (!body.criteriaSet.length && address) {
+        body.criteriaSet.push({
+            address,
+        })
     }
 
     return body

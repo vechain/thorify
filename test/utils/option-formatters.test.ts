@@ -157,8 +157,8 @@ describe('utils:formatLogQuery', () => {
                 null,
             ],
         })
-        expect(ret).to.have.property('topicSets')
-        expect(ret.topicSets).to.be.instanceof(Array)
+        expect(ret).to.have.property('criteriaSet')
+        expect(ret.criteriaSet).to.be.instanceof(Array)
     })
 
     it('with valid topics', () => {
@@ -170,20 +170,20 @@ describe('utils:formatLogQuery', () => {
             ],
         })
 
-        expect(ret).to.have.property('topicSets')
-        expect(ret.topicSets).to.be.instanceof(Array)
-        expect(ret.topicSets).to.have.length(2 * 2 * 1)
+        expect(ret).to.have.property('criteriaSet')
+        expect(ret.criteriaSet).to.be.instanceof(Array)
+        expect(ret.criteriaSet).to.have.length(2 * 2 * 1)
         for (let i = 0; i < 3; i++) {
-            expect(ret.topicSets[i]).to.have.property('topic0')
-            expect(ret.topicSets[i]).to.have.property('topic1')
-            expect(ret.topicSets[i]).to.have.property('topic2')
+            expect(ret.criteriaSet[i]).to.have.property('topic0')
+            expect(ret.criteriaSet[i]).to.have.property('topic1')
+            expect(ret.criteriaSet[i]).to.have.property('topic2')
         }
-        expect(ret.topicSets[0].topic2).to.be.equal('topic2')
+        expect(ret.criteriaSet[0].topic2).to.be.equal('topic2')
 
-        expect(ret.topicSets[0].topic1).to.be.equal('topic10')
-        expect(ret.topicSets[1].topic0).to.be.equal('topic00')
-        expect(ret.topicSets[2].topic0).to.be.equal('topic01')
-        expect(ret.topicSets[3].topic1).to.be.equal('topic11')
+        expect(ret.criteriaSet[0].topic1).to.be.equal('topic10')
+        expect(ret.criteriaSet[1].topic0).to.be.equal('topic00')
+        expect(ret.criteriaSet[2].topic0).to.be.equal('topic01')
+        expect(ret.criteriaSet[3].topic1).to.be.equal('topic11')
     })
 
 })

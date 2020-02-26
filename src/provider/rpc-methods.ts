@@ -212,18 +212,9 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
 })
 
 RPCMethodMap.set('eth_getLogs', async function(rpc: JSONRPC, host: string, timeout: number) {
-    let query = ''
-    if (rpc.params[0].address) {
-        query = '&address=' + rpc.params[0].address
-    }
-    if (rpc.params[0].order && (rpc.params[0].order.toUpperCase() === 'ASC' || rpc.params[0].order.toUpperCase() === 'DESC')) {
-        query += '&order=' + rpc.params[0].order.toUpperCase()
-    }
-    query = query.replace('&', '?')
-    const URL = host + '/logs/event' + query
-
     const reqBody = utils.formatLogQuery(rpc.params[0])
 
+    const URL = host + '/logs/event'
     const res = await HTTP.post(URL, reqBody, timeout).then(HTTPPostProcessor)
 
     if (!res) {

@@ -45,7 +45,8 @@ export interface TopicItem {
     array: [string]
 }
 
-export interface TopicSet {
+export interface EventCriteriaSet {
+    address?: string
     topic0?: string
     topic1?: string
     topic2?: string
@@ -53,10 +54,13 @@ export interface TopicSet {
     topic4?: string
 }
 
+export type Order = 'ASC'|'DESC'
+
 export interface LogQueryBody {
     range?: LogQueryRange
     options?: LogQueryOptions
-    topicSets: TopicSet[]
+    criteriaSet: EventCriteriaSet[]
+    order: Order
 }
 
 export interface LogQueryRange {

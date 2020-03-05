@@ -1,37 +1,7 @@
 'use strict'
-import { EthTransaction } from '../types'
-import { params } from './params'
 
 export * from './params'
 export * from './option-formatters'
-
-export const calcIntrinsicGas = function(tx: EthTransaction): number {
-    let totalGas = params.TxGas
-
-    // calculate data gas
-    if (tx.data) {
-        const buffer = Buffer.from(sanitizeHex(tx.data), 'hex')
-        let z = 0
-        let nz = 0
-        for (const byte of buffer) {
-            if (byte) {
-                nz++
-            } else {
-                z++
-            }
-        }
-        totalGas += params.TxDataZeroGas * z
-        totalGas += params.TxDataNonZeroGas * nz
-    }
-
-    if (!!tx.to) {
-        totalGas += params.ClauseGas
-    } else {
-        totalGas += params.ClauseGasContractCreation
-    }
-
-    return totalGas
-}
 
 export const toPrefixedHex = function(hexStr: string): string {
     if (hexStr.indexOf('0x') === 0) {

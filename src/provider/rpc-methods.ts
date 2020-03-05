@@ -1,5 +1,6 @@
 'use strict'
 
+import {Transaction} from 'thor-devkit'
 import * as utils from '../utils'
 import { JSONRPC, RPCResult } from './json-rpc'
 import { HTTP, SimpleResponse } from './simple-http'
@@ -204,7 +205,7 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
         } else {
             debug('VM gas:', result.gasUsed)
             // ignore the overflow since block gas limit is uint64 and JavaScript's max number is 2^53
-            const intrinsicGas = utils.calcIntrinsicGas(Object.assign(reqBody, { to: rpc.params[0].to }))
+            const intrinsicGas = Transaction.intrinsicGas(reqBody.clauses)
             // increase vm gas by 15000 for safe since it's estimated from current block state, final state for the transaction is not determined for now
             return rpc.makeResult(intrinsicGas + (result.gasUsed ? (result.gasUsed + 15000) : 0))
         }

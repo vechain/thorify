@@ -1,5 +1,6 @@
 'use strict'
 import { expect } from 'chai'
+import { Transaction } from 'thor-devkit'
 import { web3, wsUtility, xhrUtility } from '../test-utils/init'
 
 const ABI = [{ anonymous: false, inputs: [{ indexed: true, name: '_from', type: 'address' }, { indexed: true, name: '_to', type: 'address' }, { indexed: false, name: '_value', type: 'uint256' }], name: 'Transfer', type: 'event' }, {constant: true, inputs: [{name: '_owner', type: 'address' }], name: 'balanceOf', outputs: [{name: 'balance', type: 'uint256'}], payable: false, stateMutability: 'view', type: 'function'}]
@@ -460,8 +461,15 @@ describe('web3.eth.Contract', () => {
         const result = await contract.methods.balanceOf('0xd3ae78222beadb038203be21ed5ce7c9b1bff602').estimateGas()
         const { url, body } = xhrUtility.extractRequest()
 
+        const clauses = [{
+            to: Address,
+            value: 0,
+            data: contract.methods.balanceOf('0xd3ae78222beadb038203be21ed5ce7c9b1bff602').encodeABI(),
+        }]
+        const intrinsicGas = Transaction.intrinsicGas(clauses)
+
         expect(url).to.be.equal('/accounts/*?revision=best')
-        expect(result).to.be.equal(36870)
+        expect(result).to.be.equal(intrinsicGas + 870 + 15000)
 
         expect(body).to.have.property('clauses')
         expect((body as any).clauses).to.be.an('array').to.have.lengthOf(1)

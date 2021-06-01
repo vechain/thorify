@@ -28,6 +28,9 @@ const request = function(method: Method, url: string, body: object | null, timeo
         const xhr = new XHR2()
         xhr.timeout = timeout
         xhr.open(Method[method], url)
+        if (method === Method.POST) {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+        }
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {

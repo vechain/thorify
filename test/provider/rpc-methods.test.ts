@@ -272,6 +272,28 @@ describe('rpc methods', () => {
             expect(body).to.have.property('gas', 100)
         })
 
+        it('panic should return rpc error', async () => {
+            xhrUtility.setResponse([{
+                reverted: true,
+                data: '0x4e487b710000000000000000000000000000000000000000000000000000000000000011',
+            }])
+            const executor = RPCMethodMap.get('eth_call')
+            const rpc = makeRPCRequest('eth_call', [{
+                to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+                from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+                gas: '0x64',
+                value: '0x64',
+                gasPrice: '0x64',
+            }])
+
+            const ret = await executor(rpc, host, timeout)
+            const { body } = xhrUtility.extractRequest()
+
+            expect(ret).to.have.property('error')
+            expect(ret.error).to.have.property('message', 'VM reverted: Panic(0x11)')
+            expect(body).to.have.property('gas', 100)
+        })
+
         it('"0x" of data should return empty string', async () => {
             xhrUtility.setResponse([{ data: '0x' }])
             const executor = RPCMethodMap.get('eth_call')
@@ -427,6 +449,25 @@ describe('rpc methods', () => {
             expect(ret).to.have.property('error')
             expect(ret.error).to.have.property('message', 'Gas estimation failed with VM reverted: something wrong')
 
+        })
+
+        it('panic should return rpc error', async () => {
+            xhrUtility.setResponse([{
+                reverted: true,
+                data: '0x4e487b710000000000000000000000000000000000000000000000000000000000000011',
+            }])
+            const executor = RPCMethodMap.get('eth_estimateGas')
+            const rpc = makeRPCRequest('eth_estimateGas', [{
+                to: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+                from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed',
+                gas: '0x64',
+                value: '0x64',
+                gasPrice: '0x64',
+            }])
+
+            const ret = await executor(rpc, host, timeout)
+            expect(ret).to.have.property('error')
+            expect(ret.error).to.have.property('message', 'Gas estimation failed with VM reverted: Panic(0x11)')
         })
 
         it('vmError present should return rpc error', async () => {

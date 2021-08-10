@@ -7,8 +7,24 @@ import { HTTP, SimpleResponse } from './simple-http'
 const debug = require('debug')('thor:http-provider:rpc')
 
 export type RPCExecutor = (rpc: JSONRPC, host: string, timeout: number) => Promise<RPCResult>
-
 export const RPCMethodMap = new Map<string, RPCExecutor>()
+
+
+const getRevertReason = (returned: string): string | null => {
+    const ErrorStringMatcher = /^0x08c379a0/i
+    const PanicUint256Matcher = /^0x4e487b71/i
+    try {
+        if (ErrorStringMatcher.test(returned)){
+            return abi.decodeParameter('string', returned.replace(ErrorStringMatcher, '0x'))
+        }
+        if (PanicUint256Matcher.test(returned)) {
+            return `Panic(0x${parseInt(abi.decodeParameter('uint256', returned.replace(PanicUint256Matcher, '0x')), 10).toString(16)})`
+        }
+        return null
+    } catch {
+        return null
+    }
+}
 
 const HTTPPostProcessor = function(res: SimpleResponse): Promise<any> {
     if (res.Code === 0) {
@@ -156,11 +172,13 @@ RPCMethodMap.set('eth_call', async function(rpc: JSONRPC, host: string, timeout:
     } else {
         const result = res[0]
         if (result.reverted || result.vmError) {
-            if (result.data && (result.data as string).startsWith('0x08c379a0')) {
-                return rpc.makeError('VM reverted: ' + abi.decodeParameter('string', result.data.replace(/^0x08c379a0/i, '0x')))
-            } else {
-                return rpc.makeError('VM executing failed' + (result.vmError ? ': ' + result.vmError : ''))
+            if (result.data) {
+                const reason = getRevertReason(result.data as string)
+                if (reason) {
+                    return rpc.makeError('VM reverted: ' + reason)
+                }
             }
+            return rpc.makeError('VM executing failed' + (result.vmError ? ': ' + result.vmError : ''))
         } else {
             return rpc.makeResult(result.data === '0x' ? '' : result.data)
         }
@@ -197,11 +215,13 @@ RPCMethodMap.set('eth_estimateGas', async function(rpc: JSONRPC, host: string, t
     } else {
         const result = res[0]
         if (result.reverted || result.vmError) {
-            if (result.data && (result.data as string).startsWith('0x08c379a0')) {
-                return rpc.makeError('Gas estimation failed with VM reverted: ' + abi.decodeParameter('string', result.data.replace(/^0x08c379a0/i, '0x')))
-            } else {
-                return rpc.makeError('Gas estimation failed' + (result.vmError ? ': ' + result.vmError : ''))
+            if (result.data) {
+                const reason = getRevertReason(result.data as string)
+                if (reason) {
+                    return rpc.makeError('Gas estimation failed with VM reverted: ' + reason)
+                }
             }
+            return rpc.makeError('Gas estimation failed' + (result.vmError ? ': ' + result.vmError : ''))
         } else {
             debug('VM gas:', result.gasUsed)
             // ignore the overflow since block gas limit is uint64 and JavaScript's max number is 2^53

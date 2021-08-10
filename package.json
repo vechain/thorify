@@ -10,7 +10,6 @@
         "prepare": "rm -rf dist/; npm run build",
         "test": "NODE_ENV=test mocha --require ts-node/register/transpile-only --timeout 20000 --recursive  --exclude './test/browser/*.ts' './**/*.test.ts'",
         "cover": "NODE_ENV=test nyc npm t",
-        "coverall": "NODE_ENV=test nyc npm t && nyc report --reporter=text-lcov | coveralls",
         "test:browser": "TS_NODE_PROJECT=\"test/browser/tsconfig.webpack.json\" webpack --config test/browser/webpack.test.config.ts && open test/browser/index.html"
     },
     "nyc": {
@@ -29,7 +28,7 @@
             "ts-node/register/transpile-only"
         ],
         "reporter": [
-            "json",
+            "lcov",
             "html",
             "text-summary"
         ],
@@ -44,7 +43,6 @@
         "@types/webpack": "^4.4.11",
         "@types/ws": "^6.0.0",
         "chai": "^4.1.2",
-        "coveralls": "^3.0.1",
         "mocha": "^5.1.1",
         "nyc": "^14.1.1",
         "repl-x": "^0.1.4",

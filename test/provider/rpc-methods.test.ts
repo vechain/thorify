@@ -5,6 +5,10 @@ import { xhrUtility } from '../test-utils/init'
 import { expect } from 'chai'
 import { JSONRPC } from '../../src/provider/json-rpc'
 import { RPCMethodMap } from '../../src/provider/rpc-methods'
+import { abi } from 'thor-devkit'
+
+const errorABI = { "inputs": [{ "internalType": "string", "name": "reason", "type": "string" }], "name": "Error", "outputs": [], "stateMutability": "nonpayable", "type": "function" } as abi.Function.Definition
+const revertFunc = new abi.Function(errorABI)
 
 const host = 'http://localhost:8669'
 const timeout = 0
@@ -249,7 +253,7 @@ describe('rpc methods', () => {
         it('reverted should return rpc error', async () => {
             xhrUtility.setResponse([{
                 reverted: true,
-                data: '0x08c379a00x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
+                data: '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
             }])
             const executor = RPCMethodMap.get('eth_call')
             const rpc = makeRPCRequest('eth_call', [{
@@ -408,7 +412,7 @@ describe('rpc methods', () => {
         it('reverted should return rpc error', async () => {
             xhrUtility.setResponse([{
                 reverted: true,
-                data: '0x08c379a00x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
+                data: '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
             }])
             const executor = RPCMethodMap.get('eth_estimateGas')
             const rpc = makeRPCRequest('eth_estimateGas', [{
@@ -447,7 +451,7 @@ describe('rpc methods', () => {
         it('request without from should not have caller in body', async () => {
             xhrUtility.setResponse([{
                 reverted: true,
-                data: '0x08c379a00x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
+                data: '0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f736f6d657468696e672077726f6e670000000000000000000000000000000000',
             }])
             const executor = RPCMethodMap.get('eth_estimateGas')
             const rpc = makeRPCRequest('eth_estimateGas', [{

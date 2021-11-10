@@ -508,7 +508,7 @@ describe('subscription: contract', () => {
                 done(errorInfo)
             } else if (emitData && emitChange && emitError) {
                 const url = wsUtility.extractURL()
-                expect(url).to.be.equal('/subscriptions/event?address=0x0000000000000000000000000000456e65726779&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x0000000000000000000000007567d83b7b8d80addcb281a71d54fc7b3364ffed')
+                expect(url).to.be.equal('/subscriptions/event?addr=0x0000000000000000000000000000456e65726779&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x0000000000000000000000007567d83b7b8d80addcb281a71d54fc7b3364ffed')
                 done()
             }
         }, 250)

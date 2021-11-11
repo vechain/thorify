@@ -80,9 +80,20 @@ class ThorProvider extends EventEmitter {
                     break
                 case 'logs':
                     URI += 'event'
-                    query = QS.stringify(rpc.params[1])
-                    if (query) {
-                        URI += '?' + query
+                    if (typeof rpc.params[1] === 'object' && rpc.params[1] !== null) {
+                        let options: { [index: string]: any } = {}
+                        for (let [key, value] of Object.entries(rpc.params[1] as object)) {
+                            if (key === 'address') {
+                                options['addr'] = value
+                            } else {
+                                options[key] = value
+                            }
+                        }
+                        
+                        query = QS.stringify(options)
+                        if (query) {
+                            URI += '?' + query
+                        }
                     }
                     break
                 case 'transfers':
@@ -138,7 +149,7 @@ class ThorProvider extends EventEmitter {
                 }
             }
 
-            this.sockets[rpc.id] = {rpc, ws}
+            this.sockets[rpc.id] = { rpc, ws }
 
             callback(null, rpc.makeResult(rpc.id))
             return
@@ -172,15 +183,15 @@ class ThorProvider extends EventEmitter {
     }
 }
 
-const omitCallBackedPromise = function(callBackedRet: any) {
-        /*  when developer calling a method using promise,when error return from provider,the function in web3-core-method
-            will return a Promise in,it's ok when writing provider in callback mode but it will cause problems when
-            writing provider in Promise, this function is used to omit the rejected promise
-        */
+const omitCallBackedPromise = function (callBackedRet: any) {
+    /*  when developer calling a method using promise,when error return from provider,the function in web3-core-method
+        will return a Promise in,it's ok when writing provider in callback mode but it will cause problems when
+        writing provider in Promise, this function is used to omit the rejected promise
+    */
 
-        if (callBackedRet && callBackedRet.catch) {
-            callBackedRet.catch(() => null)
-        }
+    if (callBackedRet && callBackedRet.catch) {
+        callBackedRet.catch(() => null)
+    }
 }
 
 export {

@@ -4,7 +4,6 @@ import { LogFilterOptions, TransferFilterOptions } from '../types'
 import * as utils from '../utils'
 
 const extendFormatters = function(web3: any) {
-
     const web3Utils = web3.utils
     const outputTransactionFormatter = web3.extend.formatters.outputTransactionFormatter
     web3.extend.formatters.outputTransactionFormatter = function(tx: any) {
@@ -38,7 +37,7 @@ const extendFormatters = function(web3: any) {
             receipt.gasUsed = web3Utils.hexToNumber(receipt.gasUsed)
 
             for (const output of receipt.outputs) {
-                if (web3Utils._.isArray(output.events)) {
+                if (output.events) {
                     output.events = output.events.map((event: any) => {
                         if (!event.isThorified) {
                             Object.defineProperty(event, 'isThorified', { get: () => true })

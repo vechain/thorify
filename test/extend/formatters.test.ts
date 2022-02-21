@@ -156,30 +156,10 @@ const thorTxReceipt = {
     ],
 }
 
-const thorTxReceiptWithUnsafeFields = {
-    gasUsed: 55365,
-    paid: '0x7aef5bddbe52000',
-    reward: '0x24e1685c1f7f000',
-    reverted: false,
-    meta: {
-        blockID: '0x00000001c458949985a6d86b7139690b8811dd3b4647c02d4f41cdefb7d32327',
-        blockNumber: 1,
-        blockTimestamp: 1523156271,
-    },
-    outputs: [
-        {
-            contractAddress: null,
-            events: {},
-            transfers: [],
-        },
-    ],
-}
-
 Object.defineProperty(thorTx, 'isThorified', { get: () => true, set: () => null })
 Object.defineProperty(thorTxWithNullTo, 'isThorified', { get: () => true, set: () => null })
 Object.defineProperty(thorTxWithUnsafeFields, 'isThorified', { get: () => true, set: () => null })
 Object.defineProperty(thorTxReceipt, 'isThorified', { get: () => true, set: () => null })
-Object.defineProperty(thorTxReceiptWithUnsafeFields, 'isThorified', { get: () => true, set: () => null })
 
 describe('web3 formatters', () => {
 
@@ -211,11 +191,6 @@ describe('web3 formatters', () => {
     it('Format thor transaction receipt', () => {
         const tx = web3.extend.formatters.outputTransactionReceiptFormatter(thorTxReceipt)
         expect(tx).to.have.all.keys('meta', 'gasPayer', 'gasUsed', 'outputs', 'paid', 'reverted', 'reward')
-    })
-
-    it('Format thor transaction receipt with unsafe input', () => {
-        const tx = web3.extend.formatters.outputTransactionReceiptFormatter(thorTxReceiptWithUnsafeFields)
-        expect(tx).to.have.all.keys('gasUsed', 'outputs', 'paid', 'reverted', 'reward', 'meta')
     })
 
     it('Format thor transaction receipt with eth receipt properties', () => {

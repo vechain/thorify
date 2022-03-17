@@ -21,7 +21,6 @@ describe('web3.contract', () => {
         expect((body as any).criteriaSet).to.be.an('array').to.have.lengthOf(1)
         expect((body as any).criteriaSet[0]).to.have.property('address', Address)
 
-        expect(body).to.not.have.property('range')
         expect(body).to.not.have.property('options')
     })
 

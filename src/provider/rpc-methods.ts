@@ -274,3 +274,7 @@ RPCMethodMap.set('eth_getChainTag', async function(rpc: JSONRPC, host: string, t
 
     return rpc.makeResult('0x' + res.id.substr(64, 2))
 })
+
+RPCMethodMap.set('eth_gasPrice', async function(rpc: JSONRPC, host: string, timeout: number) {
+    return rpc.makeResult('0x1')
+})

@@ -1,0 +1,43 @@
+name: Unit Test
+
+on:
+  workflow_call:
+    inputs:
+      node_ver:
+        required: true
+        type: string
+      web3_ver:
+        required: true
+        type: string
+        
+
+jobs:
+  unit_test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.node_ver }}
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{matrix.node}}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Web3
+        run: npm i web3@${{ inputs.web3_ver }} npm i web3-core-subscriptions@${{ inputs.web3_ver }}
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test

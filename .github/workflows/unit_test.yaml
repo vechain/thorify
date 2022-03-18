@@ -1,0 +1,84 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  job1:
+    name: Test on node@16 with web3@1.6
+    uses: ./.github/workflows/unit_template.yaml
+    with:
+      node_ver: 16
+      web3_ver: 1.6
+
+  job2:
+    name: Test on node@16 with web3@1.5
+    uses: ./.github/workflows/unit_template.yaml
+    with:
+      node_ver: 16
+      web3_ver: 1.5
+
+  job3:
+    name: Test on node@16 with web3@1.4
+    uses: ./.github/workflows/unit_template.yaml
+    with:
+      node_ver: 16
+      web3_ver: 1.4
+
+  job4:
+    name: Test on node@16 with web3@1.3
+    uses: ./.github/workflows/unit_template.yaml
+    with:
+      node_ver: 16
+      web3_ver: 1.3
+
+  job5:
+    name: Test on node@14 with web3@1.7
+    uses: ./.github/workflows/unit_template.yaml
+    with:
+      node_ver: 14
+      web3_ver: 1.7
+
+  job6:
+    name: Test on node@12 with web3@1.7
+    uses: ./.github/workflows/unit_template.yaml
+    with:
+      node_ver: 12
+      web3_ver: 1.7
+
+  test_and_coverage:
+    needs: [job1, job2, job3, job4, job5, job6]
+    runs-on: ubuntu-latest
+    name: Unit test and coverage
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: v16
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{matrix.node}}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run tests
+        run: npm run cover
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

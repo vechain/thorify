@@ -2,6 +2,7 @@
 
 import { expect } from 'chai'
 import { web3, xhrUtility } from '../test-utils/init'
+import * as utils from '../../src/utils'
 
 const ABI = [{ anonymous: false, inputs: [{ indexed: true, name: '_from', type: 'address' }, { indexed: true, name: '_to', type: 'address' }, { indexed: false, name: '_value', type: 'uint256' }], name: 'Transfer', type: 'event' }]
 const Address = '0x0000000000000000000000000000456e65726779'
@@ -21,7 +22,9 @@ describe('web3.contract', () => {
         expect((body as any).criteriaSet).to.be.an('array').to.have.lengthOf(1)
         expect((body as any).criteriaSet[0]).to.have.property('address', Address)
 
-        expect(body).to.not.have.property('options')
+        expect(body).to.have.property('options')
+        expect((body as any).options).to.have.property('offset', 0)
+        expect((body as any).options).to.have.property('limit', utils.params.defaultLogLimit)
     })
 
     it('getPastEvents', async () => {
@@ -31,6 +34,13 @@ describe('web3.contract', () => {
 
         expect(url).to.be.equal('/logs/event')
         expect(body).to.have.property('order', 'ASC')
+        expect(body).to.have.property('range')
+        expect((body as any).range).to.have.property('unit', 'block')
+        expect((body as any).range).to.have.property('from', 0)
+        expect((body as any).range).to.have.property('to', Number.MAX_SAFE_INTEGER)
+        expect(body).to.have.property('options')
+        expect((body as any).options).to.have.property('offset', 0)
+        expect((body as any).options).to.have.property('limit', utils.params.defaultLogLimit)
       })
 
 })

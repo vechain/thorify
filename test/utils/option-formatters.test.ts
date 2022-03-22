@@ -46,11 +46,6 @@ describe('utils:fromETHBlockNumberOrHash', () => {
 })
 
 describe('utils:formatRange', () => {
-
-    it('empty input', () => {
-        expect(utils.formatRange({})).to.be.equal(null)
-    })
-
     it('minimal input', () => {
         const ret = utils.formatRange({ unit: 'block' })
         expect(ret.unit).to.be.equal('block')
@@ -71,35 +66,38 @@ describe('utils:formatRange', () => {
         expect(ret.from).to.be.equal(0)
         expect(ret.to).to.be.equal(Number.MAX_SAFE_INTEGER)
     })
+
+    it('time range input', () => {
+        const ret = utils.formatRange({ unit: 'time', from: 0, to: 1000 })
+        console.log(ret)
+        expect(ret.unit).to.be.equal('time')
+        expect(ret.from).to.be.equal(0)
+        expect(ret.to).to.be.equal(1000)
+    })
+
+    it('time: invalid input', () => {
+        const ret = utils.formatRange({ unit: 'time', from: 'invalid', to: 'invalid' })
+        expect(ret.unit).to.be.equal('time')
+        expect(ret.from).to.be.equal(0)
+        expect(ret.to).to.be.equal(Number.MAX_SAFE_INTEGER)
+    })
 })
 
 describe('utils:formatOptions', () => {
-
-    it('empty input', () => {
-        const ret = utils.formatOptions({})
-        expect(ret).to.be.equal(null)
-    })
-
     it('valid input', () => {
         const ret = utils.formatOptions({ limit: 100, offset: 100 })
         expect(ret.limit).to.be.equal(100)
         expect(ret.offset).to.be.equal(100)
     })
 
-    it('valid invalid input', () => {
+    it('invalid input', () => {
         const ret = utils.formatOptions({ limit: 'invalid', offset: 'invalid' })
-        expect(ret).to.be.equal(null)
+        expect(ret).to.have.property('offset', 0) 
+        expect(ret).to.have.property('limit', utils.params.defaultLogLimit)
     })
-
 })
 
 describe('utils:formatLogQuery', () => {
-
-    it('empty input', () => {
-        const ret = utils.formatLogQuery({})
-        expect(ret).to.not.have.property('options')
-        expect(ret).to.not.have.property('range')
-    })
 
     it('valid options', () => {
         const ret = utils.formatLogQuery({ options: { limit: 100, offset: 100 } })
@@ -107,9 +105,18 @@ describe('utils:formatLogQuery', () => {
         expect(ret.options.offset).to.be.equal(100)
     })
 
-    it('invalid options', () => {
+    it('invalid options should result default options', () => {
         const ret = utils.formatLogQuery({ options: {} })
-        expect(ret).to.not.have.property('options')
+        expect(ret).to.property('options')
+        expect(ret.options).to.have.property('offset', 0) 
+        expect(ret.options).to.have.property('limit', utils.params.defaultLogLimit)
+    })
+
+    it('no options should result default', () => {
+        const ret = utils.formatLogQuery({})
+        expect(ret).to.property('options')
+        expect(ret.options).to.have.property('offset', 0) 
+        expect(ret.options).to.have.property('limit', utils.params.defaultLogLimit)
     })
 
     it('valid range', () => {
@@ -121,7 +128,9 @@ describe('utils:formatLogQuery', () => {
 
     it('invalid range', () => {
         const ret = utils.formatLogQuery({ range: { unit: 'invalid' } })
-        expect(ret).to.not.have.property('range')
+        expect(ret).to.have.property('range')
+        expect(ret.range.from).to.be.equal(0)
+        expect(ret.range.to).to.be.equal(Number.MAX_SAFE_INTEGER)
     })
 
     it('valid from block', () => {
@@ -133,7 +142,7 @@ describe('utils:formatLogQuery', () => {
 
     it('invalid from and to block', () => {
         const ret = utils.formatLogQuery({ fromBlock: 'latest', toBlock: 'latest' })
-        expect(ret.range.from).to.be.equal(0)
+        expect(ret.range.from).to.be.equal(Number.MAX_SAFE_INTEGER)
         expect(ret.range.to).to.be.equal(Number.MAX_SAFE_INTEGER)
     })
 

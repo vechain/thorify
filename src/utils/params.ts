@@ -4,6 +4,7 @@
 const params = {
     defaultGasPriceCoef: 0,
     defaultExpiration: 720,
+    defaultLogLimit: 50,
 }
 
 export {

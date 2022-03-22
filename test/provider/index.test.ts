@@ -39,7 +39,7 @@ describe('thor-provider methods', () => {
                 done(new Error('Return error in wrong place!'))
             }
             if (ret.error) {
-                expect(ret.error.message).to.be.equal('[thor-provider]Method not supported!')
+                expect(ret.error.message).to.be.equal('Method: not supported method is not supported!')
                 done()
             } else {
                 done(new Error('No error thrown!'))
@@ -78,7 +78,7 @@ describe('subscriptions', () => {
                 done(new Error('Return error in wrong place!'))
             }
             if (ret.error) {
-                expect(ret.error.message).to.be.equal('Subscription unsupported not supported!')
+                expect(ret.error.message).to.be.equal('Subscription: unsupported is not supported!')
                 done()
             } else {
                 done(new Error('No error thrown!'))

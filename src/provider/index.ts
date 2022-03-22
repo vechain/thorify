@@ -61,7 +61,7 @@ class ThorProvider extends EventEmitter {
                 return
             })
         } else {
-            callback(null, rpc.makeError('[thor-provider]Method not supported!'))
+            callback(null, rpc.makeError(`Method: ${rpc.method} is not supported!`))
             return
         }
 
@@ -104,7 +104,7 @@ class ThorProvider extends EventEmitter {
                     }
                     break
                 default:
-                    callback(null, rpc.makeError(`Subscription ${rpc.params[0]} not supported!`))
+                    callback(null, rpc.makeError(`Subscription: ${rpc.params[0]} is not supported!`))
                     return
             }
 

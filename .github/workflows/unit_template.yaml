@@ -34,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Install Web3
-        run: npm i web3@${{ inputs.web3_ver }} npm i web3-core-subscriptions@${{ inputs.web3_ver }}
+        run: npm i web3-core-subscriptions@${{ inputs.web3_ver }} web3@${{ inputs.web3_ver }}
 
       - name: Build project
         run: npm run build

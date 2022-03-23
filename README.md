@@ -30,9 +30,10 @@ A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
 ## Install
 
 ``` bash
-npm install --save thorify
-npm install --save web3@1.*  # Web3 is needed as dependency.
+npm i thorify web3@1.* # Web3 is needed as dependency.
 ```
+
+Furthermore, if you would like to change web3 version after installation, for example `1.6`, run `npm i web3@1.6 web3-core-subscriptions@1.6` as `subscriptions` is a peer dependency.
 
 ## Usage
 
@@ -59,6 +60,8 @@ const web3 = thorify(new Web3(), "http://localhost:8669");
 web3.eth.getBlock("latest").then(res => console.log(res));
 // Best block info will be displayed
 ```
+
+
 
 ## Web3 method supported
 
@@ -160,7 +163,7 @@ The RESTful API of Thor is different with Ethereum's JSON-RPC, therefore, there 
 
 ## Compatibility
 
-Currently, `Thorify` is compatible with `web3@1.*`.
+Currently, `Thorify` is compatible with `web3@1.*`, tested versions are `1.2~1.7.1`.
 
 ## Debugging
 

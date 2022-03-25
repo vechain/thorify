@@ -98,6 +98,10 @@ export const formatOptions = function (options: any): LogQueryOptions {
         if (temp) { ret.limit = temp }
     }
 
+    if (ret.limit > utils.params.maxLogLimit){
+        ret.limit = utils.params.maxLogLimit
+    }
+
     return ret
 }
 
@@ -113,10 +117,13 @@ export const formatLogQuery = function (params: any): LogQueryBody {
 
     const body: LogQueryBody = {
         criteriaSet: [],
-        order
+        order,
     }
 
-    body.options = formatOptions(params.options||{})
+    
+    if (params.options) {
+        body.options = formatOptions(params.options)
+    }   
 
     // discard fromBlock and toBlock if range presents
     if (params.range) {

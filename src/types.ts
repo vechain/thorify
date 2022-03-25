@@ -64,14 +64,14 @@ export interface LogQueryBody {
 }
 
 export interface LogQueryRange {
-    unit?: string
-    from?: number
-    to?: number
+    unit: string
+    from: number
+    to: number
 }
 
 export interface LogQueryOptions {
-    offset?: number
-    limit?: number
+    offset: number
+    limit: number
 }
 
 export interface LogFilterOptions {

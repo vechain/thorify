@@ -95,6 +95,12 @@ describe('utils:formatOptions', () => {
         expect(ret).to.have.property('offset', 0) 
         expect(ret).to.have.property('limit', utils.params.defaultLogLimit)
     })
+
+    it('max limit', () => {
+        const ret = utils.formatOptions({ limit: 1024})
+        expect(ret).to.have.property('limit', utils.params.maxLogLimit)
+    })
+
 })
 
 describe('utils:formatLogQuery', () => {
@@ -107,13 +113,6 @@ describe('utils:formatLogQuery', () => {
 
     it('invalid options should result default options', () => {
         const ret = utils.formatLogQuery({ options: {} })
-        expect(ret).to.property('options')
-        expect(ret.options).to.have.property('offset', 0) 
-        expect(ret.options).to.have.property('limit', utils.params.defaultLogLimit)
-    })
-
-    it('no options should result default', () => {
-        const ret = utils.formatLogQuery({})
         expect(ret).to.property('options')
         expect(ret.options).to.have.property('offset', 0) 
         expect(ret.options).to.have.property('limit', utils.params.defaultLogLimit)

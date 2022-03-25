@@ -21,10 +21,6 @@ describe('web3.contract', () => {
         expect(body).to.have.property('criteriaSet')
         expect((body as any).criteriaSet).to.be.an('array').to.have.lengthOf(1)
         expect((body as any).criteriaSet[0]).to.have.property('address', Address)
-
-        expect(body).to.have.property('options')
-        expect((body as any).options).to.have.property('offset', 0)
-        expect((body as any).options).to.have.property('limit', utils.params.defaultLogLimit)
     })
 
     it('getPastEvents', async () => {
@@ -38,9 +34,6 @@ describe('web3.contract', () => {
         expect((body as any).range).to.have.property('unit', 'block')
         expect((body as any).range).to.have.property('from', 0)
         expect((body as any).range).to.have.property('to', Number.MAX_SAFE_INTEGER)
-        expect(body).to.have.property('options')
-        expect((body as any).options).to.have.property('offset', 0)
-        expect((body as any).options).to.have.property('limit', utils.params.defaultLogLimit)
       })
 
 })

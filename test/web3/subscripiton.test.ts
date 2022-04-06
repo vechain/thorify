@@ -421,7 +421,7 @@ describe('subscription: contract', () => {
         let emitError = false
         let errorInfo
 
-        const sub = contract.events.Transfer({pos: '0x0009c5f530fa412e137ce153c53be953b7d7362482b855fce5572cb228879880', filter: {_from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed'}}).on('data', (data) => {
+        const sub = contract.events.Transfer({fromBlock: '0x0009c5f530fa412e137ce153c53be953b7d7362482b855fce5572cb228879880', filter: {_from: '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed'}}).on('data', (data) => {
             if (data) {
                 emitData = true
                 try {
@@ -508,7 +508,7 @@ describe('subscription: contract', () => {
                 done(errorInfo)
             } else if (emitData && emitChange && emitError) {
                 const url = wsUtility.extractURL()
-                expect(url).to.be.equal('/subscriptions/event?addr=0x0000000000000000000000000000456e65726779&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x0000000000000000000000007567d83b7b8d80addcb281a71d54fc7b3364ffed')
+                expect(url).to.be.equal('/subscriptions/event?addr=0x0000000000000000000000000000456e65726779&pos=0x0009c5f530fa412e137ce153c53be953b7d7362482b855fce5572cb228879880&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x0000000000000000000000007567d83b7b8d80addcb281a71d54fc7b3364ffed')
                 done()
             }
         }, 250)

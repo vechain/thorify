@@ -1,6 +1,7 @@
 'use strict'
 const debug = require('debug')('thor:injector')
 const Subscription = require('web3-core-subscriptions').subscription
+import * as utils from '../utils'
 import { LogFilterOptions } from '../types'
 import { inputLogFilterFormatter } from './formatters'
 
@@ -40,6 +41,10 @@ const extendContracts = function(web3: any) {
         const filterOptions: LogFilterOptions = {
             address: subOptions.params.address,
         }
+        if (subOptions.params.fromBlock) {
+            filterOptions.pos = utils.validBytes32OrError(subOptions.params.fromBlock, '[thorify] fromBlock must be blockID')
+        }
+
         debug('Contract filter option: %O', filterOptions)
 
         if (subOptions.params.topics) {

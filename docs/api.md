@@ -1080,7 +1080,7 @@ Subscribes to an event and unsubscribes immediately after the first event or err
 ``` javascript
 contractInstance.once(event[, options], callback)
 contractInstance.once('Transfer', {
-  _from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+  filter:{_from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'},
 }), (error, result) => {
     if(error){
         console.log(error)
@@ -1117,13 +1117,11 @@ contractInstance.once('Transfer', {
 **Parameters**
 
 - `event` - `String`: The name of the event in the contract, or `allEvents` to get all events.
-- `options` - `LogFilter Object (optional)`: The options.
-- `call` - `Function`: This callback will be fired for the first event as the second argument, or an error as the first argument. See [getPastEvents](#getpastevents) return values for details about the event structure.
-
-`LogFilter Object`: 
-
-+ `filter` - `Object (optional)`: Lets you filter events by indexed parameters, e.g. {filter: {myNumber: 12}} means all events where “myNumber” is 12, **Subscription doesn't support one array as filter**.
-+ `topics` - `Array(optional)`: This allows you to manually set the topics for the event filter. If given the filter property and event signature, (topic[0]) will not be set automatically, **Subscription doesn't support one array as filter**.
+- `options` - `object(optional)`:
+    + `filter` - `Object (optional)`: Lets you filter events by indexed parameters, e.g. {filter: {myNumber: 12}} means all events where “myNumber” is 12, **Subscription doesn't support one array as filter**.
+    + `topics` - `Array(optional)`: This allows you to manually set the topics for the event filter. If given the filter property and event signature, (topic[0]) will not be set automatically, **Subscription doesn't support one array as filter**.
+    + `fromBlock` - `String (optional)`: The block ID (greater than or equal to) from which to get events on.
+- `callback` - `Function`: This callback will be fired for the first event as the second argument, or an error as the first argument. See [getPastEvents](#getpastevents) return values for details about the event structure.
 
 **Returns**
 
@@ -1136,7 +1134,8 @@ Subscribe to an event
 ``` javascript
 contractInstance.events.myEvent( [options][, callback])
 contractInstance.events.myEvent({
-  _from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+    filter: {_from: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'},
+    fromBlock: '0x0000000bb5ece55e16c426157c2bd14e49f5de58b1d56b11db4beec9578715c8'
 }), (error, result) => {
     if(error){
         console.log(error)
@@ -1172,13 +1171,11 @@ contractInstance.events.myEvent({
 
 **Parameters**
 
-- `options` - `LogFilter Object (optional)`: The options.
-- `call` - `Function`: This callback will be fired for the first event as the second argument, or an error as the first argument. See [getPastEvents](#getpastevents) return values for details about the event structure.
-
-`LogFilter Object`: 
-
-+ `filter` - `Object (optional)`: Lets you filter events by indexed parameters, e.g. {filter: {myNumber: 12}} means all events where “myNumber” is 12, **Subscription doesn't support one array as filter**.
-+ `topics` - `Array(optional)`: This allows you to manually set the topics for the event filter. If given the filter property and event signature, (topic[0]) will not be set automatically, **Subscription doesn't support one array as filter**.
+- `options` - `object(optional)`:
+    + `filter` - `Object (optional)`: Lets you filter events by indexed parameters, e.g. {filter: {myNumber: 12}} means all events where “myNumber” is 12, **Subscription doesn't support one array as filter**.
+    + `topics` - `Array(optional)`: This allows you to manually set the topics for the event filter. If given the filter property and event signature, (topic[0]) will not be set automatically, **Subscription doesn't support one array as filter**.
+    + `fromBlock` - `String (optional)`: The block ID (greater than or equal to) from which to get events on.
+- `callback` - `Function`: This callback will be fired for the first event as the second argument, or an error as the first argument. See [getPastEvents](#getpastevents) return values for details about the event structure.
 
 **Returns**
 

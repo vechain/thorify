@@ -211,7 +211,7 @@ web3Instance.eth.getTransaction(transactionID).then(result => {
 `Meta Object`:
 
 + `blockID` - `String`: Identifier of the block(bytes32)
-+ `blockNumber` - `Unit32`: Number of block 
++ `blockNumber` - `Uint32`: Number of block 
 + `blockTimestamp` - `Uint64`: Unix timestamp of block
 
 ### Get transaction receipt
@@ -278,7 +278,7 @@ web3Instance.eth.getTransactionReceipt(transactionHash).then(result => {
 `Meta Object`:
 
 + `blockID` - `String`: Identifier of the block(bytes32)
-+ `blockNumber` - `Unit32`: Number of block 
++ `blockNumber` - `Uint32`: Number of block 
 + `blockTimestamp` - `Uint64`: Unix timestamp of block
 + `txID` - `String`: Identifier of the transaction
 + `txOrigin` - `String`: The one who signed the transaction
@@ -508,7 +508,7 @@ web3Instance.eth.getPastLogs(options).then(result => {
 `Meta Object`:
 
 + `blockID` - `String`: Identifier of the block(bytes32) this event was created in
-+ `blockNumber` - `Unit32`: Number of block  this event was created in
++ `blockNumber` - `Uint32`: Number of block  this event was created in
 + `blockTimestamp` - `Uint64`: Unix timestamp of block
 + `txID` - `String`: Identifier of the transaction this event was created in
 + `txOrigin` - `String`: The one who signed the transaction
@@ -726,7 +726,7 @@ subscription.unsubscribe(function(error, success){
 `Meta Object`:
 
 + `blockID` - `String`: Identifier of the block(bytes32) this event was created in
-+ `blockNumber` - `Unit32`: Number of block  this event was created in
++ `blockNumber` - `Uint32`: Number of block  this event was created in
 + `blockTimestamp` - `Uint64`: Unix timestamp of block
 + `txID` - `String`: Identifier of the transaction this event was created in
 + `txOrigin` - `String`: The one who signed the transaction
@@ -819,7 +819,7 @@ subscription.unsubscribe(function(error, success){
 `Meta Object`:
 
 + `blockID` - `String`: Identifier of the block(bytes32) this event was created in
-+ `blockNumber` - `Unit32`: Number of block  this event was created in
++ `blockNumber` - `Uint32`: Number of block  this event was created in
 + `blockTimestamp` - `Uint64`: Unix timestamp of block
 + `txID` - `String`: Identifier of the transaction this event was created in
 + `txOrigin` - `String`: The one who signed the transaction
@@ -1278,7 +1278,7 @@ contractInstance.getPastEvents(event[, options]).then(logs =>{
 `Meta Object`:
 
 + `blockID` - `String`: Identifier of the block(bytes32) this event was created in
-+ `blockNumber` - `Unit32`: Number of block  this event was created in
++ `blockNumber` - `Uint32`: Number of block  this event was created in
 + `blockTimestamp` - `Uint64`: Unix timestamp of block
 + `txID` - `String`: Identifier of the transaction this event was created in
 + `txOrigin` - `String`: The one who signed the transaction

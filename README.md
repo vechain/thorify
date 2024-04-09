@@ -1,11 +1,12 @@
-## Thorify &nbsp;&nbsp; [![Gitter](https://badges.gitter.im/vechain/thor.svg)](https://gitter.im/vechain/thor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+## Thorify 
+> [!IMPORTANT]
+> This project is discontinued, try out [web3-providers-connex](https://github.com/vechain/web3-providers-connex) or [vechain-sdk-js](https://github.com/vechain/vechain-sdk-js).
 
 [![NPM Version](https://badge.fury.io/js/thorify.svg)](https://www.npmjs.com/package/thorify)
 [![Build Status](https://travis-ci.org/vechain/thorify.svg)](https://travis-ci.org/vechain/thorify)
 [![Coverage Status](https://coveralls.io/repos/github/vechain/thorify/badge.svg?branch=master)](https://coveralls.io/github/vechain/thorify?branch=master)
 
 A web3 adaptor for VeChain [Thor](https://github.com/vechain/thor) RESTful API.
-
 
 ## Table of contents
 
@@ -60,8 +61,6 @@ const web3 = thorify(new Web3(), "http://localhost:8669");
 web3.eth.getBlock("latest").then(res => console.log(res));
 // Best block info will be displayed
 ```
-
-
 
 ## Web3 method supported
 
@@ -123,22 +122,6 @@ The APIs that follows the mechanism are:
 
 1. [thor-devkit.js](https://github.com/vechain/thor-devkit.js) supports multi-clause and sign transaction
 2. send signed transaction using [sendSignedTransaction](https://thorify.vecha.in/#/?id=send-signed-transaction)
-
-## Which Stack Should I Choose Regarding Connex,Thorify And Web3-Gear
-
-+ [Connex](https://github.com/vechain/connex#connex-): The standard interface to connect VeChain apps with VeChain blockchain and user.
-+ [Web3-Gear](https://github.com/vechain/web3-gear#web3-gear): Proxy Thor's RESTful API to Eth's JSON-RPC, to support Remix, Truffle and more.
-
-Below is an reference when you are planning your technical stack:
-
-![tech-stack](https://raw.githubusercontent.com/vechain/thorify/master/tech-stack.png)
-
-Here are some most common scenarios:
-
-1. Develop a web application: `Connex` + [Connex powered VeChain wallets](https://env.vechain.org/)
-2. Backend service in Node.js: `Thorify + Web3`
-3. Contract development in [Truffle](https://truffleframework.com/): `Web3 + Web3-Gear`
-4. Contract development in [Remix-IDE](https://remix.ethereum.org/): `Web3 + Web3-Gear`
 
 ## FAQ
 
